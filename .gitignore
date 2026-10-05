@@ -1,0 +1,14 @@
+# Godot cache & export
+.godot/
+builds/
+.godot/export_credentials.cfg
+export_credentials.cfg
+
+# System / OS
+.DS_Store
+Thumbs.db
+
+# Agent private files
+CLAUDE.local.md
+.claude/settings.local.json
+.gemini/
