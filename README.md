@@ -1,6 +1,6 @@
 # COMP 440 Project 3 (Working Title)
 
-A 3D psychological horror and puzzle game built in Godot 4.7.2 by Hali (Portraits), Rocky (Electrical), Daniel (Environmental Clues), and John (Ghost / Integration). The concept synthesizes the team's collaborative ideas into a cohesive four-system architecture.
+A 3D psychological horror and puzzle game built in Godot 4.7.2 by Haliyah (Portraits), Rocky (Electrical), Daniel (Environmental Clues), and John (Ghost / Integration). The concept synthesizes the team's collaborative ideas into a cohesive four-system architecture.
 
 The player investigates an eerie house haunted by an entity that moves freely through darkness and takes refuge inside oil paintings when exposed to light. To survive, the player must manipulate room lighting and portrait covers, decipher environmental clues, and navigate an inescapable truth: the entity can only leave the house if carried out inside the central family portrait.
 
