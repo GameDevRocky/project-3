@@ -6,7 +6,7 @@ This is the **canonical** instruction file for every AI agent on this repo. Code
 
 | Area | Owner | Folders |
 |---|---|---|
-| Portrait / Painting system | Hali | `systems/portraits/`, `tests/portraits/`, `docs/features/portraits/` |
+| Portrait / Painting system | Haliyah | `systems/portraits/`, `tests/portraits/`, `docs/features/portraits/` |
 | Electrical & Lighting | Rocky | `systems/electrical/`, `tests/electrical/`, `docs/features/electrical/` |
 | Player System | Daniel | `systems/player/`, `tests/player/`, `docs/features/player/` |
 | Ghost / Monster System | John | `systems/ghost/`, `tests/ghost/`, `docs/features/ghost/` |

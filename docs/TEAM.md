@@ -2,7 +2,7 @@
 
 | Area | Owner | Owned files | Interface crossing the boundary |
 | --- | --- | --- | --- |
-| **Portrait / Painting system** | Hali | `systems/portraits/`, `tests/portraits/`, `docs/features/portraits/` | Owns portrait location, room ID, covered/uncovered, active/inactive, family portrait tracking, and monster visual occupancy (`is_occupied`). Provides queries for valid entry paintings and emits `painting_state_changed`, `monster_occupancy_changed`. |
+| **Portrait / Painting system** | Haliyah | `systems/portraits/`, `tests/portraits/`, `docs/features/portraits/` | Owns portrait location, room ID, covered/uncovered, active/inactive, family portrait tracking, and monster visual occupancy (`is_occupied`). Provides queries for valid entry paintings and emits `painting_state_changed`, `monster_occupancy_changed`. |
 | **Electrical & Lighting** | Rocky | `systems/electrical/`, `tests/electrical/`, `docs/features/electrical/` | Owns circuits, room light states, breaker state, bulb condition, power grid budget (100W). Provides `get_room_light_state`, `is_room_lit`, `reset_breaker`, `turn_on_all_lights`; emits `light_state_changed`, `power_meter_updated`, `breaker_state_changed`. |
 | **Player System** | Daniel | `systems/player/`, `tests/player/`, `docs/features/player/` | Owns player position, first-person camera, movement, carried items (boxes, sheet, portrait), dark-adaptation ambient glow, interaction raycast, alive/dead state. Provides `try_interact`, `deposit_box_in_car`, `kill_player`; emits `player_died`, `item_packed`. |
 | **Ghost / Monster System** | John | `systems/ghost/`, `tests/ghost/`, `docs/features/ghost/` | Owns ghost location, state, chase state, movement mode, target, occupied portrait ID. Reads room light states (Electrical) and active/uncovered paintings (Portraits); emits `ghost_moved`, `ghost_entered_painting`, `player_killed`. |
@@ -37,10 +37,10 @@ Pairs follow the architectural seams so the reviewer is the person whose system 
 | Author | Area | Reviewer | Why |
 |---|---|---|---|
 | Rocky | Electrical & Lighting | John (Ghost) | Ghost movement and freezing are gated by room lighting state |
-| John | Ghost / Monster System | Hali (Portraits) & Daniel (Player) | Monster jumps into uncovered paintings and kills player on contact |
-| Hali | Portraits / Paintings | John (Ghost) & Daniel (Player) | Monster uses paintings as refuge; Player carries portraits and drapes sheets |
+| John | Ghost / Monster System | Haliyah (Portraits) & Daniel (Player) | Monster jumps into uncovered paintings and kills player on contact |
+| Haliyah | Portraits / Paintings | John (Ghost) & Daniel (Player) | Monster uses paintings as refuge; Player carries portraits and drapes sheets |
 | Daniel | Player System | Rocky (Electrical) & John (Ghost) | Player toggles switches and triggers lethal collision with monster |
-| John | Integration / Core | Hali / Rocky / Daniel | Integration touches shared project settings and `main.tscn` |
+| John | Integration / Core | Haliyah / Rocky / Daniel | Integration touches shared project settings and `main.tscn` |
 
 ---
 

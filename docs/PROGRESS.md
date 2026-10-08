@@ -38,7 +38,7 @@ _Updated 2026-10-05_
 
 ---
 
-## Portrait / Painting System: Hali
+## Portrait / Painting System: Haliyah
 
 - **Status:** ⚪ · **Branch:** None · **Current feature:** None · **Updated:** 2026-10-05
 - **Done:** None yet.

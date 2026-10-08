@@ -131,7 +131,7 @@ var boxes_packed_count: int = 0
 
 ---
 
-### 2.2 Portrait / Painting System (Owner: Hali)
+### 2.2 Portrait / Painting System (Owner: Haliyah)
 **Location:** `systems/portraits/`
 
 **State Owned:** Portrait locations, covered/uncovered status, active/inactive state, family portrait tracking, and monster occupancy visual flag.

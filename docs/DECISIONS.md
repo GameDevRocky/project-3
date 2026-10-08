@@ -13,7 +13,7 @@ Why architectural and design decisions are the way they are.
 
 **D-001 · 2026-10-05 · Team · Four Systems Architecture & State Ownership**
 The codebase is divided into four distinct systems and owners per class design requirements:
-1. Portrait / Painting System: Hali (`systems/portraits/`)
+1. Portrait / Painting System: Haliyah (`systems/portraits/`)
 2. Electrical & Lighting: Rocky (`systems/electrical/`)
 3. Environmental Clues: Daniel (`systems/environment/`)
 4. Ghost / Monster System: John (`systems/ghost/`)
@@ -55,7 +55,7 @@ The electrical system operates on a 100 Watt resource meter. Each room with ligh
 
 **D-010 · 2026-10-05 · Team · Cloth Dust-Sheet Covering Mechanic**
 The player blocks the ghost from entering wall paintings by collecting and draping cloth dust-sheets over painting frames (and removing them when needed).
-*Why:* Provides a tangible physical interaction item, clear visual feedback, and reusable strategic resources for sealing off rooms or corridors. *Affects:* `GAME_SPEC.md`, `CONTRACTS.md`, Hali (Portraits), John (Ghost).
+*Why:* Provides a tangible physical interaction item, clear visual feedback, and reusable strategic resources for sealing off rooms or corridors. *Affects:* `GAME_SPEC.md`, `CONTRACTS.md`, Haliyah (Portraits), John (Ghost).
 
 **D-011 · 2026-10-05 · Team · Real-Time Sensory Feedback Only (No Menus / Journals)**
 Environmental clues and monster evidence rely strictly on real-time spatial sensory feedback (3D positional audio, falling physics props, flickering shadows, canvas warping). No UI journals or inventory menus.
@@ -96,7 +96,7 @@ When a room's lights are turned on, the monster must jump into an uncovered pain
 
 **D-019 · 2026-10-07 · Team · Monster Occupancy Visual Seam on Paintings**
 When the monster enters a painting, it writes an `is_occupied` boolean flag to the portrait. The Portrait System renders the trapped monster visibly within the canvas texture.
-*Why:* Provides unmistakable visual feedback confirming the monster is currently trapped in that specific frame. *Affects:* `CONTRACTS.md`, Hali (Portraits), John (Ghost).
+*Why:* Provides unmistakable visual feedback confirming the monster is currently trapped in that specific frame. *Affects:* `CONTRACTS.md`, Haliyah (Portraits), John (Ghost).
 
 **D-020 · 2026-10-07 · Team · Full 100W Power Grid Reset at Basement Breaker**
 When the power grid reaches 0W and trips the breaker, navigating through the dark to the basement panel and resetting it restores the full 100W capacity.
@@ -108,7 +108,7 @@ When the power grid reaches 0W and trips the breaker, navigating through the dar
 
 **P-002 · 2026-10-07 · John · Sign-off on CONTRACTS.md v0.2 & Updated GDD**
 Approval of shared types (`PaintingData` with `is_occupied`, `PlayerState`, `GhostState`), Player System integration (Daniel), and updated moving-out game loop.
-*Status:* Pending sign-off from Hali, Rocky, Daniel, and John.
+*Status:* Pending sign-off from Haliyah, Rocky, Daniel, and John.
 
 ---
 

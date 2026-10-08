@@ -4,19 +4,19 @@ Team Game Design Document
 
 October 7, 2026 
 
-Hali, Rocky, Daniel, and John 
+Haliyah, Rocky, Daniel, and John 
 
 **1. What is the core loop in one sentence?** 
 
-Author: Hali 
+Author: Haliyah 
 
 Enter your old family home on the eve of new tenants moving in, restore power at the basement breaker to turn on all lights, use room switches within a 100-watt energy budget to contain a darkness-dwelling monster in wall paintings while carrying four room-labeled moving boxes out to your car, and finally retrieve the family portrait by the front door without letting the monster enter it or kill you. 
 
 **2. What are the systems? Name one system per member, its owner, the state it owns, and what it does.** 
 
-Authors: Hali, Rocky, Daniel, and John 
+Authors: Haliyah, Rocky, Daniel, and John 
 
-Portrait/Painting System - Hali 
+Portrait/Painting System - Haliyah 
 
 State it owns: Each portrait's location, room ID, wall position, covered or uncovered state (via cloth dust-sheets), active or inactive state, whether it is the final family portrait, whether it is being carried, and whether the monster is currently inhabiting and visible within it (`is_occupied`). 
 
@@ -70,7 +70,7 @@ The Ghost/Monster System writes its physical collider position and roaming state
 
 **4. What is the familiar thing, what makes it turn, and how does that change what the player does?** 
 
-Author: Hali 
+Author: Haliyah 
 
 The familiar thing is the ordinary chore of moving out of your old family home—hauling the last few packed boxes out to your car trunk before turning the house over to incoming rental tenants tomorrow. Staged furniture remains for the renters, but your family's personal belongings and heirloom family portrait must be cleared out tonight. 
 

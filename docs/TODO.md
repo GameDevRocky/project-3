@@ -24,7 +24,7 @@ Scope and mechanics: [`GAME_SPEC.md`](GAME_SPEC.md). Typed seams: [`CONTRACTS.md
 - [ ] `electrical/01-circuits-and-switches`: Room light toggle logic, circuit breaker state machine, 100W wattage drain/recharge meter, `light_state_changed` and `breaker_state_changed` signals.
 - [ ] `electrical/02-bulb-flicker`: Bulb condition, paranormal flickering triggers, blown bulb mechanics.
 
-### Portrait / Painting System (Hali)
+### Portrait / Painting System (Haliyah)
 - [ ] `portraits/01-painting-data`: Painting registry, tracking `is_covered`, `is_active`, `is_family_portrait`.
 - [ ] `portraits/02-cover-interaction`: Interaction logic to drape or remove cloth dust-sheets; queries for valid ghost entry paintings.
 

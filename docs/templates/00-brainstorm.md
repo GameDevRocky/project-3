@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | System | <Portraits / Electrical / Environment / Ghost / Integration> |
-| Owner | <Hali / Rocky / Daniel / John> |
+| Owner | <Haliyah / Rocky / Daniel / John> |
 | Branch | `<system>/<NN>-<slug>` |
 | Agent | <Claude Code / Codex / Gemini CLI> |
 | Date | <YYYY-MM-DD> |
