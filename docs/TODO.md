@@ -33,9 +33,10 @@ Scope and mechanics: [`GAME_SPEC.md`](GAME_SPEC.md). Typed seams: [`CONTRACTS.md
 - [ ] `ghost/02-seam-light-reaction`: Reads Electrical `is_room_lit`; retreats to uncovered, active painting when lights turn ON.
 - [ ] `ghost/03-chase-and-kill`: Line of sight player detection in dark rooms, chase movement, instant-kill jumpscare on contact.
 
-### Environmental Clues (Daniel)
-- [ ] `environment/01-clue-listener`: Event receiver for ghost movements and electrical events.
-- [ ] `environment/02-spatial-audio-disturbances`: Positional audio cues (creaks, footsteps, whispers) and physical prop disturbance triggers.
+### Player System (Daniel)
+- [ ] `player/01-controller-camera`: First-person `CharacterBody3D` controller, mouse-look, standard walk speed, sprint, and dark-adaptation ambient glow in unlit rooms.
+- [ ] `player/02-interaction-and-carry`: Raycast interaction system (`E`), carrying moving boxes/sheets/portraits, deposit at car trunk, wall switch toggle while carrying.
+- [ ] `player/03-death-sequence`: Lethal contact detection with monster collider, fatal jump-scare death screen, checkpoint reload.
 
 ### Integration (John)
 - [ ] `integration/01-playtest-house`: House greybox scene in `systems/core/main.tscn` connecting Entry Hall, Parlor, Study, Dining Room, and Basement.

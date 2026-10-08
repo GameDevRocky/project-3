@@ -60,14 +60,14 @@ _Updated 2026-10-05_
 
 ---
 
-## Environmental Clues: Daniel
+## Player System: Daniel
 
-- **Status:** ⚪ · **Branch:** None · **Current feature:** None · **Updated:** 2026-10-05
+- **Status:** ⚪ · **Branch:** None · **Current feature:** None · **Updated:** 2026-10-07
 - **Done:** None yet.
-- **In progress:** Reviewing `CONTRACTS.md` v0.1.
-- **Next:** Feature `environment/01-clue-dispatcher` (listening for ghost events and triggering audio/physical cues).
+- **In progress:** Reviewing `CONTRACTS.md` v0.2.
+- **Next:** Feature `player/01-controller-and-carry` (first-person controller, dark-adaptation glow, item carrying, switch toggling).
 - **Needs from others:** Shared contract approval.
-- **Handoff notes:** Audio cues will use spatial sound nodes in room scenes.
+- **Handoff notes:** Player handles raycast interactions (`E`), carrying boxes to the car trunk, and collision death when the monster attacks.
 
 ---
 

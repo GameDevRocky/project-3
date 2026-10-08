@@ -8,7 +8,7 @@ This is the **canonical** instruction file for every AI agent on this repo. Code
 |---|---|---|
 | Portrait / Painting system | Hali | `systems/portraits/`, `tests/portraits/`, `docs/features/portraits/` |
 | Electrical & Lighting | Rocky | `systems/electrical/`, `tests/electrical/`, `docs/features/electrical/` |
-| Environmental Clues | Daniel | `systems/environment/`, `tests/environment/`, `docs/features/environment/` |
+| Player System | Daniel | `systems/player/`, `tests/player/`, `docs/features/player/` |
 | Ghost / Monster System | John | `systems/ghost/`, `tests/ghost/`, `docs/features/ghost/` |
 | Integration / Core (`main.tscn`, `project.godot`) | John | `systems/core/`, `docs/features/integration/` |
 | Assets (models, materials, 2D art, audio) | Shared | `assets/` (see `docs/ASSETS.md`) |

@@ -2,10 +2,10 @@
 
 | Area | Owner | Owned files | Interface crossing the boundary |
 | --- | --- | --- | --- |
-| **Portrait / Painting system** | Hali | `systems/portraits/`, `tests/portraits/`, `docs/features/portraits/` | Owns portrait location, covered/uncovered, turned/moved, active/inactive. Provides portrait query methods (`get_painting_state`, `get_active_uncovered_paintings`) and emits `painting_state_changed`. |
-| **Electrical & Lighting** | Rocky | `systems/electrical/`, `tests/electrical/`, `docs/features/electrical/` | Owns circuits, room light states, breaker state, bulb condition. Provides `get_room_light_state`, `is_room_lit`, `set_breaker_state` and emits `light_state_changed`, `breaker_tripped`. |
-| **Environmental Clues** | Daniel | `systems/environment/`, `tests/environment/`, `docs/features/environment/` | Owns physical disturbances, audio cues, clue intensity/location, triggered evidence. Listens to ghost location/movement and electrical flicker events to trigger physical/audio disturbances. |
-| **Ghost / Monster System** | John | `systems/ghost/`, `tests/ghost/`, `docs/features/ghost/` | Owns ghost location, state, chase state, movement mode, target. Reads room light states (Electrical) and active/uncovered paintings (Portraits); emits `ghost_moved`, `ghost_entered_painting`, `ghost_exited_painting`. |
+| **Portrait / Painting system** | Hali | `systems/portraits/`, `tests/portraits/`, `docs/features/portraits/` | Owns portrait location, room ID, covered/uncovered, active/inactive, family portrait tracking, and monster visual occupancy (`is_occupied`). Provides queries for valid entry paintings and emits `painting_state_changed`, `monster_occupancy_changed`. |
+| **Electrical & Lighting** | Rocky | `systems/electrical/`, `tests/electrical/`, `docs/features/electrical/` | Owns circuits, room light states, breaker state, bulb condition, power grid budget (100W). Provides `get_room_light_state`, `is_room_lit`, `reset_breaker`, `turn_on_all_lights`; emits `light_state_changed`, `power_meter_updated`, `breaker_state_changed`. |
+| **Player System** | Daniel | `systems/player/`, `tests/player/`, `docs/features/player/` | Owns player position, first-person camera, movement, carried items (boxes, sheet, portrait), dark-adaptation ambient glow, interaction raycast, alive/dead state. Provides `try_interact`, `deposit_box_in_car`, `kill_player`; emits `player_died`, `item_packed`. |
+| **Ghost / Monster System** | John | `systems/ghost/`, `tests/ghost/`, `docs/features/ghost/` | Owns ghost location, state, chase state, movement mode, target, occupied portrait ID. Reads room light states (Electrical) and active/uncovered paintings (Portraits); emits `ghost_moved`, `ghost_entered_painting`, `player_killed`. |
 | **Integration & Core** | John | `systems/core/` (`main.tscn`), `project.godot`, `export_presets.cfg`, `docs/features/integration/` | Wires systems together in `main.tscn`; input map, collision layers, autoloads, export presets. |
 | **Assets** | Shared | `assets/`, `docs/ASSETS.md` | 3D models, textures, 2D portrait paintings, audio sound effects, ambient tracks. |
 | **Shared contracts** | Joint (All) | `systems/shared/`, `tests/shared/`, `docs/CONTRACTS.md` | Jointly owned frozen data structures and interfaces. |
@@ -20,7 +20,7 @@ Exact signatures: [`CONTRACTS.md`](CONTRACTS.md). Game rules & mechanics: [`GAME
 2. **Everyone tests alone with fakes.** Each area has its own test scenes in `systems/<system>/test/` and automated headless GUT tests in `tests/<system>/`.
 3. **Merge small and often.** A small PR merged today beats a massive merge conflict tomorrow. Everyone pulls `main` before starting anything new.
 4. **Integration checkpoints:**
-   - **Checkpoint 0 (Wed 10-07):** GDD complete, `CONTRACTS.md` v0.1 signed off, repository architecture set up.
+   - **Checkpoint 0 (Wed 10-07):** GDD complete, `CONTRACTS.md` v0.2 signed off, repository architecture set up.
    - **Checkpoint 1 (Thu 10-08):** Foundation code merged (`systems/shared/`, `project.godot`), system stubs in place.
    - **Checkpoint 2 (Fri 10-09, Playtest):** Playable 4-system greybox slice working together in `main.tscn`.
    - **Checkpoint 3 (Tue 10-13):** Full 5-room layout connected, family portrait escape climax assembled.
@@ -36,10 +36,10 @@ Pairs follow the architectural seams so the reviewer is the person whose system 
 
 | Author | Area | Reviewer | Why |
 |---|---|---|---|
-| Rocky | Electrical & Lighting | John (Ghost) | Ghost movement is gated by room lighting state |
-| John | Ghost / Monster System | Hali (Portraits) & Daniel (Environment) | Ghost jumps into uncovered paintings and triggers environmental cues |
-| Hali | Portraits / Paintings | John (Ghost) | Ghost relies on painting active/covered state and family portrait |
-| Daniel | Environmental Clues | Rocky (Electrical) | Environment reacts to electrical state and coordinates audio/visual atmosphere |
+| Rocky | Electrical & Lighting | John (Ghost) | Ghost movement and freezing are gated by room lighting state |
+| John | Ghost / Monster System | Hali (Portraits) & Daniel (Player) | Monster jumps into uncovered paintings and kills player on contact |
+| Hali | Portraits / Paintings | John (Ghost) & Daniel (Player) | Monster uses paintings as refuge; Player carries portraits and drapes sheets |
+| Daniel | Player System | Rocky (Electrical) & John (Ghost) | Player toggles switches and triggers lethal collision with monster |
 | John | Integration / Core | Hali / Rocky / Daniel | Integration touches shared project settings and `main.tscn` |
 
 ---

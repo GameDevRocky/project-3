@@ -75,12 +75,39 @@ Initial repository scaffolding remains strictly docs-driven until team contract 
 - Final Game Delivery: Fri 2026-10-16 (Code freeze Thu 2026-10-15 night)
 *Why:* Anchors sprint targets for all 4 system owners. *Affects:* `AGENTS.md`, `README.md`, `GAME_SPEC.md`, `PROGRESS.md`, `TODO.md`, `TEAM.md`.
 
+**D-015 · 2026-10-07 · Team · Narrative Shift: Moving Out of Family Home for New Renters**
+The narrative premise shifts from renovating the house to clearing the last four room-labeled family boxes and family portrait out to the car before new tenants move in tomorrow. Staged furniture remains behind.
+*Why:* Provides a clear, practical, relatable objective with a grounded reason to visit every room without needing freeform renovation tools. *Affects:* `GAME_SPEC.md`, `Project 3 Game Design Document.md`.
+
+**D-016 · 2026-10-07 · Team · Daniel Owns Player System (Replacing Environmental Clues)**
+The Environmental Clues system is replaced by the Player System, owned by Daniel (`systems/player/`). Daniel handles first-person locomotion, camera controls, item carrying, interaction raycasts, dark-adaptation ambient glow, and death handling.
+*Why:* Consolidates core first-person character physics and interaction loops into an explicit owner, removing the need for a standalone clue generator. *Affects:* `TEAM.md`, `CONTRACTS.md`, `AGENTS.md`.
+
+**D-017 · 2026-10-07 · Team · Three-Phase Dynamic Objective Checklist**
+Game progression follows a structured HUD checklist in the top right:
+1. Phase 0: "Flip the breaker in the basement" (monster is dormant and cannot attack).
+2. Phase 1: All lights turn on; checklist displays four room-labeled boxes to pack into the car trunk in any order.
+3. Phase 2: Once 4 boxes are stowed, checklist switches to "Take the family portrait" by the front door.
+*Why:* Provides safe onboarding before escalating horror tension, with clear guidance on what to do next. *Affects:* `GAME_SPEC.md`, `Project 3 Game Design Document.md`, HUD.
+
+**D-018 · 2026-10-07 · Team · Monster Immobilization in Lit Rooms**
+When a room's lights are turned on, the monster must jump into an uncovered painting in that room and becomes completely immobilized and unable to move while the room remains lit.
+*Why:* Gives the player a reliable tactical containment tool to lock down the monster while managing power budget. *Affects:* `GAME_SPEC.md`, `CONTRACTS.md`, John (Ghost).
+
+**D-019 · 2026-10-07 · Team · Monster Occupancy Visual Seam on Paintings**
+When the monster enters a painting, it writes an `is_occupied` boolean flag to the portrait. The Portrait System renders the trapped monster visibly within the canvas texture.
+*Why:* Provides unmistakable visual feedback confirming the monster is currently trapped in that specific frame. *Affects:* `CONTRACTS.md`, Hali (Portraits), John (Ghost).
+
+**D-020 · 2026-10-07 · Team · Full 100W Power Grid Reset at Basement Breaker**
+When the power grid reaches 0W and trips the breaker, navigating through the dark to the basement panel and resetting it restores the full 100W capacity.
+*Why:* The punishment is the dangerous trek through total darkness with the monster roaming freely; rewarding the reset with a full 100W refill avoids death-spiral scenarios. *Affects:* `GAME_SPEC.md`, Rocky (Electrical).
+
 ---
 
 ## Proposed (Waiting for sign-off)
 
-**P-001 · 2026-10-05 · John · Sign-off on CONTRACTS.md v0.1**
-Approval of shared enums, `PaintingData`, `GhostState`, `ClueEvent`, and cross-system method signatures.
+**P-002 · 2026-10-07 · John · Sign-off on CONTRACTS.md v0.2 & Updated GDD**
+Approval of shared types (`PaintingData` with `is_occupied`, `PlayerState`, `GhostState`), Player System integration (Daniel), and updated moving-out game loop.
 *Status:* Pending sign-off from Hali, Rocky, Daniel, and John.
 
 ---
@@ -88,4 +115,4 @@ Approval of shared enums, `PaintingData`, `GhostState`, `ClueEvent`, and cross-s
 ## Open Questions
 
 **Q-001 · 2026-10-05 · Team · Final Game Title**
-Official game title pending final team brainstorming (Working Title: *Project 3*).
+Official game title pending final team brainstorming (Working Title: *The Last Portrait* / *Project 3*).

@@ -1,8 +1,8 @@
-# COMP 440 Project 3 (Working Title)
+# The Last Portrait (COMP 440 Project 3)
 
-A 3D psychological horror and puzzle game built in Godot 4.7.2 by Haliyah (Portraits), Rocky (Electrical), Daniel (Environmental Clues), and John (Ghost / Integration). The concept synthesizes the team's collaborative ideas into a cohesive four-system architecture.
+A 3D psychological horror and puzzle game built in Godot 4.7.2 by Haliyah (Portraits), Rocky (Electrical), Daniel (Player), and John (Ghost / Integration). The concept synthesizes the team's collaborative ideas into a cohesive four-system architecture.
 
-The player investigates an eerie house haunted by an entity that moves freely through darkness and takes refuge inside oil paintings when exposed to light. To survive, the player must manipulate room lighting and portrait covers, decipher environmental clues, and navigate an inescapable truth: the entity can only leave the house if carried out inside the central family portrait.
+The player visits their old family home on the eve of new rental tenants moving in to pack and carry the last four room-labeled moving boxes out to their car. Unbeknownst to them, the house is haunted by an entity that moves freely through darkness and takes refuge inside oil paintings when exposed to light. To survive, the player must manipulate room lighting and portrait covers within a 100-watt power grid, navigate unlit rooms with a faint dark-adaptation glow, and retrieve the heirloom family portrait by the front door without letting the monster enter it or kill them.
 
 **Deadlines:**
 - **Game Design Document:** Wed 2026-10-07
@@ -33,10 +33,10 @@ The player investigates an eerie house haunted by an entity that moves freely th
 
 | System | Owner | Folder | Owned State |
 |---|---|---|---|
-| **Portrait / Painting system** | Hali | `systems/portraits/` | Portrait location, covered/uncovered, turned/moved, active/inactive |
-| **Electrical & Lighting** | Rocky | `systems/electrical/` | Circuits, room light states, breaker state, bulb condition |
-| **Environmental Clues** | Daniel | `systems/environment/` | Physical disturbances, audio cues, clue intensity/location, triggered evidence |
-| **Ghost / Monster System** | John | `systems/ghost/` | Ghost location, state, chase state, movement mode, target |
+| **Portrait / Painting system** | Haliyah | `systems/portraits/` | Portrait location, room ID, covered/uncovered, active/inactive, family portrait tracking, monster occupancy (`is_occupied`) |
+| **Electrical & Lighting** | Rocky | `systems/electrical/` | Circuits, room light states, breaker state, bulb condition, 100W power grid budget |
+| **Player System** | Daniel | `systems/player/` | Locomotion, first-person camera, carried items (boxes/sheet/portrait), dark-adaptation glow, switch interaction, death loop |
+| **Ghost / Monster System** | John | `systems/ghost/` | Ghost location, state, chase state, movement mode, target, occupied portrait ID, lethal contact |
 | **Integration & Core** | John | `systems/core/` | `main.tscn`, `project.godot`, export presets, input mapping |
 | **Shared Contracts** | Joint | `systems/shared/` | Data transfer objects, enums, seam signatures |
 
