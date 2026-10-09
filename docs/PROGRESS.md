@@ -40,13 +40,12 @@ _Updated 2026-10-05_
 
 ## Portrait / Painting System: Haliyah
 
-- **Status:** ⚪ · **Branch:** None · **Current feature:** None · **Updated:** 2026-10-05
-- **Done:** None yet.
-- **In progress:** Reviewing `CONTRACTS.md` v0.1.
-- **Next:** Feature `portraits/01-painting-state` (covering, turning, active state logic).
-- **Needs from others:** Shared contract approval.
-- **Handoff notes:** Initial stub will define `PaintingData` resource management and queries.
-
+- **Status:** 🟡 · **Branch:** `portraits/01-painting-system` · **Current feature:** 01-painting-system · **Updated:** 2026-10-09 (Codex)
+- **Done:** Reusable painting component, registry queries and occupancy guard, cloth cover, procedural paintings and trapped-ghost effect, family portrait carry hooks, standalone demo, GUT tests, integration guide.
+- **In progress:** GUT suite is not available in the standalone portrait project; integration tests remain for the shared project.
+- **Next:** Integrate with the shared `PaintingData`/`GameTypes` foundation and test the portrait component in the house scene.
+- **Needs from others:** Shared foundation (`GameTypes`, `PaintingData`, root `project.godot`) and team approval on `CONTRACTS.md` v0.2.
+- **Handoff notes:** Public signatures and signals follow `docs/CONTRACTS.md` §2.2. Room IDs are integer enum values until shared types land. The final family portrait remains eligible for ghost entry while carried to support D-005; occupied state persists through pickup/drop. Godot 4.7.2 headless demo load and 18 smoke checks pass. Open `systems/portraits/project.godot` for standalone visual checks. See `docs/features/portraits/README.md` for the Ghost, Electrical, Player, and ending seams.
 ---
 
 ## Electrical & Lighting: Rocky
