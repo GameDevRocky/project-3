@@ -30,10 +30,10 @@ _Updated 2026-10-05_
 ## Integration: John
 
 - **Status:** 🟢 · **Branch:** `integration/01-greybox-house` · **Current feature:** `integration/01-greybox-house` · **Updated:** 2026-10-07
-- **Done:** Project documentation, agent guidelines, templates, directory structure, `systems/shared/game_types.gd`, `systems/core/room_volume.gd`, `systems/core/main.tscn` (5-room Central Hub greybox + driveway + sockets), and layout tests in `tests/core/test_house_layout.gd`.
-- **In progress:** Verifying house layout and preparing merge into `main`.
-- **Next:** First-person player controller and car deposit trigger integration.
-- **Needs from others:** Sign-off on `CONTRACTS.md` v0.2.
+- **Done:** Project documentation, agent guidelines, templates, directory structure, `systems/shared/game_types.gd`, `systems/core/room_volume.gd`, `systems/core/main.tscn` (5-room Central Hub greybox + driveway + sockets), and layout tests in `tests/core/test_house_layout.gd`. Branch pushed to `origin/integration/01-greybox-house`.
+- **In progress:** PR opened for review (`integration/01-greybox-house` -> `main`).
+- **Next:** Merge PR into `main`, then proceed with first-person player controller and car deposit trigger integration.
+- **Needs from others:** Review by review pairs (Haliyah, Rocky, Daniel) and sign-off on `CONTRACTS.md` v0.2.
 - **Handoff notes:** `systems/core/main.tscn` has explicit socket nodes under `Sockets/`: `CarSocket` (with `TrunkSocket`), `BreakerPanelSocket`, `FamilyPortraitSocket`, `MovingBoxSockets` (4 boxes), `LightFixtureSockets` (5 room lights), `SwitchSockets` (5 wall switches), and `PaintingSockets` (4 wall paintings). Room occupancy is detected via `RoomVolumes` using `RoomVolume` Area3D triggers.
 
 ---
