@@ -1,27 +1,18 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene format=3 uid="uid://cm5liqgj2v166"]
 
-[ext_resource type="Script" path="res://systems/core/room_volume.gd" id="1_rv"]
+[ext_resource type="Script" uid="uid://w65lmb2adnwf" path="res://systems/core/room_volume.gd" id="1_rv"]
 [ext_resource type="PackedScene" path="res://systems/portraits/portrait_system.tscn" id="2_portraits"]
 [ext_resource type="PackedScene" path="res://systems/portraits/portrait_painting.tscn" id="3_painting"]
 [ext_resource type="PackedScene" path="res://systems/player/player_controller.tscn" id="4_player"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_Driveway"]
+albedo_color = Color(0.2, 0.2, 0.22, 1)
 
 [sub_resource type="StandardMaterial3D" id="Mat_Floor"]
 albedo_color = Color(0.28, 0.22, 0.18, 1)
 
 [sub_resource type="StandardMaterial3D" id="Mat_Wall"]
 albedo_color = Color(0.72, 0.68, 0.62, 1)
-
-[sub_resource type="StandardMaterial3D" id="Mat_Driveway"]
-albedo_color = Color(0.2, 0.2, 0.22, 1)
-
-[sub_resource type="StandardMaterial3D" id="Mat_Car"]
-albedo_color = Color(0.18, 0.32, 0.55, 1)
-
-[sub_resource type="StandardMaterial3D" id="Mat_Box"]
-albedo_color = Color(0.65, 0.48, 0.3, 1)
-
-[sub_resource type="StandardMaterial3D" id="Mat_Breaker"]
-albedo_color = Color(0.3, 0.32, 0.35, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_entry"]
 size = Vector3(6, 3, 6)
@@ -41,377 +32,385 @@ size = Vector3(8, 3.2, 8)
 [sub_resource type="BoxShape3D" id="BoxShape3D_driveway"]
 size = Vector3(14, 3, 10)
 
-[node name="Main" type="Node3D"]
+[sub_resource type="StandardMaterial3D" id="Mat_Car"]
+albedo_color = Color(0.18, 0.32, 0.55, 1)
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[sub_resource type="StandardMaterial3D" id="Mat_Breaker"]
+albedo_color = Color(0.3, 0.32, 0.35, 1)
 
-[node name="SunLight" type="DirectionalLight3D" parent="."]
+[sub_resource type="StandardMaterial3D" id="Mat_Box"]
+albedo_color = Color(0.65, 0.48, 0.3, 1)
+
+[node name="Main" type="Node3D" unique_id=1776546897]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=486554938]
+
+[node name="SunLight" type="DirectionalLight3D" parent="." unique_id=66195435]
 transform = Transform3D(0.866, -0.354, 0.354, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 10, 0)
 light_color = Color(0.65, 0.7, 0.85, 1)
 light_energy = 0.15
 
-[node name="HouseGeometry" type="CSGCombiner3D" parent="."]
+[node name="HouseGeometry" type="CSGCombiner3D" parent="." unique_id=1619198943]
 use_collision = true
 
-[node name="Driveway" type="CSGBox3D" parent="HouseGeometry"]
+[node name="Driveway" type="CSGBox3D" parent="HouseGeometry" unique_id=1613382755]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 7)
 size = Vector3(14, 0.2, 10)
 material = SubResource("Mat_Driveway")
 
-[node name="Porch" type="CSGBox3D" parent="HouseGeometry"]
+[node name="Porch" type="CSGBox3D" parent="HouseGeometry" unique_id=1007224990]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 1.5)
 size = Vector3(6, 0.3, 3)
 material = SubResource("Mat_Driveway")
 
-[node name="EntryFloor" type="CSGBox3D" parent="HouseGeometry"]
+[node name="EntryFloor" type="CSGBox3D" parent="HouseGeometry" unique_id=142780460]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -3)
 size = Vector3(6, 0.2, 6)
 material = SubResource("Mat_Floor")
 
-[node name="EntryCeiling" type="CSGBox3D" parent="HouseGeometry"]
+[node name="EntryCeiling" type="CSGBox3D" parent="HouseGeometry" unique_id=1609713387]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, -3)
 size = Vector3(6, 0.2, 6)
 material = SubResource("Mat_Wall")
 
-[node name="EntrySouthWall" type="CSGBox3D" parent="HouseGeometry"]
+[node name="EntrySouthWall" type="CSGBox3D" parent="HouseGeometry" unique_id=2082864441]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
 size = Vector3(6, 3, 0.2)
 material = SubResource("Mat_Wall")
 
-[node name="FrontDoorCut" type="CSGBox3D" parent="HouseGeometry/EntrySouthWall"]
+[node name="FrontDoorCut" type="CSGBox3D" parent="HouseGeometry/EntrySouthWall" unique_id=423882871]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
 operation = 2
 size = Vector3(1.4, 2.4, 0.5)
 
-[node name="EntryWestWall" type="CSGBox3D" parent="HouseGeometry"]
+[node name="EntryWestWall" type="CSGBox3D" parent="HouseGeometry" unique_id=393589376]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1.6, -3)
 size = Vector3(0.2, 3, 6)
 material = SubResource("Mat_Wall")
 
-[node name="ParlorDoorCut" type="CSGBox3D" parent="HouseGeometry/EntryWestWall"]
+[node name="ParlorDoorCut" type="CSGBox3D" parent="HouseGeometry/EntryWestWall" unique_id=783322395]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
 operation = 2
 size = Vector3(0.5, 2.4, 1.4)
 
-[node name="EntryEastWall" type="CSGBox3D" parent="HouseGeometry"]
+[node name="EntryEastWall" type="CSGBox3D" parent="HouseGeometry" unique_id=87709523]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1.6, -3)
 size = Vector3(0.2, 3, 6)
 material = SubResource("Mat_Wall")
 
-[node name="StudyDoorCut" type="CSGBox3D" parent="HouseGeometry/EntryEastWall"]
+[node name="StudyDoorCut" type="CSGBox3D" parent="HouseGeometry/EntryEastWall" unique_id=383066170]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
 operation = 2
 size = Vector3(0.5, 2.4, 1.4)
 
-[node name="EntryNorthWall" type="CSGBox3D" parent="HouseGeometry"]
+[node name="EntryNorthWall" type="CSGBox3D" parent="HouseGeometry" unique_id=208802141]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, -6)
 size = Vector3(6, 3, 0.2)
 material = SubResource("Mat_Wall")
 
-[node name="DiningDoorCut" type="CSGBox3D" parent="HouseGeometry/EntryNorthWall"]
+[node name="DiningDoorCut" type="CSGBox3D" parent="HouseGeometry/EntryNorthWall" unique_id=247708451]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, -0.3, 0)
 operation = 2
 size = Vector3(1.4, 2.4, 0.5)
 
-[node name="BasementStairHole" type="CSGBox3D" parent="HouseGeometry/EntryNorthWall"]
+[node name="BasementStairHole" type="CSGBox3D" parent="HouseGeometry/EntryNorthWall" unique_id=246240033]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, -0.3, 0)
 operation = 2
 size = Vector3(1.6, 2.6, 0.5)
 
-[node name="ParlorFloor" type="CSGBox3D" parent="HouseGeometry"]
+[node name="ParlorFloor" type="CSGBox3D" parent="HouseGeometry" unique_id=123281413]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0.1, -3)
 size = Vector3(8, 0.2, 8)
 material = SubResource("Mat_Floor")
 
-[node name="ParlorCeiling" type="CSGBox3D" parent="HouseGeometry"]
+[node name="ParlorCeiling" type="CSGBox3D" parent="HouseGeometry" unique_id=1340256227]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 3.1, -3)
 size = Vector3(8, 0.2, 8)
 material = SubResource("Mat_Wall")
 
-[node name="ParlorWestWall" type="CSGBox3D" parent="HouseGeometry"]
+[node name="ParlorWestWall" type="CSGBox3D" parent="HouseGeometry" unique_id=454490685]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11, 1.6, -3)
 size = Vector3(0.2, 3, 8)
 material = SubResource("Mat_Wall")
 
-[node name="ParlorSouthWall" type="CSGBox3D" parent="HouseGeometry"]
+[node name="ParlorSouthWall" type="CSGBox3D" parent="HouseGeometry" unique_id=773549089]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1.6, 1)
 size = Vector3(8, 3, 0.2)
 material = SubResource("Mat_Wall")
 
-[node name="ParlorNorthWall" type="CSGBox3D" parent="HouseGeometry"]
+[node name="ParlorNorthWall" type="CSGBox3D" parent="HouseGeometry" unique_id=361467047]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1.6, -7)
 size = Vector3(8, 3, 0.2)
 material = SubResource("Mat_Wall")
 
-[node name="StudyFloor" type="CSGBox3D" parent="HouseGeometry"]
+[node name="StudyFloor" type="CSGBox3D" parent="HouseGeometry" unique_id=1422156471]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.1, -3)
 size = Vector3(6, 0.2, 6)
 material = SubResource("Mat_Floor")
 
-[node name="StudyCeiling" type="CSGBox3D" parent="HouseGeometry"]
+[node name="StudyCeiling" type="CSGBox3D" parent="HouseGeometry" unique_id=1252610836]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 3.1, -3)
 size = Vector3(6, 0.2, 6)
 material = SubResource("Mat_Wall")
 
-[node name="StudyEastWall" type="CSGBox3D" parent="HouseGeometry"]
+[node name="StudyEastWall" type="CSGBox3D" parent="HouseGeometry" unique_id=469993819]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 1.6, -3)
 size = Vector3(0.2, 3, 6)
 material = SubResource("Mat_Wall")
 
-[node name="StudySouthWall" type="CSGBox3D" parent="HouseGeometry"]
+[node name="StudySouthWall" type="CSGBox3D" parent="HouseGeometry" unique_id=1154686438]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1.6, 0)
 size = Vector3(6, 3, 0.2)
 material = SubResource("Mat_Wall")
 
-[node name="StudyNorthWall" type="CSGBox3D" parent="HouseGeometry"]
+[node name="StudyNorthWall" type="CSGBox3D" parent="HouseGeometry" unique_id=2134243121]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1.6, -6)
 size = Vector3(6, 3, 0.2)
 material = SubResource("Mat_Wall")
 
-[node name="DiningFloor" type="CSGBox3D" parent="HouseGeometry"]
+[node name="DiningFloor" type="CSGBox3D" parent="HouseGeometry" unique_id=1200745002]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.1, -9.5)
 size = Vector3(8, 0.2, 7)
 material = SubResource("Mat_Floor")
 
-[node name="DiningCeiling" type="CSGBox3D" parent="HouseGeometry"]
+[node name="DiningCeiling" type="CSGBox3D" parent="HouseGeometry" unique_id=409351687]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 3.1, -9.5)
 size = Vector3(8, 0.2, 7)
 material = SubResource("Mat_Wall")
 
-[node name="DiningNorthWall" type="CSGBox3D" parent="HouseGeometry"]
+[node name="DiningNorthWall" type="CSGBox3D" parent="HouseGeometry" unique_id=2108412762]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.6, -13)
 size = Vector3(8, 3, 0.2)
 material = SubResource("Mat_Wall")
 
-[node name="DiningEastWall" type="CSGBox3D" parent="HouseGeometry"]
+[node name="DiningEastWall" type="CSGBox3D" parent="HouseGeometry" unique_id=376172155]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.6, -9.5)
 size = Vector3(0.2, 3, 7)
 material = SubResource("Mat_Wall")
 
-[node name="DiningWestWall" type="CSGBox3D" parent="HouseGeometry"]
+[node name="DiningWestWall" type="CSGBox3D" parent="HouseGeometry" unique_id=1751441250]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1.6, -9.5)
 size = Vector3(0.2, 3, 7)
 material = SubResource("Mat_Wall")
 
-[node name="BasementStairsRamp" type="CSGBox3D" parent="HouseGeometry"]
+[node name="BasementStairsRamp" type="CSGBox3D" parent="HouseGeometry" unique_id=428780957]
 transform = Transform3D(1, 0, 0, 0, 0.819, 0.573, 0, -0.573, 0.819, -1.8, -1.6, -8.5)
-size = Vector3(1.6, 0.3, 6.0)
+size = Vector3(1.6, 0.3, 6)
 material = SubResource("Mat_Floor")
 
-[node name="BasementFloor" type="CSGBox3D" parent="HouseGeometry"]
+[node name="BasementFloor" type="CSGBox3D" parent="HouseGeometry" unique_id=142485876]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -3.6, -12)
 size = Vector3(8, 0.2, 8)
 material = SubResource("Mat_Driveway")
 
-[node name="BasementCeiling" type="CSGBox3D" parent="HouseGeometry"]
+[node name="BasementCeiling" type="CSGBox3D" parent="HouseGeometry" unique_id=157902571]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -0.4, -12)
 size = Vector3(8, 0.2, 8)
 material = SubResource("Mat_Wall")
 
-[node name="BasementNorthWall" type="CSGBox3D" parent="HouseGeometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -2.0, -16)
+[node name="BasementNorthWall" type="CSGBox3D" parent="HouseGeometry" unique_id=106025495]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -2, -16)
 size = Vector3(8, 3.2, 0.2)
 material = SubResource("Mat_Wall")
 
-[node name="BasementSouthWall" type="CSGBox3D" parent="HouseGeometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -2.0, -8)
+[node name="BasementSouthWall" type="CSGBox3D" parent="HouseGeometry" unique_id=2103668667]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -2, -8)
 size = Vector3(8, 3.2, 0.2)
 material = SubResource("Mat_Wall")
 
-[node name="BasementWestWall" type="CSGBox3D" parent="HouseGeometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, -2.0, -12)
+[node name="BasementWestWall" type="CSGBox3D" parent="HouseGeometry" unique_id=928834501]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, -2, -12)
 size = Vector3(0.2, 3.2, 8)
 material = SubResource("Mat_Wall")
 
-[node name="BasementEastWall" type="CSGBox3D" parent="HouseGeometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, -2.0, -12)
+[node name="BasementEastWall" type="CSGBox3D" parent="HouseGeometry" unique_id=1634173509]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, -2, -12)
 size = Vector3(0.2, 3.2, 8)
 material = SubResource("Mat_Wall")
 
-[node name="RoomVolumes" type="Node3D" parent="."]
+[node name="RoomVolumes" type="Node3D" parent="." unique_id=1459190737]
 
-[node name="RoomVolume_EntryHall" type="Area3D" parent="RoomVolumes"]
+[node name="RoomVolume_EntryHall" type="Area3D" parent="RoomVolumes" unique_id=1251690902]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -3)
 collision_layer = 16
 collision_mask = 6
 script = ExtResource("1_rv")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RoomVolumes/RoomVolume_EntryHall"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RoomVolumes/RoomVolume_EntryHall" unique_id=1946395695]
 shape = SubResource("BoxShape3D_entry")
 
-[node name="RoomVolume_Parlor" type="Area3D" parent="RoomVolumes"]
+[node name="RoomVolume_Parlor" type="Area3D" parent="RoomVolumes" unique_id=2056427546]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1.5, -3)
 collision_layer = 16
 collision_mask = 6
 script = ExtResource("1_rv")
 room_id = 1
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RoomVolumes/RoomVolume_Parlor"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RoomVolumes/RoomVolume_Parlor" unique_id=715162476]
 shape = SubResource("BoxShape3D_parlor")
 
-[node name="RoomVolume_Study" type="Area3D" parent="RoomVolumes"]
+[node name="RoomVolume_Study" type="Area3D" parent="RoomVolumes" unique_id=1188092875]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1.5, -3)
 collision_layer = 16
 collision_mask = 6
 script = ExtResource("1_rv")
 room_id = 2
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RoomVolumes/RoomVolume_Study"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RoomVolumes/RoomVolume_Study" unique_id=492645160]
 shape = SubResource("BoxShape3D_study")
 
-[node name="RoomVolume_DiningRoom" type="Area3D" parent="RoomVolumes"]
+[node name="RoomVolume_DiningRoom" type="Area3D" parent="RoomVolumes" unique_id=1317556197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.5, -9.5)
 collision_layer = 16
 collision_mask = 6
 script = ExtResource("1_rv")
 room_id = 3
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RoomVolumes/RoomVolume_DiningRoom"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RoomVolumes/RoomVolume_DiningRoom" unique_id=603262906]
 shape = SubResource("BoxShape3D_dining")
 
-[node name="RoomVolume_Basement" type="Area3D" parent="RoomVolumes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -2.0, -12)
+[node name="RoomVolume_Basement" type="Area3D" parent="RoomVolumes" unique_id=1118133736]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -2, -12)
 collision_layer = 16
 collision_mask = 6
 script = ExtResource("1_rv")
 room_id = 4
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RoomVolumes/RoomVolume_Basement"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RoomVolumes/RoomVolume_Basement" unique_id=574864538]
 shape = SubResource("BoxShape3D_basement")
 
-[node name="RoomVolume_Driveway" type="Area3D" parent="RoomVolumes"]
+[node name="RoomVolume_Driveway" type="Area3D" parent="RoomVolumes" unique_id=1426096226]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 7)
 collision_layer = 16
 collision_mask = 6
 script = ExtResource("1_rv")
 room_id = 5
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RoomVolumes/RoomVolume_Driveway"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RoomVolumes/RoomVolume_Driveway" unique_id=1090223651]
 shape = SubResource("BoxShape3D_driveway")
 
-[node name="PortraitSystem" parent="." instance=ExtResource("2_portraits")]
+[node name="PortraitSystem" parent="." unique_id=975324426 instance=ExtResource("2_portraits")]
 
-[node name="FamilyPortrait" parent="PortraitSystem" instance=ExtResource("3_painting")]
+[node name="FamilyPortrait" parent="PortraitSystem" unique_id=191046079 instance=ExtResource("3_painting")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 1.6, -0.15)
 portrait_id = &"family_portrait"
-room_id = 0
 is_family_portrait = true
 
-[node name="Painting_Parlor_1" parent="PortraitSystem" instance=ExtResource("3_painting")]
+[node name="Painting_Parlor_1" parent="PortraitSystem" unique_id=2080260441 instance=ExtResource("3_painting")]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -10.85, 1.6, -3)
 portrait_id = &"parlor_1"
 room_id = 1
 
-[node name="Painting_Parlor_2" parent="PortraitSystem" instance=ExtResource("3_painting")]
+[node name="Painting_Parlor_2" parent="PortraitSystem" unique_id=1131422192 instance=ExtResource("3_painting")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1.6, -6.85)
 portrait_id = &"parlor_2"
 room_id = 1
 
-[node name="Painting_Study_1" parent="PortraitSystem" instance=ExtResource("3_painting")]
+[node name="Painting_Study_1" parent="PortraitSystem" unique_id=456713173 instance=ExtResource("3_painting")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 8.85, 1.6, -3)
 portrait_id = &"study_1"
 room_id = 2
 
-[node name="Painting_Dining_1" parent="PortraitSystem" instance=ExtResource("3_painting")]
+[node name="Painting_Dining_1" parent="PortraitSystem" unique_id=1331505330 instance=ExtResource("3_painting")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.6, -12.85)
 portrait_id = &"dining_1"
 room_id = 3
 
-[node name="PlayerController" parent="." instance=ExtResource("4_player")]
+[node name="PlayerController" parent="." unique_id=664864773 instance=ExtResource("4_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 10)
 
-[node name="Sockets" type="Node3D" parent="."]
+[node name="Sockets" type="Node3D" parent="." unique_id=932006977]
 
-[node name="CarSocket" type="Node3D" parent="Sockets"]
+[node name="CarSocket" type="Node3D" parent="Sockets" unique_id=1765689428]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7)
 
-[node name="CarMesh" type="CSGBox3D" parent="Sockets/CarSocket"]
+[node name="CarMesh" type="CSGBox3D" parent="Sockets/CarSocket" unique_id=1954607239]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
 size = Vector3(2.2, 1.4, 4.6)
 material = SubResource("Mat_Car")
 
-[node name="TrunkSocket" type="Marker3D" parent="Sockets/CarSocket"]
+[node name="TrunkSocket" type="Marker3D" parent="Sockets/CarSocket" unique_id=507670838]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, -2.4)
 
-[node name="BreakerPanelSocket" type="Node3D" parent="Sockets"]
+[node name="BreakerPanelSocket" type="Node3D" parent="Sockets" unique_id=1932604493]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -1.8, -15.85)
 
-[node name="BreakerMesh" type="CSGBox3D" parent="Sockets/BreakerPanelSocket"]
+[node name="BreakerMesh" type="CSGBox3D" parent="Sockets/BreakerPanelSocket" unique_id=689874609]
 size = Vector3(0.6, 0.8, 0.15)
 material = SubResource("Mat_Breaker")
 
-[node name="MovingBoxSockets" type="Node3D" parent="Sockets"]
+[node name="MovingBoxSockets" type="Node3D" parent="Sockets" unique_id=2090193636]
 
-[node name="Box_LivingRoom" type="CSGBox3D" parent="Sockets/MovingBoxSockets"]
+[node name="Box_LivingRoom" type="CSGBox3D" parent="Sockets/MovingBoxSockets" unique_id=1241057199]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0.45, -4)
 size = Vector3(0.6, 0.6, 0.6)
 material = SubResource("Mat_Box")
 
-[node name="Box_Study" type="CSGBox3D" parent="Sockets/MovingBoxSockets"]
+[node name="Box_Study" type="CSGBox3D" parent="Sockets/MovingBoxSockets" unique_id=924452765]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.45, -4.5)
 size = Vector3(0.6, 0.6, 0.6)
 material = SubResource("Mat_Box")
 
-[node name="Box_DiningRoom" type="CSGBox3D" parent="Sockets/MovingBoxSockets"]
+[node name="Box_DiningRoom" type="CSGBox3D" parent="Sockets/MovingBoxSockets" unique_id=70402999]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.45, -10)
 size = Vector3(0.6, 0.6, 0.6)
 material = SubResource("Mat_Box")
 
-[node name="Box_Basement" type="CSGBox3D" parent="Sockets/MovingBoxSockets"]
+[node name="Box_Basement" type="CSGBox3D" parent="Sockets/MovingBoxSockets" unique_id=1497196656]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, -3.2, -12)
 size = Vector3(0.6, 0.6, 0.6)
 material = SubResource("Mat_Box")
 
-[node name="LightFixtureSockets" type="Node3D" parent="Sockets"]
+[node name="LightFixtureSockets" type="Node3D" parent="Sockets" unique_id=627929496]
 
-[node name="Light_EntryHall" type="OmniLight3D" parent="Sockets/LightFixtureSockets"]
+[node name="Light_EntryHall" type="OmniLight3D" parent="Sockets/LightFixtureSockets" unique_id=2114685678]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, -3)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
 omni_range = 7.0
 
-[node name="Light_Parlor" type="OmniLight3D" parent="Sockets/LightFixtureSockets"]
+[node name="Light_Parlor" type="OmniLight3D" parent="Sockets/LightFixtureSockets" unique_id=1352264705]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 2.7, -3)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
 omni_range = 9.0
 
-[node name="Light_Study" type="OmniLight3D" parent="Sockets/LightFixtureSockets"]
+[node name="Light_Study" type="OmniLight3D" parent="Sockets/LightFixtureSockets" unique_id=2092587198]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 2.7, -3)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
 omni_range = 7.0
 
-[node name="Light_DiningRoom" type="OmniLight3D" parent="Sockets/LightFixtureSockets"]
+[node name="Light_DiningRoom" type="OmniLight3D" parent="Sockets/LightFixtureSockets" unique_id=1278804361]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 2.7, -9.5)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
 omni_range = 8.5
 
-[node name="Light_Basement" type="OmniLight3D" parent="Sockets/LightFixtureSockets"]
+[node name="Light_Basement" type="OmniLight3D" parent="Sockets/LightFixtureSockets" unique_id=528293105]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -0.8, -12)
 light_color = Color(0.9, 0.85, 0.75, 1)
 light_energy = 1.2
 omni_range = 8.0
 
-[node name="SwitchSockets" type="Node3D" parent="Sockets"]
+[node name="SwitchSockets" type="Node3D" parent="Sockets" unique_id=1100955300]
 
-[node name="Switch_EntryHall" type="CSGBox3D" parent="Sockets/SwitchSockets"]
+[node name="Switch_EntryHall" type="CSGBox3D" parent="Sockets/SwitchSockets" unique_id=1483767083]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.2, -0.15)
 size = Vector3(0.15, 0.25, 0.08)
 
-[node name="Switch_Parlor" type="CSGBox3D" parent="Sockets/SwitchSockets"]
+[node name="Switch_Parlor" type="CSGBox3D" parent="Sockets/SwitchSockets" unique_id=142815731]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.15, 1.2, -2.1)
 size = Vector3(0.08, 0.25, 0.15)
 
-[node name="Switch_Study" type="CSGBox3D" parent="Sockets/SwitchSockets"]
+[node name="Switch_Study" type="CSGBox3D" parent="Sockets/SwitchSockets" unique_id=1240477808]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.15, 1.2, -2.1)
 size = Vector3(0.08, 0.25, 0.15)
 
-[node name="Switch_DiningRoom" type="CSGBox3D" parent="Sockets/SwitchSockets"]
+[node name="Switch_DiningRoom" type="CSGBox3D" parent="Sockets/SwitchSockets" unique_id=1397745810]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9, 1.2, -6.15)
 size = Vector3(0.15, 0.25, 0.08)
 
-[node name="Switch_Basement" type="CSGBox3D" parent="Sockets/SwitchSockets"]
+[node name="Switch_Basement" type="CSGBox3D" parent="Sockets/SwitchSockets" unique_id=1144480087]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, -1.2, -6.15)
 size = Vector3(0.15, 0.25, 0.08)
