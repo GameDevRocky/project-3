@@ -59,7 +59,7 @@ size = Vector3(14, 0.2, 10)
 material = SubResource("Mat_Driveway")
 
 [node name="Porch" type="CSGBox3D" parent="HouseGeometry" unique_id=1007224990]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 1.5)
+transform = Transform3D(1, 0, 0, 0, 0.9979532, -0.063948825, 0, 0.063948825, 0.9979532, 0, 0.05, 1.5)
 size = Vector3(6, 0.3, 3)
 material = SubResource("Mat_Driveway")
 
