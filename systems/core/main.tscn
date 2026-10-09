@@ -1,8 +1,9 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://systems/core/room_volume.gd" id="1_rv"]
 [ext_resource type="PackedScene" path="res://systems/portraits/portrait_system.tscn" id="2_portraits"]
 [ext_resource type="PackedScene" path="res://systems/portraits/portrait_painting.tscn" id="3_painting"]
+[ext_resource type="PackedScene" path="res://systems/player/player_controller.tscn" id="4_player"]
 
 [sub_resource type="StandardMaterial3D" id="Mat_Floor"]
 albedo_color = Color(0.28, 0.22, 0.18, 1)
@@ -315,6 +316,9 @@ room_id = 2
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.6, -12.85)
 portrait_id = &"dining_1"
 room_id = 3
+
+[node name="PlayerController" parent="." instance=ExtResource("4_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 10)
 
 [node name="Sockets" type="Node3D" parent="."]
 
