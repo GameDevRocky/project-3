@@ -1,6 +1,8 @@
 class_name RoomVolume
 extends Area3D
 
+const GameTypes = preload("res://systems/shared/game_types.gd")
+
 ## Emitted when an entity (Player, Monster, or Prop) enters this room volume
 signal room_entered(body: Node3D, room_id: GameTypes.RoomId)
 

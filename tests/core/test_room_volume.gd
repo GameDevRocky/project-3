@@ -1,5 +1,8 @@
 extends GutTest
 
+const GameTypes = preload("res://systems/shared/game_types.gd")
+const RoomVolume = preload("res://systems/core/room_volume.gd")
+
 func test_room_volume_exports_room_id() -> void:
 	var rv: RoomVolume = RoomVolume.new()
 	assert_not_null(rv)

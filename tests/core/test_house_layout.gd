@@ -1,5 +1,7 @@
 extends GutTest
 
+const GameTypes = preload("res://systems/shared/game_types.gd")
+const RoomVolume = preload("res://systems/core/room_volume.gd")
 const MAIN_SCENE_PATH := "res://systems/core/main.tscn"
 
 func test_main_scene_instantiates() -> void:
