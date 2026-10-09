@@ -1,7 +1,7 @@
 extends Node3D
 ## Test-only first-person controller and room builder. No player/game code dependency.
 
-const PAINTING_SCENE: PackedScene = preload("res://demo/portrait_painting_demo.tscn")
+const PAINTING_SCENE: PackedScene = preload("res://systems/portraits/demo/portrait_painting_demo.tscn")
 
 @onready var _player: CharacterBody3D = $TestPlayer
 @onready var _camera: Camera3D = $TestPlayer/Camera3D
