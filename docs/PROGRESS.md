@@ -72,9 +72,9 @@ _Updated 2026-10-05_
 
 ## Ghost / Monster System: John
 
-- **Status:** ⚪ · **Branch:** None · **Current feature:** None · **Updated:** 2026-10-05
-- **Done:** None yet.
-- **In progress:** Reviewing `CONTRACTS.md` v0.1.
-- **Next:** Feature `ghost/01-movement-state-machine` (free roaming in dark, jumping into paintings when lit).
-- **Needs from others:** Electrical light state signal and Portrait valid painting query stubs.
-- **Handoff notes:** Ghost state machine will initially test against mock light and portrait interfaces.
+- **Status:** 🟢 · **Branch:** `ghost/01-monster-system` · **Current feature:** `ghost/01-monster-system` · **Updated:** 2026-10-07
+- **Done:** Implemented `systems/ghost/ghost_monster.gd` (FSM with DORMANT, FREE_ROAM, CHASE, PAINTING_BOUND modes, light reaction query, and lethal contact), `systems/ghost/ghost_monster.tscn` (procedural 3D shadow mesh and NavigationAgent3D), and GUT tests in `tests/ghost/test_ghost_system.gd`.
+- **In progress:** Preparing PR into `main`.
+- **Next:** Merge ghost system into `main` and wire into integration scene.
+- **Needs from others:** Electrical system and portrait system method stubs.
+- **Handoff notes:** The monster starts dormant (`DORMANT`) until power is activated. It queries parent nodes for `ElectricalSystem` and `PortraitSystem` to handle light freezing and painting occupancy.
