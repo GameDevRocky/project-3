@@ -8,8 +8,8 @@ const PlayerState = preload("res://systems/shared/player_state.gd")
 @export var sprint_speed: float = 5.8
 @export var mouse_sensitivity: float = 0.003
 
-@onready var camera: Camera3D = $Camera3D
-@onready var interaction_ray: RayCast3D = $Camera3D/InteractionRay
+@onready var camera: Camera3D = get_node_or_null("Camera3D")
+@onready var interaction_ray: RayCast3D = get_node_or_null("Camera3D/InteractionRay")
 
 var current_room: GameTypes.RoomId = GameTypes.RoomId.EXTERIOR_DRIVEWAY
 var carried_item: GameTypes.CarriedItemType = GameTypes.CarriedItemType.NONE
@@ -20,6 +20,9 @@ func _ready() -> void:
 	add_to_group("player")
 	collision_layer = 2 # Layer 2 (player)
 	collision_mask = 1 | 4 # Layer 1 (world) | Layer 3 (monster)
+	floor_snap_length = 0.4
+	floor_constant_speed = true
+	floor_max_angle = deg_to_rad(50.0)
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -27,8 +30,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		rotate_y(-event.relative.x * mouse_sensitivity)
-		camera.rotate_x(-event.relative.y * mouse_sensitivity)
-		camera.rotation.clampf(-PI/2.2, PI/2.2)
+		if camera != null:
+			camera.rotate_x(-event.relative.y * mouse_sensitivity)
+			camera.rotation.clampf(-PI/2.2, PI/2.2)
 
 	if event.is_action_pressed("pause"):
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
@@ -69,10 +73,14 @@ func get_player_state() -> PlayerState:
 	return state
 
 func try_interact() -> void:
-	if interaction_ray.is_colliding():
-		var collider = interaction_ray.get_collider()
+	if interaction_ray != null and interaction_ray.is_colliding():
+		var collider: Object = interaction_ray.get_collider()
 		if collider != null:
 			print("Interacted with: ", collider.name)
+			if collider.has_method("interact"):
+				collider.interact(self)
+			elif collider is Node and (collider as Node).get_parent() != null and (collider as Node).get_parent().has_method("interact"):
+				(collider as Node).get_parent().interact(self)
 
 func kill_player() -> void:
 	is_alive = bool(false)

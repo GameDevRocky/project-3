@@ -4,6 +4,8 @@
 [ext_resource type="PackedScene" path="res://systems/portraits/portrait_system.tscn" id="2_portraits"]
 [ext_resource type="PackedScene" path="res://systems/portraits/portrait_painting.tscn" id="3_painting"]
 [ext_resource type="PackedScene" path="res://systems/player/player_controller.tscn" id="4_player"]
+[ext_resource type="PackedScene" uid="uid://cdcgyx2hdjcgi" path="res://systems/electrical/electrical_system.tscn" id="5_electrical"]
+[ext_resource type="PackedScene" uid="uid://btx18iw2l5nto" path="res://systems/electrical/light_switch.tscn" id="6_switch"]
 
 [sub_resource type="StandardMaterial3D" id="Mat_Driveway"]
 albedo_color = Color(0.2, 0.2, 0.22, 1)
@@ -24,7 +26,7 @@ size = Vector3(8, 3, 8)
 size = Vector3(6, 3, 6)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_dining"]
-size = Vector3(8, 3, 7)
+size = Vector3(6, 3, 7)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_basement"]
 size = Vector3(8, 3.2, 8)
@@ -169,8 +171,8 @@ size = Vector3(6, 3, 0.2)
 material = SubResource("Mat_Wall")
 
 [node name="DiningFloor" type="CSGBox3D" parent="HouseGeometry" unique_id=1200745002]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.1, -9.5)
-size = Vector3(8, 0.2, 7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.1, -9.5)
+size = Vector3(6, 0.2, 7)
 material = SubResource("Mat_Floor")
 
 [node name="DiningCeiling" type="CSGBox3D" parent="HouseGeometry" unique_id=409351687]
@@ -193,9 +195,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1.6, -9.5)
 size = Vector3(0.2, 3, 7)
 material = SubResource("Mat_Wall")
 
+[node name="DiningStairPartitionWall" type="CSGBox3D" parent="HouseGeometry" unique_id=98721345]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.6, -9.5)
+size = Vector3(0.2, 3, 7)
+material = SubResource("Mat_Wall")
+
 [node name="BasementStairsRamp" type="CSGBox3D" parent="HouseGeometry" unique_id=428780957]
-transform = Transform3D(1, 0, 0, 0, 0.819, 0.573, 0, -0.573, 0.819, -1.8, -1.6, -8.5)
-size = Vector3(1.6, 0.3, 6)
+transform = Transform3D(-1, 4.6327365e-08, 7.413929e-08, 0, 0.8480546, -0.5299233, -8.742278e-08, -0.5299233, -0.8480546, -1.8, -1.83, -9.18)
+size = Vector3(1.6, 0.3, 7.45)
 material = SubResource("Mat_Floor")
 
 [node name="BasementFloor" type="CSGBox3D" parent="HouseGeometry" unique_id=142485876]
@@ -208,6 +215,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -0.4, -12)
 size = Vector3(8, 0.2, 8)
 material = SubResource("Mat_Wall")
 
+[node name="BasementStairCeilingCut" type="CSGBox3D" parent="HouseGeometry/BasementCeiling" unique_id=64810239]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0, 2)
+operation = 2
+size = Vector3(2, 0.5, 4.5)
+
 [node name="BasementNorthWall" type="CSGBox3D" parent="HouseGeometry" unique_id=106025495]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -2, -16)
 size = Vector3(8, 3.2, 0.2)
@@ -217,6 +229,11 @@ material = SubResource("Mat_Wall")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -2, -8)
 size = Vector3(8, 3.2, 0.2)
 material = SubResource("Mat_Wall")
+
+[node name="BasementStairwayCut" type="CSGBox3D" parent="HouseGeometry/BasementSouthWall" unique_id=78491203]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.8, 0)
+operation = 2
+size = Vector3(1.8, 3.2, 0.5)
 
 [node name="BasementWestWall" type="CSGBox3D" parent="HouseGeometry" unique_id=928834501]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, -2, -12)
@@ -260,7 +277,7 @@ room_id = 2
 shape = SubResource("BoxShape3D_study")
 
 [node name="RoomVolume_DiningRoom" type="Area3D" parent="RoomVolumes" unique_id=1317556197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.5, -9.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1.5, -9.5)
 collision_layer = 16
 collision_mask = 6
 script = ExtResource("1_rv")
@@ -316,6 +333,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.6, -12.85)
 portrait_id = &"dining_1"
 room_id = 3
 
+[node name="ElectricalSystem" parent="." unique_id=1849203810 instance=ExtResource("5_electrical")]
+
 [node name="PlayerController" parent="." unique_id=664864773 instance=ExtResource("4_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 10)
 
@@ -338,6 +357,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -1.8, -15.85)
 [node name="BreakerMesh" type="CSGBox3D" parent="Sockets/BreakerPanelSocket" unique_id=689874609]
 size = Vector3(0.6, 0.8, 0.15)
 material = SubResource("Mat_Breaker")
+
+[node name="FamilyPortraitSocket" type="Marker3D" parent="Sockets" unique_id=201847192]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 1.6, -0.15)
 
 [node name="MovingBoxSockets" type="Node3D" parent="Sockets" unique_id=2090193636]
 
@@ -395,22 +417,21 @@ omni_range = 8.0
 
 [node name="SwitchSockets" type="Node3D" parent="Sockets" unique_id=1100955300]
 
-[node name="Switch_EntryHall" type="CSGBox3D" parent="Sockets/SwitchSockets" unique_id=1483767083]
+[node name="Switch_EntryHall" parent="Sockets/SwitchSockets" unique_id=1483767083 instance=ExtResource("6_switch")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.2, -0.15)
-size = Vector3(0.15, 0.25, 0.08)
 
-[node name="Switch_Parlor" type="CSGBox3D" parent="Sockets/SwitchSockets" unique_id=142815731]
+[node name="Switch_Parlor" parent="Sockets/SwitchSockets" unique_id=142815731 instance=ExtResource("6_switch")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.15, 1.2, -2.1)
-size = Vector3(0.08, 0.25, 0.15)
+room_id = 1
 
-[node name="Switch_Study" type="CSGBox3D" parent="Sockets/SwitchSockets" unique_id=1240477808]
+[node name="Switch_Study" parent="Sockets/SwitchSockets" unique_id=1240477808 instance=ExtResource("6_switch")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.15, 1.2, -2.1)
-size = Vector3(0.08, 0.25, 0.15)
+room_id = 2
 
-[node name="Switch_DiningRoom" type="CSGBox3D" parent="Sockets/SwitchSockets" unique_id=1397745810]
+[node name="Switch_DiningRoom" parent="Sockets/SwitchSockets" unique_id=1397745810 instance=ExtResource("6_switch")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9, 1.2, -6.15)
-size = Vector3(0.15, 0.25, 0.08)
+room_id = 3
 
-[node name="Switch_Basement" type="CSGBox3D" parent="Sockets/SwitchSockets" unique_id=1144480087]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, -1.2, -6.15)
-size = Vector3(0.15, 0.25, 0.08)
+[node name="Switch_Basement" parent="Sockets/SwitchSockets" unique_id=1144480087 instance=ExtResource("6_switch")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.15, 1.2, -6.8)
+room_id = 4

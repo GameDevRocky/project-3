@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://c8electricalsys01"]
+
+[ext_resource type="Script" path="res://systems/electrical/electrical_system.gd" id="1_elec"]
+
+[node name="ElectricalSystem" type="Node3D"]
+script = ExtResource("1_elec")
