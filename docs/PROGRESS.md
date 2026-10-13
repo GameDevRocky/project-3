@@ -50,12 +50,12 @@ _Updated 2026-10-05_
 
 ## Electrical & Lighting: Rocky
 
-- **Status:** ⚪ · **Branch:** None · **Current feature:** None · **Updated:** 2026-10-05
-- **Done:** None yet.
-- **In progress:** Reviewing `CONTRACTS.md` v0.1.
-- **Next:** Feature `electrical/01-light-circuits` (light switches, room illumination states, breaker toggles).
-- **Needs from others:** Shared contract approval.
-- **Handoff notes:** Room lighting state is a core dependency for ghost navigation.
+- **Status:** 🟢 · **Branch:** `electrical/01-light-circuits` · **Current feature:** `electrical/01-light-circuits` · **Updated:** 2026-10-12 (Gemini CLI)
+- **Done:** Implemented `systems/electrical/electrical_system.gd` (room lighting states, breaker state machine, 100W wattage drain and recharge simulation, public queries `is_room_lit`, `get_room_light_state`, `set_room_light`, `trip_breaker`, `reset_breaker`, `turn_on_all_lights`), `systems/electrical/electrical_system.tscn`, and GUT unit tests in `tests/electrical/test_electrical_system.gd` (8/8 passing).
+- **In progress:** Verification and preparing branch PR for integration.
+- **Next:** Integration into `systems/core/main.tscn` and bulb blowout mechanics (`electrical/02-bulb-flicker`).
+- **Needs from others:** None (fully conforms to `CONTRACTS.md` v0.2 §2.1).
+- **Handoff notes:** The sample electrical system is ready for Ghost / Monster testing! Ghost Monster can query `electrical.is_room_lit(room_id)` and `electrical.get_room_light_state(room_id)` directly, or connect to `electrical.light_state_changed` and `electrical.breaker_state_changed`. When `ElectricalSystem` is present under a common parent or scene root, `_check_light_reaction()` in `GhostMonster` works seamlessly.
 
 ---
 

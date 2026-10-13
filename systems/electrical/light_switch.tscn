@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://c8lightswitch01"]
+
+[ext_resource type="Script" path="res://systems/electrical/light_switch.gd" id="1_switch"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_switch"]
+size = Vector3(0.2, 0.3, 0.1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_switch"]
+size = Vector3(0.15, 0.25, 0.08)
+
+[node name="LightSwitch" type="StaticBody3D"]
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("1_switch")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_switch")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_switch")
