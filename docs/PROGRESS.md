@@ -50,12 +50,12 @@ _Updated 2026-10-05_
 
 ## Electrical & Lighting: Rocky
 
-- **Status:** 🟢 · **Branch:** `electrical/02-breaker-panel` · **Current feature:** `electrical/02-breaker-panel` · **Updated:** 2026-10-14 (Gemini CLI)
-- **Done:** Implemented interactable `BreakerPanel` in `systems/electrical/breaker_panel.gd` and `.tscn` supporting Phase 0 startup lighting and blackout breaker resets. Wired into `main.tscn` under `Sockets/BreakerPanelSocket`. Automated unit tests in `tests/electrical/test_breaker_panel.gd` (3/3 passing, 14/14 electrical tests passing).
-- **In progress:** Ready for PR into `main`.
-- **Next:** Climax breaker cutoff and paranormal bulb flickering mechanics (`electrical/03-bulb-flicker`).
+- **Status:** 🟢 · **Branch:** `electrical/03-energy-drain` · **Current feature:** `electrical/03-energy-drain` · **Updated:** 2026-10-14 (Gemini CLI)
+- **Done:** Implemented `PowerMeterHUD` in `systems/electrical/power_meter_hud.gd` and `.tscn` displaying live wattage bar, drain rate per lit room (`-X.0 W/s`), recharge status (`+5.0 W/s`), low voltage warning (<25W amber, <10W red flashing), and blackout trip banner. Added low-voltage light fixture dimming in `electrical_system.gd` (<15W). Automated unit tests in `tests/electrical/test_power_meter_hud.gd` (6/6 passing, 20/20 electrical tests passing total).
+- **In progress:** Ready for review and merge into `main`.
+- **Next:** Climax breaker cutoff and paranormal bulb flickering mechanics (`electrical/04-bulb-flicker`).
 - **Needs from others:** None.
-- **Handoff notes:** The master breaker box is located on the north wall of the basement cellar (`Sockets/BreakerPanelSocket`). The player can walk up and press `E` to interact. In Phase 0, it turns on all house lights; during a blackout (TRIPPED), it resets the breaker back to OPERATIONAL and restores the 100W grid reserve.
+- **Handoff notes:** The `PowerMeterHUD` automatically instantiates and binds to `ElectricalSystem` at runtime, providing real-time visual feedback for the 100W wattage economy, drain/recharge dynamics, and blackout alerts. Fixtures dim dynamically when power drops below 15W.
 
 ---
 

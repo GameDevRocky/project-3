@@ -2,6 +2,7 @@ class_name ElectricalSystem
 extends Node3D
 
 const GameTypes = preload("res://systems/shared/game_types.gd")
+const PowerMeterHUDScene = preload("res://systems/electrical/power_meter_hud.tscn")
 
 ## Emitted when a room's illumination state changes
 signal light_state_changed(room_id: GameTypes.RoomId, new_state: GameTypes.LightState)
@@ -36,6 +37,7 @@ var _light_fixtures: Dictionary[int, Node3D] = {}
 func _ready() -> void:
 	add_to_group("electrical_system")
 	_bind_scene_fixtures()
+	_ensure_hud()
 
 func _process(delta: float) -> void:
 	if breaker_state == GameTypes.BreakerState.TRIPPED:
@@ -45,12 +47,16 @@ func _process(delta: float) -> void:
 	if lit_count > 0:
 		current_power = max(0.0, current_power - (lit_count * drain_rate_per_room * delta))
 		power_meter_updated.emit(current_power, max_power)
+		if current_power < 15.0:
+			_update_fixture_energies()
 		if current_power <= 0.0:
 			trip_breaker()
 	else:
 		if current_power < max_power:
 			current_power = min(max_power, current_power + (recharge_rate * delta))
 			power_meter_updated.emit(current_power, max_power)
+			if current_power >= 15.0:
+				_update_fixture_energies()
 
 ## Returns the current light state of a given room
 func get_room_light_state(room_id: GameTypes.RoomId) -> GameTypes.LightState:
@@ -152,3 +158,24 @@ func _sync_fixture(room_id: GameTypes.RoomId, lit: bool) -> void:
 	if fixture != null:
 		if "visible" in fixture:
 			fixture.visible = lit
+		if "light_energy" in fixture:
+			var dim_factor: float = clampf(current_power / 15.0, 0.35, 1.0) if current_power < 15.0 else 1.0
+			fixture.light_energy = 1.2 * dim_factor
+
+func _update_fixture_energies() -> void:
+	for room_id in _room_states.keys():
+		if is_room_lit(room_id as GameTypes.RoomId):
+			_sync_fixture(room_id as GameTypes.RoomId, true)
+
+func _ensure_hud() -> void:
+	if not is_inside_tree():
+		return
+	var tree := get_tree()
+	if tree == null:
+		return
+	if tree.get_first_node_in_group("power_meter_hud") != null:
+		return
+	var hud := PowerMeterHUDScene.instantiate()
+	add_child(hud)
+	hud.add_to_group("power_meter_hud")
+	hud.set_electrical_system(self)
