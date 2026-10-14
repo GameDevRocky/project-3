@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://57mkuf644f73"]
+
+[ext_resource type="Script" path="res://systems/electrical/breaker_panel.gd" id="1_breaker"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_breaker"]
+size = Vector3(0.6, 0.8, 0.25)
+
+[sub_resource type="StandardMaterial3D" id="Mat_BreakerPanel"]
+albedo_color = Color(0.3, 0.32, 0.35, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_breaker"]
+material = SubResource("Mat_BreakerPanel")
+size = Vector3(0.6, 0.8, 0.15)
+
+[node name="BreakerPanel" type="StaticBody3D"]
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("1_breaker")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_breaker")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_breaker")
