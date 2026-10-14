@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://systems/player/player_controller.tscn" id="4_player"]
 [ext_resource type="PackedScene" uid="uid://cdcgyx2hdjcgi" path="res://systems/electrical/electrical_system.tscn" id="5_electrical"]
 [ext_resource type="PackedScene" uid="uid://btx18iw2l5nto" path="res://systems/electrical/light_switch.tscn" id="6_switch"]
+[ext_resource type="PackedScene" path="res://systems/electrical/breaker_panel.tscn" id="7_breaker"]
 
 [sub_resource type="StandardMaterial3D" id="Mat_Driveway"]
 albedo_color = Color(0.2, 0.2, 0.22, 1)
@@ -354,9 +355,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, -2.4)
 [node name="BreakerPanelSocket" type="Node3D" parent="Sockets" unique_id=1932604493]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -1.8, -15.85)
 
-[node name="BreakerMesh" type="CSGBox3D" parent="Sockets/BreakerPanelSocket" unique_id=689874609]
-size = Vector3(0.6, 0.8, 0.15)
-material = SubResource("Mat_Breaker")
+[node name="BreakerPanel" parent="Sockets/BreakerPanelSocket" unique_id=689874609 instance=ExtResource("7_breaker")]
 
 [node name="FamilyPortraitSocket" type="Marker3D" parent="Sockets" unique_id=201847192]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 1.6, -0.15)
