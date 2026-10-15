@@ -30,8 +30,8 @@ Goal: Replace the repository-root Jekyll deployment with an automated Godot 4.7.
 - [x] Pull-request CI imports, tests, and exports with Godot 4.7.2.
 - [x] The reported GUT script count matches the number of `test_*.gd` files.
 - [x] GitHub Pages uses the Actions publishing source.
-- [ ] A `main` workflow run deploys successfully.
-- [ ] `https://gamedevrocky.github.io/project-3/` loads the Godot game rather than the repository README.
+- [x] A `main` workflow run deploys successfully.
+- [x] `https://gamedevrocky.github.io/project-3/` loads the Godot game rather than the repository README.
 
 ## 3. Plan
 
@@ -48,5 +48,5 @@ Goal: Replace the repository-root Jekyll deployment with an automated Godot 4.7.
 - [x] Workflow implemented.
 - [x] Local static checks pass.
 - [x] PR workflow passes.
-- [ ] PR merged into `main`.
-- [ ] Pages deployment verified in a browser.
+- [x] PR merged into `main`.
+- [x] Pages deployment verified over HTTPS with the Godot HTML, JavaScript, PCK, and WebAssembly assets responding successfully.
