@@ -9,13 +9,13 @@ Status key: 🟢 on track · 🟡 at risk · 🔴 blocked · ⚪ not started · 
 
 ## On `main` right now
 
-_Updated 2026-10-05_
+_Updated 2026-10-15_
 
-- Project directory structure, configuration files, and documentation framework initialized.
-- Agent instructions (`AGENTS.md`, `GEMINI.md`, `CLAUDE.md`) established.
-- `CONTRACTS.md` v0.1 draft prepared with shared data types and system interfaces.
-- Feature templates created in `docs/templates/`.
-- No game scenes or logic implemented yet.
+- The 5-room greybox house, player controller, portrait system, and electrical gameplay components are present in `systems/core/main.tscn`.
+- The ghost system is implemented and tested, but still needs final scene wiring for the complete gameplay loop.
+- The full GUT suite executes 10 scripts and passes 35/35 tests with 159 assertions.
+- GitHub Actions imports, tests, and exports the Godot 4.7.2 Web build on every PR and deploys `main` to GitHub Pages.
+- The live build is available at `https://gamedevrocky.github.io/project-3/`.
 
 ## Milestones
 
@@ -29,12 +29,12 @@ _Updated 2026-10-05_
 
 ## Integration: John
 
-- **Status:** 🟢 · **Branch:** `integration/05-pages-deploy` · **Current feature:** `integration/05-pages-deploy` · **Updated:** 2026-10-15 (Codex)
-- **Done:** Project documentation, shared foundation, 5-room Central Hub greybox, system sockets, integration tests, and a single-threaded Godot Web export preset targeting `builds/web/index.html`. GitHub Pages publishing source changed from legacy Jekyll to GitHub Actions.
-- **In progress:** PR #10 passed its Linux import, full GUT suite, Web export, and Pages artifact checks; deployment remains gated on merge to `main`.
-- **Next:** Merge PR #10 and verify the live game at `https://gamedevrocky.github.io/project-3/`.
-- **Needs from others:** Review and browser playtest after the deployment succeeds.
-- **Handoff notes:** `.github/workflows/deploy-pages.yml` builds and uploads `builds/web/` without committing generated files. Pull requests validate import/tests/export but never deploy; only `main` deploys. Pages is configured with `build_type: workflow`, HTTPS enforced, and Web thread support remains disabled.
+- **Status:** ✅ · **Branch:** None · **Current feature:** None · **Updated:** 2026-10-15 (Codex)
+- **Done:** Project documentation, shared foundation, 5-room Central Hub greybox, system sockets, integration tests, single-threaded Web export, and automated GitHub Pages deployment. PR #10 merged into `main`; its import, 10-script/35-test GUT suite, Web export, artifact upload, and Pages deployment all passed.
+- **In progress:** None for Pages deployment.
+- **Next:** Complete the remaining four-system gameplay wiring and perform a human browser playtest of the deployed build.
+- **Needs from others:** Confirm keyboard/mouse interaction, lighting, layout, audio-after-first-input, and overall playability in a desktop browser.
+- **Handoff notes:** `.github/workflows/deploy-pages.yml` builds and uploads `builds/web/` without committing generated files. Pull requests validate import/tests/export but never deploy; only `main` deploys. Pages uses `build_type: workflow`, HTTPS is enforced, Web threads remain disabled, and `index.js`, `index.pck`, and `index.wasm` respond successfully from the deployed site.
 
 ---
 
