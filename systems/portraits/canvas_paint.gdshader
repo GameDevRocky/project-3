@@ -5,6 +5,7 @@ uniform vec4 base_tint : source_color = vec4(0.82, 0.75, 0.60, 1.0);
 uniform bool family_style = false;
 uniform float ghost_amount : hint_range(0.0, 1.0) = 0.0;
 uniform float active_amount : hint_range(0.0, 1.0) = 1.0;
+uniform sampler2D monster_artwork_texture : source_color, filter_linear, repeat_disable;
 
 float hash21(vec2 p) {
 	return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
@@ -36,15 +37,18 @@ void fragment() {
 		pigment = mix(pigment, vec3(0.38, 0.39, 0.29), hill);
 		pigment = mix(pigment, vec3(0.29, 0.32, 0.31), distant * 0.8);
 	}
-	float face = soft_ellipse(uv, vec2(0.52, 0.57), vec2(0.18, 0.31));
-	float skull = soft_ellipse(uv, vec2(0.52, 0.67), vec2(0.13, 0.16));
-	float shoulders = soft_ellipse(uv, vec2(0.52, 0.31), vec2(0.27, 0.20));
+	float face = soft_ellipse(uv, vec2(0.52, 0.43), vec2(0.18, 0.31));
+	float skull = soft_ellipse(uv, vec2(0.52, 0.33), vec2(0.13, 0.16));
+	float shoulders = soft_ellipse(uv, vec2(0.52, 0.69), vec2(0.27, 0.20));
 	float figure = max(skull, shoulders * 0.85) * smoothstep(0.03, 0.2, ghost_amount);
-	float eye_l = soft_ellipse(uv, vec2(0.475, 0.685), vec2(0.027, 0.017));
-	float eye_r = soft_ellipse(uv, vec2(0.565, 0.685), vec2(0.027, 0.017));
-	float mouth = soft_ellipse(uv, vec2(0.52, 0.615), vec2(0.035, 0.055));
+	float eye_l = soft_ellipse(uv, vec2(0.475, 0.315), vec2(0.027, 0.017));
+	float eye_r = soft_ellipse(uv, vec2(0.565, 0.315), vec2(0.027, 0.017));
+	float mouth = soft_ellipse(uv, vec2(0.52, 0.385), vec2(0.035, 0.055));
 	float dragged = step(0.82, fract((uv.x + warp) * 13.0 + sin(uv.y * 19.0) * 0.13)) * ghost_amount * 0.12;
 	pigment = mix(pigment, vec3(0.035, 0.027, 0.03), figure * 0.91);
+	vec4 monster_artwork = texture(monster_artwork_texture, uv);
+	float monster_ink = clamp(monster_artwork.a * ghost_amount, 0.0, 1.0);
+	pigment = mix(pigment, monster_artwork.rgb, monster_ink);
 	pigment = mix(pigment, vec3(0.82, 0.73, 0.57), max(eye_l, eye_r) * ghost_amount * 0.9);
 	pigment = mix(pigment, vec3(0.008, 0.006, 0.01), mouth * ghost_amount * 0.8);
 	pigment += vec3(dragged * (0.22 + sin(TIME * 2.0) * 0.06));

@@ -17,6 +17,7 @@ signal occupancy_changed(painting_id: StringName, has_monster: bool)
 @export var portrait_tint: Color = Color(0.88, 0.82, 0.66)
 
 var _canvas_material: ShaderMaterial
+var _monster_artwork: SubViewport
 var _sheet: MeshInstance3D
 var _data := PaintingData.new()
 var _ghost_tween: Tween
@@ -135,7 +136,13 @@ func _build_visuals() -> void:
 	var h: float = painting_size.y
 	var border: float = 0.095 if is_family_portrait else 0.065
 	_add_box("FrameBacking", Vector3(w + border * 2.0, h + border * 2.0, 0.09), Vector3(0, 0, -0.035), frame_color.darkened(0.35))
-	_add_box("Canvas", Vector3(w, h, 0.018), Vector3(0, 0, 0.014), Color.WHITE)
+	var canvas_node := MeshInstance3D.new()
+	canvas_node.name = "Canvas"
+	var canvas_quad := QuadMesh.new()
+	canvas_quad.size = Vector2(w, h)
+	canvas_node.mesh = canvas_quad
+	canvas_node.position = Vector3(0.0, 0.0, 0.014)
+	add_child(canvas_node)
 	var gold: Color = Color(0.58, 0.39, 0.15) if is_family_portrait else Color(0.43, 0.31, 0.16)
 	var trim: float = border * 0.3
 	_add_box("FrameTop", Vector3(w + border * 2, border, 0.13), Vector3(0, h * 0.5 + border * 0.5, 0), gold)
@@ -158,8 +165,8 @@ func _build_visuals() -> void:
 	_canvas_material.set_shader_parameter("base_tint", portrait_tint)
 	_canvas_material.set_shader_parameter("family_style", is_family_portrait)
 	_canvas_material.set_shader_parameter("ghost_amount", 1.0 if is_occupied else 0.0)
-	var canvas_node: MeshInstance3D = get_node("Canvas")
 	canvas_node.material_override = _canvas_material
+	_build_monster_artwork()
 	_sheet = MeshInstance3D.new()
 	_sheet.name = "CoverSheet"
 	var quad := QuadMesh.new()
@@ -175,6 +182,55 @@ func _build_visuals() -> void:
 	_sheet.material_override = sheet_material
 	add_child(_sheet)
 	_sheet.visible = is_covered
+
+func _build_monster_artwork() -> void:
+	var ghost_scene: PackedScene = load("res://systems/ghost/ghost_monster.tscn") as PackedScene
+	if ghost_scene == null:
+		push_error("Portrait artwork could not load the existing GhostMonster scene.")
+		return
+	var ghost_source: Node = ghost_scene.instantiate()
+	var source_mesh: MeshInstance3D = ghost_source.get_node_or_null("ShadowMesh") as MeshInstance3D
+	if source_mesh == null or source_mesh.mesh == null:
+		push_error("Portrait artwork could not find GhostMonster/ShadowMesh.")
+		ghost_source.free()
+		return
+
+	_monster_artwork = SubViewport.new()
+	_monster_artwork.name = "MonsterArtwork"
+	_monster_artwork.size = Vector2i(192, 256)
+	_monster_artwork.transparent_bg = true
+	_monster_artwork.own_world_3d = true
+	_monster_artwork.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	add_child(_monster_artwork)
+
+	var art_root := Node3D.new()
+	art_root.name = "MonsterArtRoot"
+	_monster_artwork.add_child(art_root)
+
+	var silhouette := MeshInstance3D.new()
+	silhouette.name = "MonsterSilhouette"
+	silhouette.mesh = source_mesh.mesh
+	silhouette.position = source_mesh.position
+	var silhouette_material := StandardMaterial3D.new()
+	var source_material: StandardMaterial3D = source_mesh.material_override as StandardMaterial3D
+	silhouette_material.albedo_color = source_material.albedo_color if source_material != null else Color(0.05, 0.05, 0.08, 0.9)
+	silhouette_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	silhouette_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	silhouette_material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	silhouette_material.roughness = 0.95
+	silhouette.material_override = silhouette_material
+	art_root.add_child(silhouette)
+
+	var artwork_camera := Camera3D.new()
+	artwork_camera.name = "ArtworkCamera"
+	artwork_camera.projection = Camera3D.PROJECTION_ORTHOGONAL
+	artwork_camera.size = 2.4
+	artwork_camera.position = Vector3(0.0, 1.0, 4.0)
+	artwork_camera.current = true
+	_monster_artwork.add_child(artwork_camera)
+
+	ghost_source.free()
+	_canvas_material.set_shader_parameter("monster_artwork_texture", _monster_artwork.get_texture())
 
 func _add_box(node_name: String, size: Vector3, local_position: Vector3, color: Color) -> void:
 	var item := MeshInstance3D.new()
@@ -211,6 +267,8 @@ func _refresh_state(emit_change: bool = true) -> void:
 		_sheet.visible = is_covered
 	if _canvas_material != null:
 		_canvas_material.set_shader_parameter("active_amount", 1.0 if is_active else 0.42)
+	if _monster_artwork != null:
+		_monster_artwork.render_target_update_mode = SubViewport.UPDATE_ONCE if is_occupied else SubViewport.UPDATE_DISABLED
 	_refresh_data()
 	if emit_change and is_inside_tree():
 		state_changed.emit(_data)

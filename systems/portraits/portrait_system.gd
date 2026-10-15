@@ -2,6 +2,9 @@ class_name PortraitSystem
 extends Node3D
 ## Registry and contract seam for portrait state. Ghost AI owns movement decisions.
 
+const GameTypes = preload("res://systems/shared/game_types.gd")
+const HousePaintingsScene: PackedScene = preload("res://systems/portraits/house_paintings.tscn")
+
 signal painting_state_changed(painting_id: StringName, data: PaintingData)
 signal monster_occupancy_changed(painting_id: StringName, has_monster: bool)
 signal family_portrait_picked_up()
@@ -11,9 +14,43 @@ var _paintings: Dictionary[StringName, PortraitPainting] = {}
 var _occupied_painting_id: StringName = &""
 
 func _ready() -> void:
+	var house_root: Node = get_parent()
+	if house_root != null and house_root.get_node_or_null("HouseGeometry") != null:
+		var house_paintings: Node3D = HousePaintingsScene.instantiate() as Node3D
+		house_paintings.name = "HousePaintingLayout"
+		add_child(house_paintings)
 	for candidate: Node in get_tree().get_nodes_in_group("portrait_paintings"):
 		if candidate is PortraitPainting:
-			register_painting(candidate as PortraitPainting)
+			var painting: PortraitPainting = candidate as PortraitPainting
+			_face_painting_toward_room(painting)
+			register_painting(painting)
+
+func _face_painting_toward_room(painting: PortraitPainting) -> void:
+	var room_center: Vector3
+	match painting.room_id:
+		GameTypes.RoomId.ENTRY_HALL:
+			room_center = Vector3(0.0, 0.0, -3.0)
+		GameTypes.RoomId.PARLOR:
+			room_center = Vector3(-7.0, 0.0, -3.0)
+		GameTypes.RoomId.STUDY:
+			room_center = Vector3(6.0, 0.0, -3.0)
+		GameTypes.RoomId.DINING_ROOM:
+			room_center = Vector3(2.0, 0.0, -9.5)
+		GameTypes.RoomId.BASEMENT:
+			room_center = Vector3(-2.0, -2.0, -12.0)
+		GameTypes.RoomId.EXTERIOR_DRIVEWAY:
+			room_center = Vector3(0.0, 0.0, 7.0)
+		_:
+			return
+
+	var inward: Vector3 = room_center - painting.global_position
+	inward.y = 0.0
+	if inward.length_squared() < 0.001:
+		return
+	if absf(inward.x) > absf(inward.z):
+		painting.global_rotation.y = -PI * 0.5 if inward.x < 0.0 else PI * 0.5
+	else:
+		painting.global_rotation.y = 0.0 if inward.z > 0.0 else PI
 
 func register_painting(painting: PortraitPainting) -> bool:
 	if painting == null or painting.portrait_id == &"":

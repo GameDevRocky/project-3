@@ -1,0 +1,54 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://systems/portraits/portrait_painting.tscn" id="1_painting"]
+
+[node name="HousePaintingLayout" type="Node3D"]
+
+[node name="Painting_EntryHall_1" parent="." instance=ExtResource("1_painting")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 2.85, 1.6, -5.15)
+portrait_id = &"entry_hall_1"
+room_id = 0
+is_covered = false
+is_active = true
+
+[node name="Painting_Parlor_3" parent="." instance=ExtResource("1_painting")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -7.0, 1.6, 0.85)
+portrait_id = &"parlor_3"
+room_id = 1
+is_covered = false
+is_active = true
+
+[node name="Painting_Study_2" parent="." instance=ExtResource("1_painting")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.4, 1.6, -5.85)
+portrait_id = &"study_2"
+room_id = 2
+is_covered = false
+is_active = true
+
+[node name="Painting_Study_3" parent="." instance=ExtResource("1_painting")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 6.0, 1.6, -0.15)
+portrait_id = &"study_3"
+room_id = 2
+is_covered = false
+is_active = true
+
+[node name="Painting_Dining_2" parent="." instance=ExtResource("1_painting")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 4.85, 1.6, -9.8)
+portrait_id = &"dining_2"
+room_id = 3
+is_covered = false
+is_active = true
+
+[node name="Painting_Basement_2" parent="." instance=ExtResource("1_painting")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, -2.1, -15.85)
+portrait_id = &"basement_2"
+room_id = 4
+is_covered = false
+is_active = true
+
+[node name="Painting_Basement_3" parent="." instance=ExtResource("1_painting")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 1.85, -2.1, -12.0)
+portrait_id = &"basement_3"
+room_id = 4
+is_covered = false
+is_active = true

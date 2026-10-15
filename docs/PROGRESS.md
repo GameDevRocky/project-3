@@ -41,12 +41,12 @@ _Updated 2026-10-15_
 
 ## Portrait / Painting System: Haliyah
 
-- **Status:** 🟡 · **Branch:** `portraits/01-painting-system` · **Current feature:** 01-painting-system · **Updated:** 2026-10-09 (Codex)
-- **Done:** Reusable painting component, registry queries and occupancy guard, cloth cover, procedural paintings and trapped-ghost effect, family portrait carry hooks, standalone demo, GUT tests, integration guide.
-- **In progress:** GUT suite is not available in the standalone portrait project; integration tests remain for the shared project.
-- **Next:** Integrate with the shared `PaintingData`/`GameTypes` foundation and test the portrait component in the house scene.
-- **Needs from others:** Shared foundation (`GameTypes`, `PaintingData`, root `project.godot`) and team approval on `CONTRACTS.md` v0.2.
-- **Handoff notes:** Public signatures and signals follow `docs/CONTRACTS.md` §2.2. Room IDs are integer enum values until shared types land. The final family portrait remains eligible for ghost entry while carried to support D-005; occupied state persists through pickup/drop. Godot 4.7.2 headless demo load and 18 smoke checks pass. Open `systems/portraits/project.godot` for standalone visual checks. See `docs/features/portraits/README.md` for the Ghost, Electrical, Player, and ending seams.
+- **Status:** 🟡 · **Branch:** `portraits/02-visible-paintings` · **Current feature:** 02-visible-paintings · **Updated:** 2026-10-15 (Codex)
+- **Done:** Reusable painting component and registry, dust-sheet covers, family portrait carry hooks, plus 7 new registered house paintings (13 total). Initial frames face into their rooms. Occupied canvases render the existing GhostMonster capsule mesh in a portrait-local transparent SubViewport and composite it into the artwork with the existing entry/exit distortion.
+- **In progress:** Ready for review and merge to `main`.
+- **Next:** Human visual review of the occupied canvas readability and wall placements; then merge the feature branch.
+- **Needs from others:** Review by John and Daniel; no Ghost System integration changes are required.
+- **Handoff notes:** Counts: Entry Hall 2, Parlor 3, Study 3, Dining 2, Basement 3, Exterior 0. All paintings start uncovered/active. GhostMonster's existing `set_monster_occupied` entry/exit calls correctly synchronize the canvas, including transfer between paintings and carried family portrait behavior. Full GUT suite passes: 15 scripts, 57 tests, 367 assertions. Godot 4.7.2 editor loaded and ran the integrated main house; the basement encounter showed the ghost silhouette inside the painting. Covered eligibility and uncover restoration are tested. No changes were made to GhostMonster movement or chase logic.
 ---
 
 ## Electrical & Lighting: Rocky
