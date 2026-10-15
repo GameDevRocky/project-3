@@ -66,11 +66,11 @@ func force_enter_nearest_painting(paintings_in_room: Array) -> bool:
 	# Find first available uncovered painting
 	for p in paintings_in_room:
 		if p.is_active and not p.is_covered and not p.is_occupied:
-			current_painting_id = p.portrait_id
+			current_painting_id = p.id
 			p.is_occupied = true
 			mode = GameTypes.GhostMode.PAINTING_BOUND
 			shadow_mesh.visible = false
-			ghost_entered_painting.emit(p.portrait_id)
+			ghost_entered_painting.emit(p.id)
 			return true
 	return false
 
