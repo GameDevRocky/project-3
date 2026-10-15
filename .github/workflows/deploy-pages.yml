@@ -1,0 +1,163 @@
+name: Build and deploy Godot Web export
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  GODOT_VERSION: "4.7.2"
+  GODOT_STATUS: stable
+  GODOT_EDITOR_SHA256: cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4
+  GODOT_TEMPLATES_SHA256: f298490b8d44d934be425a5a65a51bf15f422428b229a06a6e11d9ffea248011
+
+jobs:
+  build:
+    name: Test and export
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Restore Godot export templates
+        id: template-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/godot/export_templates/4.7.2.stable
+          key: godot-export-templates-${{ runner.os }}-4.7.2-stable
+
+      - name: Install Godot editor
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          release_url="https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-${GODOT_STATUS}"
+          editor_name="Godot_v${GODOT_VERSION}-${GODOT_STATUS}_linux.x86_64"
+          archive_path="$RUNNER_TEMP/${editor_name}.zip"
+
+          curl --fail --location --retry 3 \
+            "$release_url/${editor_name}.zip" \
+            --output "$archive_path"
+          printf '%s  %s\n' "$GODOT_EDITOR_SHA256" "$archive_path" | sha256sum --check --status
+
+          mkdir -p "$RUNNER_TEMP/godot"
+          unzip -q "$archive_path" -d "$RUNNER_TEMP/godot"
+          chmod +x "$RUNNER_TEMP/godot/$editor_name"
+          mv "$RUNNER_TEMP/godot/$editor_name" "$RUNNER_TEMP/godot/godot"
+          echo "$RUNNER_TEMP/godot" >> "$GITHUB_PATH"
+
+      - name: Install Godot export templates
+        if: steps.template-cache.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          release_url="https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-${GODOT_STATUS}"
+          templates_name="Godot_v${GODOT_VERSION}-${GODOT_STATUS}_export_templates.tpz"
+          archive_path="$RUNNER_TEMP/$templates_name"
+          extract_path="$RUNNER_TEMP/godot-export-templates"
+          install_path="$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_STATUS}"
+
+          curl --fail --location --retry 3 \
+            "$release_url/$templates_name" \
+            --output "$archive_path"
+          printf '%s  %s\n' "$GODOT_TEMPLATES_SHA256" "$archive_path" | sha256sum --check --status
+
+          mkdir -p "$extract_path" "$install_path"
+          unzip -q "$archive_path" -d "$extract_path"
+          cp -R "$extract_path/templates/." "$install_path/"
+
+      - name: Confirm Godot version
+        run: godot --version
+
+      - name: Import project resources
+        run: godot --headless --path . --import
+
+      - name: Run complete GUT suite
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          godot --headless --path . \
+            -s addons/gut/gut_cmdln.gd \
+            -gdir=res://tests \
+            -ginclude_subdirs \
+            -gexit 2>&1 | tee "$RUNNER_TEMP/gut-output.log"
+
+          if grep -Fq "SCRIPT ERROR" "$RUNNER_TEMP/gut-output.log"; then
+            echo "GUT output contains a SCRIPT ERROR." >&2
+            exit 1
+          fi
+
+          expected_scripts="$(find tests -type f -name 'test_*.gd' | wc -l | tr -d ' ')"
+          executed_scripts="$(sed -nE 's/.*Scripts:?[[:space:]]+([0-9]+).*/\1/p' "$RUNNER_TEMP/gut-output.log" | tail -n 1)"
+
+          if [[ -z "$executed_scripts" ]]; then
+            echo "GUT did not report its executed script count." >&2
+            exit 1
+          fi
+
+          if [[ "$executed_scripts" -lt "$expected_scripts" ]]; then
+            echo "GUT executed $executed_scripts scripts, but $expected_scripts test files exist." >&2
+            exit 1
+          fi
+
+      - name: Export Web release
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p builds/web
+          godot --headless --path . \
+            --export-release "Web" builds/web/index.html \
+            2>&1 | tee "$RUNNER_TEMP/export-output.log"
+
+          if grep -Fq "SCRIPT ERROR" "$RUNNER_TEMP/export-output.log"; then
+            echo "Web export output contains a SCRIPT ERROR." >&2
+            exit 1
+          fi
+
+          test -s builds/web/index.html
+          test -n "$(find builds/web -maxdepth 1 -type f -name '*.wasm' -print -quit)"
+          test -n "$(find builds/web -maxdepth 1 -type f -name '*.pck' -print -quit)"
+          touch builds/web/.nojekyll
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: builds/web
+
+  deploy:
+    name: Deploy to GitHub Pages
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy GitHub Pages artifact
+        id: deployment
+        uses: actions/deploy-pages@v4

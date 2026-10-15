@@ -29,12 +29,12 @@ _Updated 2026-10-05_
 
 ## Integration: John
 
-- **Status:** 🟢 · **Branch:** `integration/04-web-export` · **Current feature:** `integration/04-web-export` · **Updated:** 2026-10-09 (Codex)
-- **Done:** Project documentation, agent guidelines, templates, directory structure, `systems/shared/game_types.gd`, `systems/core/room_volume.gd`, `systems/core/main.tscn` (5-room Central Hub greybox + driveway + sockets), and layout tests in `tests/core/test_house_layout.gd`. Branch pushed to `origin/integration/01-greybox-house`.
-- **In progress:** Adding a single-threaded Godot Web export preset for deployment at `https://gamedevrocky.github.io/project-3/`.
-- **Next:** Validate the release export and full GUT suite, then push the configuration to `main`.
-- **Needs from others:** Review by review pairs (Haliyah, Rocky, Daniel) and sign-off on `CONTRACTS.md` v0.2.
-- **Handoff notes:** `systems/core/main.tscn` has explicit socket nodes under `Sockets/`: `CarSocket` (with `TrunkSocket`), `BreakerPanelSocket`, `FamilyPortraitSocket`, `MovingBoxSockets` (4 boxes), `LightFixtureSockets` (5 room lights), `SwitchSockets` (5 wall switches), and `PaintingSockets` (4 wall paintings). Room occupancy is detected via `RoomVolumes` using `RoomVolume` Area3D triggers. The `Web` export preset writes `builds/web/index.html` with browser thread support disabled for GitHub Pages hosting.
+- **Status:** 🟢 · **Branch:** `integration/05-pages-deploy` · **Current feature:** `integration/05-pages-deploy` · **Updated:** 2026-10-15 (Codex)
+- **Done:** Project documentation, shared foundation, 5-room Central Hub greybox, system sockets, integration tests, and a single-threaded Godot Web export preset targeting `builds/web/index.html`. GitHub Pages publishing source changed from legacy Jekyll to GitHub Actions.
+- **In progress:** Adding CI that installs verified Godot 4.7.2 binaries, imports the project, runs the complete GUT suite, exports the Web build, and uploads/deploys a Pages artifact.
+- **Next:** Push the workflow, validate the PR run, merge into `main`, and verify the live game at `https://gamedevrocky.github.io/project-3/`.
+- **Needs from others:** Review and browser playtest after the deployment succeeds.
+- **Handoff notes:** `.github/workflows/deploy-pages.yml` builds and uploads `builds/web/` without committing generated files. Pull requests validate import/tests/export but never deploy; only `main` deploys. Pages is configured with `build_type: workflow`, HTTPS enforced, and Web thread support remains disabled.
 
 ---
 
