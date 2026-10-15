@@ -1,10 +1,10 @@
 extends GutTest
 
-const GhostMonsterScript = preload("res://systems/ghost/ghost_monster.gd")
-const PaintingDataScript = preload("res://systems/shared/painting_data.gd")
+const GhostMonsterScene = preload("res://systems/ghost/ghost_monster.tscn")
+const PaintingDataScript = preload("res://systems/portraits/painting_data.gd")
 
 func test_ghost_initial_state_is_dormant() -> void:
-	var monster: GhostMonster = GhostMonsterScript.new()
+	var monster: GhostMonster = GhostMonsterScene.instantiate()
 	add_child_autoqfree(monster)
 	var state = monster.get_ghost_state()
 	assert_eq(state.mode, GameTypes.GhostMode.DORMANT, "Monster should start DORMANT before breaker is flipped")
@@ -14,12 +14,12 @@ func test_ghost_initial_state_is_dormant() -> void:
 	monster.queue_free()
 
 func test_ghost_enters_painting_when_forced() -> void:
-	var monster: GhostMonster = GhostMonsterScript.new()
+	var monster: GhostMonster = GhostMonsterScene.instantiate()
 	add_child_autoqfree(monster)
 	monster.set_monster_dormant(false)
 
-	var p = PaintingDataScript.new()
-	p.portrait_id = &"parlor_art"
+	var p: PaintingData = PaintingDataScript.new()
+	p.id = &"parlor_art"
 	p.is_active = true
 	p.is_covered = false
 	p.is_occupied = false
