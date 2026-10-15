@@ -86,6 +86,16 @@ func _build_interface() -> void:
 	_prompt_label.position = Vector2(-300.0, -92.0)
 	_prompt_label.size = Vector2(600.0, 44.0)
 	root.add_child(_prompt_label)
+	var controls_label := Label.new()
+	controls_label.name = "ControlsHint"
+	controls_label.text = "WASD Move   •   Shift Sprint   •   E / Click Interact   •   Esc Cursor"
+	controls_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	controls_label.add_theme_font_size_override("font_size", 14)
+	controls_label.add_theme_color_override("font_color", Color(0.72, 0.72, 0.74, 0.72))
+	controls_label.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	controls_label.position = Vector2(-590.0, -36.0)
+	controls_label.size = Vector2(560.0, 24.0)
+	root.add_child(controls_label)
 
 	var stamina_label := Label.new()
 	stamina_label.text = "STAMINA"

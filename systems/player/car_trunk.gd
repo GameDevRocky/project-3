@@ -21,7 +21,7 @@ func interact(actor: Node = null) -> void:
 			box_deposited.emit(item_type)
 	elif item_type == GameTypes.CarriedItemType.FAMILY_PORTRAIT:
 		var safe: bool = not bool(actor.call("is_carried_family_portrait_occupied"))
-		if actor.call("deposit_family_portrait"):
+		if actor.call("deposit_family_portrait", self):
 			family_portrait_deposited.emit(safe)
 
 func get_interaction_prompt(actor: Node = null) -> String:

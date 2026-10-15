@@ -172,10 +172,26 @@ func deposit_box_in_car() -> bool:
 		return true
 	return false
 
-func deposit_family_portrait() -> bool:
+func deposit_family_portrait(deposit_parent: Node = null) -> bool:
 	if carried_item != GameTypes.CarriedItemType.FAMILY_PORTRAIT:
 		return false
-	_clear_carried_node()
+	if carried_node == null or not is_instance_valid(carried_node) or not carried_node is PortraitPainting:
+		return false
+	var portrait := carried_node as PortraitPainting
+	var world_parent: Node = deposit_parent
+	if world_parent == null:
+		world_parent = get_parent()
+	if world_parent == null and get_tree() != null:
+		world_parent = get_tree().current_scene
+	if world_parent == null:
+		return false
+	var deposit_transform: Transform3D = global_transform
+	if world_parent is Node3D:
+		deposit_transform = (world_parent as Node3D).global_transform
+		deposit_transform.origin += Vector3.UP * 0.9
+	if not portrait.drop_at(deposit_transform, world_parent):
+		return false
+	carried_node = null
 	_set_carried_item(GameTypes.CarriedItemType.NONE)
 	return true
 

@@ -76,3 +76,27 @@ func test_family_portrait_requires_four_boxes_and_attaches_to_player() -> void:
 	assert_true(player.interact_with_portrait(portrait))
 	assert_eq(player.get_carried_item(), GameTypes.CarriedItemType.FAMILY_PORTRAIT)
 	assert_true(portrait.is_being_carried)
+
+func test_deposit_keeps_registered_family_portrait_alive() -> void:
+	var root := Node3D.new()
+	add_child_autoqfree(root)
+	var portrait_system := PortraitSystem.new()
+	root.add_child(portrait_system)
+	var player: PlayerController = PlayerControllerScene.instantiate()
+	root.add_child(player)
+	var portrait: PortraitPainting = PortraitPaintingScene.instantiate()
+	portrait.portrait_id = &"family_portrait"
+	portrait.is_family_portrait = true
+	root.add_child(portrait)
+	await get_tree().process_frame
+
+	assert_true(portrait_system.register_painting(portrait))
+	player.boxes_packed_count = 4
+	assert_true(player.interact_with_portrait(portrait))
+	assert_true(portrait_system.enter_painting(&"family_portrait"))
+	assert_true(player.deposit_family_portrait())
+	await get_tree().process_frame
+
+	assert_true(is_instance_valid(portrait), "Depositing must not free a registered portrait")
+	assert_not_null(portrait_system.get_painting_data(&"family_portrait"))
+	assert_false(portrait.is_being_carried)
