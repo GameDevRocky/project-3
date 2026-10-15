@@ -45,3 +45,19 @@ func test_player_try_interact_calls_interact_on_target() -> void:
 	assert_false(target.interacted, "Target should not be interacted before calling try_interact")
 	player.try_interact()
 	assert_true(target.interacted, "Target interact() should be called by try_interact()")
+
+func test_mouse_look_rotates_body_and_clamps_camera_pitch() -> void:
+	var player: PlayerController = PlayerControllerScene.instantiate()
+	add_child_autoqfree(player)
+	await get_tree().process_frame
+
+	player._apply_look(Vector2(100.0, -10000.0))
+
+	var player_camera: Camera3D = player.get_node("Camera3D") as Camera3D
+	assert_lt(player.rotation.y, 0.0, "Horizontal mouse motion should rotate the player body")
+	assert_almost_eq(
+		player_camera.rotation.x,
+		PI / 2.2,
+		0.001,
+		"Vertical mouse motion should rotate and clamp the camera",
+	)

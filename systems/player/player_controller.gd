@@ -40,14 +40,11 @@ func _ready() -> void:
 	floor_max_angle = deg_to_rad(50.0)
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	if not is_alive:
 		return
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		rotate_y(-event.relative.x * mouse_sensitivity)
-		if camera != null:
-			camera.rotate_x(-event.relative.y * mouse_sensitivity)
-			camera.rotation.clampf(-PI/2.2, PI/2.2)
+		_apply_look((event as InputEventMouseMotion).relative)
 
 	if event.is_action_pressed("pause"):
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
@@ -61,6 +58,17 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	if event.is_action_pressed("interact"):
 		try_interact()
+
+func _apply_look(mouse_delta: Vector2) -> void:
+	rotate_y(-mouse_delta.x * mouse_sensitivity)
+	if camera == null:
+		return
+	var pitch_limit: float = PI / 2.2
+	camera.rotation.x = clampf(
+		camera.rotation.x - mouse_delta.y * mouse_sensitivity,
+		-pitch_limit,
+		pitch_limit,
+	)
 
 func _physics_process(delta: float) -> void:
 	if not is_alive:
