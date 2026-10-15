@@ -31,8 +31,8 @@ _Updated 2026-10-05_
 
 - **Status:** 🟢 · **Branch:** `integration/05-pages-deploy` · **Current feature:** `integration/05-pages-deploy` · **Updated:** 2026-10-15 (Codex)
 - **Done:** Project documentation, shared foundation, 5-room Central Hub greybox, system sockets, integration tests, and a single-threaded Godot Web export preset targeting `builds/web/index.html`. GitHub Pages publishing source changed from legacy Jekyll to GitHub Actions.
-- **In progress:** Adding CI that installs verified Godot 4.7.2 binaries, imports the project, runs the complete GUT suite, exports the Web build, and uploads/deploys a Pages artifact.
-- **Next:** Push the workflow, validate the PR run, merge into `main`, and verify the live game at `https://gamedevrocky.github.io/project-3/`.
+- **In progress:** PR #10 passed its Linux import, full GUT suite, Web export, and Pages artifact checks; deployment remains gated on merge to `main`.
+- **Next:** Merge PR #10 and verify the live game at `https://gamedevrocky.github.io/project-3/`.
 - **Needs from others:** Review and browser playtest after the deployment succeeds.
 - **Handoff notes:** `.github/workflows/deploy-pages.yml` builds and uploads `builds/web/` without committing generated files. Pull requests validate import/tests/export but never deploy; only `main` deploys. Pages is configured with `build_type: workflow`, HTTPS enforced, and Web thread support remains disabled.
 
