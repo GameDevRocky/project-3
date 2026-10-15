@@ -11,9 +11,10 @@ Status key: 🟢 on track · 🟡 at risk · 🔴 blocked · ⚪ not started · 
 
 _Updated 2026-10-15_
 
-- The 5-room greybox house, player controller, portrait system, and electrical gameplay components are present in `systems/core/main.tscn`.
-- The ghost system is implemented and tested, but still needs final scene wiring for the complete gameplay loop.
-- The full GUT suite executes 10 scripts and passes 35/35 tests with 159 assertions.
+- The five-room house now contains the complete GDD loop: restore power, pack four room-specific boxes, retrieve the family portrait, survive the blackout chase, and reach the car.
+- The player can move, sprint with stamina, look with the mouse, interact by raycast, carry items and dust sheets, and receive objective/interaction feedback.
+- The ghost wakes with the breaker, pursues through dark rooms, respects lit-room barriers, enters eligible paintings, can hide in the carried family portrait, and produces the safe/occupied ending split.
+- The full GUT suite executes 14 scripts and passes 54/54 tests with 250 assertions and no script errors.
 - GitHub Actions imports, tests, and exports the Godot 4.7.2 Web build on every PR and deploys `main` to GitHub Pages.
 - The live build is available at `https://gamedevrocky.github.io/project-3/`.
 
@@ -29,12 +30,12 @@ _Updated 2026-10-15_
 
 ## Integration: John
 
-- **Status:** ✅ · **Branch:** None · **Current feature:** None · **Updated:** 2026-10-15 (Codex)
-- **Done:** Project documentation, shared foundation, 5-room Central Hub greybox, system sockets, integration tests, single-threaded Web export, and automated GitHub Pages deployment. PR #10 merged into `main`; its import, 10-script/35-test GUT suite, Web export, artifact upload, and Pages deployment all passed.
-- **In progress:** None for Pages deployment.
-- **Next:** Complete the remaining four-system gameplay wiring and perform a human browser playtest of the deployed build.
-- **Needs from others:** Confirm keyboard/mouse interaction, lighting, layout, audio-after-first-input, and overall playability in a desktop browser.
-- **Handoff notes:** `.github/workflows/deploy-pages.yml` builds and uploads `builds/web/` without committing generated files. Pull requests validate import/tests/export but never deploy; only `main` deploys. Pages uses `build_type: workflow`, HTTPS is enforced, Web threads remain disabled, and `index.js`, `index.pck`, and `index.wasm` respond successfully from the deployed site.
+- **Status:** Ready for deployment verification · **Branch:** `integration/06-complete-gdd` · **Current feature:** `06-complete-gdd` · **Updated:** 2026-10-15 (Codex)
+- **Done:** Completed and wired the GDD gameplay loop across player carry/interactions, ghost pursuit and painting occupancy, electrical flicker, objectives/endings, HUD, procedural presentation, and generated audio. Added and enabled Godot MCP for development inspection. The synced full suite passes 14 scripts, 54 tests, and 250 assertions with no script errors.
+- **In progress:** Direct merge to `main` and the resulting GitHub Pages build/deployment requested by the user.
+- **Next:** Confirm the post-push GitHub Actions Web export/deployment, then perform the human-controlled desktop-browser playtest.
+- **Needs from others:** Human verification of mouse feel, lighting balance, audio mix, chase difficulty, and overall browser playability. Codex will not launch editor play mode unless explicitly requested.
+- **Handoff notes:** The complete loop is breaker → four unique boxes → family portrait → forced blackout → car. An occupied family portrait produces the loss ending; an empty one produces the escape ending. Depositing the portrait reparents it into the trunk instead of freeing the registered node. Mouse look uses `_input` so the HUD cannot consume movement. `.github/workflows/deploy-pages.yml` performs the authoritative single-threaded Web export and deploys only from `main`.
 
 ---
 

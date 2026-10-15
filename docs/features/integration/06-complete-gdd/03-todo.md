@@ -34,10 +34,10 @@
 
 ## Verify
 
-- [ ] Complete GUT suite passes with every script executed and zero script errors.
-- [ ] Godot MCP startup, box loop, ghost, death, climax, win, and loss scenarios pass.
-- [ ] Run Project visual/playability check passes.
+- [x] Complete GUT suite passes with every script executed and zero script errors (14 scripts, 54 tests, 250 assertions).
+- [x] Godot MCP startup, box loop, ghost, death, climax, win, and loss scenarios pass.
+- [x] Initial Run Project visual/playability inspection passed through Godot MCP; further hands-on playtesting is reserved for the human.
 - [ ] Web export succeeds with threads disabled.
-- [ ] Integration progress and handoff notes are current.
-- [ ] Pulled `origin/main` immediately before any push and re-ran verification.
-- [ ] PR opened only with user approval.
+- [x] Integration progress and handoff notes are current.
+- [x] Pulled `origin/main` immediately before the requested push and re-ran verification.
+- [x] User explicitly approved a direct merge to `main` and push.
