@@ -30,10 +30,10 @@ _Updated 2026-10-15_
 
 ## Integration: John
 
-- **Status:** Ready for deployment verification · **Branch:** `integration/06-complete-gdd` · **Current feature:** `06-complete-gdd` · **Updated:** 2026-10-15 (Codex)
-- **Done:** Completed and wired the GDD gameplay loop across player carry/interactions, ghost pursuit and painting occupancy, electrical flicker, objectives/endings, HUD, procedural presentation, and generated audio. Added and enabled Godot MCP for development inspection. The synced full suite passes 14 scripts, 54 tests, and 250 assertions with no script errors.
-- **In progress:** Direct merge to `main` and the resulting GitHub Pages build/deployment requested by the user.
-- **Next:** Confirm the post-push GitHub Actions Web export/deployment, then perform the human-controlled desktop-browser playtest.
+- **Status:** ✅ · **Branch:** None · **Current feature:** None · **Updated:** 2026-10-15 (Codex)
+- **Done:** Completed and wired the GDD gameplay loop across player carry/interactions, ghost pursuit and painting occupancy, electrical flicker, objectives/endings, HUD, procedural presentation, and generated audio. Added and enabled Godot MCP for development inspection. The synced full suite passes 14 scripts, 54 tests, and 250 assertions with no script errors. GitHub Actions run `38813442772` successfully imported, tested, exported Web, uploaded the artifact, and deployed GitHub Pages.
+- **In progress:** None; the complete GDD branch is merged and deployed.
+- **Next:** Perform the human-controlled desktop-browser playtest.
 - **Needs from others:** Human verification of mouse feel, lighting balance, audio mix, chase difficulty, and overall browser playability. Codex will not launch editor play mode unless explicitly requested.
 - **Handoff notes:** The complete loop is breaker → four unique boxes → family portrait → forced blackout → car. An occupied family portrait produces the loss ending; an empty one produces the escape ending. Depositing the portrait reparents it into the trunk instead of freeing the registered node. Mouse look uses `_input` so the HUD cannot consume movement. `.github/workflows/deploy-pages.yml` performs the authoritative single-threaded Web export and deploys only from `main`.
 

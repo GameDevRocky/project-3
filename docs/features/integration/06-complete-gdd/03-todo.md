@@ -37,7 +37,7 @@
 - [x] Complete GUT suite passes with every script executed and zero script errors (14 scripts, 54 tests, 250 assertions).
 - [x] Godot MCP startup, box loop, ghost, death, climax, win, and loss scenarios pass.
 - [x] Initial Run Project visual/playability inspection passed through Godot MCP; further hands-on playtesting is reserved for the human.
-- [ ] Web export succeeds with threads disabled.
+- [x] GitHub Actions Web export and Pages deployment succeed with threads disabled (run `38813442772`).
 - [x] Integration progress and handoff notes are current.
 - [x] Pulled `origin/main` immediately before the requested push and re-ran verification.
 - [x] User explicitly approved a direct merge to `main` and push.
