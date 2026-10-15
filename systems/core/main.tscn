@@ -7,6 +7,11 @@
 [ext_resource type="PackedScene" uid="uid://cdcgyx2hdjcgi" path="res://systems/electrical/electrical_system.tscn" id="5_electrical"]
 [ext_resource type="PackedScene" uid="uid://btx18iw2l5nto" path="res://systems/electrical/light_switch.tscn" id="6_switch"]
 [ext_resource type="PackedScene" path="res://systems/electrical/breaker_panel.tscn" id="7_breaker"]
+[ext_resource type="PackedScene" path="res://systems/ghost/ghost_monster.tscn" id="8_ghost"]
+[ext_resource type="Script" path="res://systems/core/game_coordinator.gd" id="9_coordinator"]
+[ext_resource type="Script" path="res://systems/core/game_hud.gd" id="10_hud"]
+[ext_resource type="PackedScene" path="res://systems/player/carryable_item.tscn" id="11_item"]
+[ext_resource type="PackedScene" path="res://systems/player/car_trunk.tscn" id="12_trunk"]
 
 [sub_resource type="StandardMaterial3D" id="Mat_Driveway"]
 albedo_color = Color(0.2, 0.2, 0.22, 1)
@@ -339,6 +344,10 @@ room_id = 3
 [node name="PlayerController" parent="." unique_id=664864773 instance=ExtResource("4_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 10)
 
+[node name="GhostMonster" parent="." instance=ExtResource("8_ghost")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -3.35, -13.5)
+current_room = 4
+
 [node name="Sockets" type="Node3D" parent="." unique_id=932006977]
 
 [node name="CarSocket" type="Node3D" parent="Sockets" unique_id=1765689428]
@@ -352,6 +361,9 @@ material = SubResource("Mat_Car")
 [node name="TrunkSocket" type="Marker3D" parent="Sockets/CarSocket" unique_id=507670838]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, -2.4)
 
+[node name="CarTrunk" parent="Sockets/CarSocket" instance=ExtResource("12_trunk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, -2.4)
+
 [node name="BreakerPanelSocket" type="Node3D" parent="Sockets" unique_id=1932604493]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -1.8, -15.85)
 
@@ -362,25 +374,30 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 1.6, -0.15)
 
 [node name="MovingBoxSockets" type="Node3D" parent="Sockets" unique_id=2090193636]
 
-[node name="Box_LivingRoom" type="CSGBox3D" parent="Sockets/MovingBoxSockets" unique_id=1241057199]
+[node name="Box_LivingRoom" parent="Sockets/MovingBoxSockets" unique_id=1241057199 instance=ExtResource("11_item")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0.45, -4)
-size = Vector3(0.6, 0.6, 0.6)
-material = SubResource("Mat_Box")
+item_type = 1
+item_label = "Living Room Box"
 
-[node name="Box_Study" type="CSGBox3D" parent="Sockets/MovingBoxSockets" unique_id=924452765]
+[node name="Box_Study" parent="Sockets/MovingBoxSockets" unique_id=924452765 instance=ExtResource("11_item")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.45, -4.5)
-size = Vector3(0.6, 0.6, 0.6)
-material = SubResource("Mat_Box")
+item_type = 3
+item_label = "Study Box"
 
-[node name="Box_DiningRoom" type="CSGBox3D" parent="Sockets/MovingBoxSockets" unique_id=70402999]
+[node name="Box_DiningRoom" parent="Sockets/MovingBoxSockets" unique_id=70402999 instance=ExtResource("11_item")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.45, -10)
-size = Vector3(0.6, 0.6, 0.6)
-material = SubResource("Mat_Box")
+item_type = 2
+item_label = "Dining Room Box"
 
-[node name="Box_Basement" type="CSGBox3D" parent="Sockets/MovingBoxSockets" unique_id=1497196656]
+[node name="Box_Basement" parent="Sockets/MovingBoxSockets" unique_id=1497196656 instance=ExtResource("11_item")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, -3.2, -12)
-size = Vector3(0.6, 0.6, 0.6)
-material = SubResource("Mat_Box")
+item_type = 4
+item_label = "Basement Box"
+
+[node name="DustSheet" parent="Sockets/MovingBoxSockets" instance=ExtResource("11_item")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.5, 0.28, -4.8)
+item_type = 5
+item_label = "Dust Sheet"
 
 [node name="LightFixtureSockets" type="Node3D" parent="Sockets" unique_id=627929496]
 
@@ -434,3 +451,9 @@ room_id = 3
 [node name="Switch_Basement" parent="Sockets/SwitchSockets" unique_id=1144480087 instance=ExtResource("6_switch")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.15, 1.2, -6.8)
 room_id = 4
+
+[node name="GameCoordinator" type="Node" parent="."]
+script = ExtResource("9_coordinator")
+
+[node name="GameHUD" type="CanvasLayer" parent="."]
+script = ExtResource("10_hud")

@@ -22,9 +22,9 @@
 
 ## Iteration 3: Core gameplay loop
 
-- [ ] Write failing core-loop tests.
-- [ ] Implement coordinator, objectives, endings, and scene wiring.
-- [ ] Core tests and full suite pass.
+- [x] Write failing core-loop tests.
+- [x] Implement coordinator, objectives, endings, and scene wiring.
+- [x] Core tests and full suite pass (13 scripts, 48 tests, 220 assertions).
 
 ## Iteration 4: Presentation
 
