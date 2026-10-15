@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://systems/player/car_trunk.gd" id="1_trunk"]
+
+[sub_resource type="BoxShape3D" id="Shape_trunk"]
+size = Vector3(2.0, 1.1, 0.7)
+
+[sub_resource type="BoxMesh" id="Mesh_trunk"]
+size = Vector3(2.0, 0.18, 0.7)
+
+[node name="CarTrunk" type="StaticBody3D"]
+script = ExtResource("1_trunk")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("Shape_trunk")
+
+[node name="TrunkLip" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.422618, -0.906308, 0, 0.906308, 0.422618, 0, 0.35, 0.15)
+mesh = SubResource("Mesh_trunk")
+
+[node name="Label3D" type="Label3D" parent="."]
+position = Vector3(0, 0.7, 0)
+text = "PACK BELONGINGS"
+font_size = 40
+outline_size = 8
+pixel_size = 0.006

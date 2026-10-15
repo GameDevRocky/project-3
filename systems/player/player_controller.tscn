@@ -23,3 +23,13 @@ fov = 75.0
 [node name="InteractionRay" type="RayCast3D" parent="Camera3D"]
 target_position = Vector3(0, 0, -2.5)
 collision_mask = 1
+
+[node name="CarrySocket" type="Marker3D" parent="Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.55, -0.45, -1.15)
+
+[node name="DarkAdaptationLight" type="OmniLight3D" parent="Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, -0.4)
+light_color = Color(0.32, 0.42, 0.58, 1)
+light_energy = 0.32
+shadow_enabled = false
+omni_range = 3.2
