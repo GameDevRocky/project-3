@@ -96,18 +96,19 @@ func update_display(current_watts: float, max_watts: float) -> void:
 		if status_label != null:
 			status_label.text = "DRAINING: -%.1f W/s (%d %s)" % [drain_rate, lit_rooms, "room" if lit_rooms == 1 else "rooms"]
 		if warning_banner != null:
-			if current_watts < 15.0:
+			if current_watts < 25.0:
 				warning_banner.visible = true
-				warning_banner.text = "⚡ LOW VOLTAGE WARNING - GRID OVERLOAD IMMINENT"
+				warning_banner.text = "⚡ CRITICAL VOLTAGE — LIGHTS DESTABILIZING" if current_watts < 10.0 else "⚡ LOW VOLTAGE WARNING"
 			else:
 				warning_banner.visible = false
 
 		if power_bar != null:
-			if current_watts < 15.0:
+			if current_watts < 10.0:
 				power_bar.modulate = Color(1.0, 0.25, 0.25)
 				if status_label != null:
-					status_label.modulate = Color(1.0, 0.3, 0.3)
-			elif current_watts < 30.0:
+					var flash_alpha: float = 0.45 + 0.55 * absf(sin(Time.get_ticks_msec() * 0.012))
+					status_label.modulate = Color(1.0, 0.3, 0.3, flash_alpha)
+			elif current_watts < 25.0:
 				power_bar.modulate = Color(1.0, 0.75, 0.2)
 				if status_label != null:
 					status_label.modulate = Color(1.0, 0.8, 0.3)

@@ -87,6 +87,7 @@ func finish_portrait(was_safe: bool) -> void:
 		ending_message = "YOU BROUGHT IT WITH YOU\nThe entity escaped inside the portrait."
 	if _player != null:
 		_player.velocity = Vector3.ZERO
+		_player.set_physics_process(false)
 	game_finished.emit(was_safe, ending_message)
 	objective_updated.emit(get_objective_text())
 

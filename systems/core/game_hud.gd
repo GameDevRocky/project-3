@@ -98,6 +98,20 @@ func _build_interface() -> void:
 	_stamina_bar.size = Vector2(220.0, 18.0)
 	_stamina_bar.show_percentage = false
 	_stamina_bar.value = 100.0
+	var stamina_background := StyleBoxFlat.new()
+	stamina_background.bg_color = Color(0.08, 0.09, 0.12, 0.88)
+	stamina_background.corner_radius_top_left = 4
+	stamina_background.corner_radius_top_right = 4
+	stamina_background.corner_radius_bottom_left = 4
+	stamina_background.corner_radius_bottom_right = 4
+	var stamina_fill := StyleBoxFlat.new()
+	stamina_fill.bg_color = Color(0.72, 0.56, 0.3, 0.95)
+	stamina_fill.corner_radius_top_left = 4
+	stamina_fill.corner_radius_top_right = 4
+	stamina_fill.corner_radius_bottom_left = 4
+	stamina_fill.corner_radius_bottom_right = 4
+	_stamina_bar.add_theme_stylebox_override("background", stamina_background)
+	_stamina_bar.add_theme_stylebox_override("fill", stamina_fill)
 	root.add_child(_stamina_bar)
 
 	_overlay = ColorRect.new()

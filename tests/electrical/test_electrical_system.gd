@@ -132,3 +132,17 @@ func test_ghost_light_reaction_queries() -> void:
 	electrical.trip_breaker()
 	assert_false(electrical.is_room_lit(GameTypes.RoomId.BASEMENT), "Breaker tripped, basement is dark again, ghost unfreezes")
 
+func test_paranormal_flicker_temporarily_preserves_a_lit_room() -> void:
+	var electrical: ElectricalSystem = ElectricalSystemScript.new()
+	add_child_autoqfree(electrical)
+	electrical.set_room_light(GameTypes.RoomId.STUDY, true)
+
+	assert_true(electrical.has_method("trigger_flicker"))
+	if not electrical.has_method("trigger_flicker"):
+		return
+	assert_true(electrical.trigger_flicker(GameTypes.RoomId.STUDY, 0.25))
+	assert_eq(electrical.get_room_light_state(GameTypes.RoomId.STUDY), GameTypes.LightState.FLICKERING)
+	assert_true(electrical.is_room_lit(GameTypes.RoomId.STUDY), "Flickering light remains a light barrier")
+	electrical._process(0.3)
+	assert_eq(electrical.get_room_light_state(GameTypes.RoomId.STUDY), GameTypes.LightState.ON)
+

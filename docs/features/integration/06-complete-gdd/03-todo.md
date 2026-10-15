@@ -28,9 +28,9 @@
 
 ## Iteration 4: Presentation
 
-- [ ] Add portrait production interaction tests.
-- [ ] Add collision adapters, flicker, room dressing, labels, and generated audio.
-- [ ] Full suite passes and Godot MCP visual inspection succeeds.
+- [x] Add portrait production interaction tests.
+- [x] Add collision adapters, flicker, room dressing, labels, and generated audio.
+- [x] Full suite passes and initial Godot MCP visual/runtime inspection succeeds.
 
 ## Verify
 

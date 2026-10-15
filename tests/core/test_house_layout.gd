@@ -75,3 +75,16 @@ func test_all_interactive_sockets_exist() -> void:
 	var switches = sockets.get_node_or_null("SwitchSockets")
 	assert_not_null(switches, "SwitchSockets must exist")
 	assert_eq(switches.get_child_count(), 5, "Must have 5 room wall switches")
+
+func test_complete_gameplay_nodes_exist() -> void:
+	var scene_res = load(MAIN_SCENE_PATH)
+	var instance = scene_res.instantiate()
+	add_child_autoqfree(instance)
+	assert_not_null(instance.get_node_or_null("GameCoordinator"))
+	assert_not_null(instance.get_node_or_null("GameHUD"))
+	assert_not_null(instance.get_node_or_null("GhostMonster"))
+	assert_not_null(instance.get_node_or_null("HousePresentation"))
+	assert_not_null(instance.get_node_or_null("ProceduralAudio"))
+	assert_not_null(instance.get_node_or_null("Sockets/CarSocket/CarTrunk"))
+	assert_not_null(instance.get_node_or_null("Sockets/MovingBoxSockets/DustSheet"))
+	assert_true(instance.get_node("Sockets/MovingBoxSockets/Box_LivingRoom") is CarryableItem)

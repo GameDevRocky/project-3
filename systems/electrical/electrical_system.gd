@@ -33,6 +33,8 @@ var _room_states: Dictionary[int, int] = {
 
 ## Optional references to visual OmniLight3D fixtures
 var _light_fixtures: Dictionary[int, Node3D] = {}
+var _flicker_remaining: Dictionary[int, float] = {}
+var _low_voltage_flicker_armed: bool = true
 
 func _ready() -> void:
 	add_to_group("electrical_system")
@@ -42,6 +44,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if breaker_state == GameTypes.BreakerState.TRIPPED:
 		return
+	_update_flickers(delta)
 
 	var lit_count: int = get_lit_room_count()
 	if lit_count > 0:
@@ -49,6 +52,11 @@ func _process(delta: float) -> void:
 		power_meter_updated.emit(current_power, max_power)
 		if current_power < 15.0:
 			_update_fixture_energies()
+			if _low_voltage_flicker_armed:
+				_low_voltage_flicker_armed = false
+				for room_id: int in _room_states.keys():
+					if _room_states[room_id] == GameTypes.LightState.ON:
+						trigger_flicker(room_id as GameTypes.RoomId, 1.2)
 		if current_power <= 0.0:
 			trip_breaker()
 	else:
@@ -57,6 +65,8 @@ func _process(delta: float) -> void:
 			power_meter_updated.emit(current_power, max_power)
 			if current_power >= 15.0:
 				_update_fixture_energies()
+			if current_power >= 20.0:
+				_low_voltage_flicker_armed = true
 
 ## Returns the current light state of a given room
 func get_room_light_state(room_id: GameTypes.RoomId) -> GameTypes.LightState:
@@ -132,6 +142,41 @@ func turn_on_all_lights() -> void:
 
 	for room_id in [GameTypes.RoomId.ENTRY_HALL, GameTypes.RoomId.PARLOR, GameTypes.RoomId.STUDY, GameTypes.RoomId.DINING_ROOM, GameTypes.RoomId.BASEMENT]:
 		set_room_light(room_id, true)
+
+func trigger_flicker(room_id: GameTypes.RoomId, duration: float = 1.2) -> bool:
+	if breaker_state == GameTypes.BreakerState.TRIPPED or not _room_states.has(room_id):
+		return false
+	if _room_states[room_id] != GameTypes.LightState.ON and _room_states[room_id] != GameTypes.LightState.FLICKERING:
+		return false
+	_room_states[room_id] = GameTypes.LightState.FLICKERING
+	_flicker_remaining[room_id] = maxf(0.05, duration)
+	light_state_changed.emit(room_id, GameTypes.LightState.FLICKERING)
+	return true
+
+func blow_bulb(room_id: GameTypes.RoomId, fixture_id: StringName) -> bool:
+	if not _room_states.has(room_id):
+		return false
+	_flicker_remaining.erase(room_id)
+	_room_states[room_id] = GameTypes.LightState.OFF
+	_sync_fixture(room_id, false)
+	light_state_changed.emit(room_id, GameTypes.LightState.OFF)
+	bulb_blown.emit(room_id, fixture_id)
+	return true
+
+func _update_flickers(delta: float) -> void:
+	for room_key: int in _flicker_remaining.keys():
+		var remaining: float = _flicker_remaining[room_key] - delta
+		if remaining <= 0.0:
+			_flicker_remaining.erase(room_key)
+			if breaker_state == GameTypes.BreakerState.OPERATIONAL:
+				_room_states[room_key] = GameTypes.LightState.ON
+				_sync_fixture(room_key as GameTypes.RoomId, true)
+				light_state_changed.emit(room_key as GameTypes.RoomId, GameTypes.LightState.ON)
+		else:
+			_flicker_remaining[room_key] = remaining
+			var fixture: Node3D = _light_fixtures.get(room_key)
+			if fixture != null and "visible" in fixture:
+				fixture.visible = fmod(remaining * 19.0, 1.0) > 0.22
 
 func _bind_scene_fixtures() -> void:
 	var root: Node = get_tree().current_scene if get_tree() != null else null

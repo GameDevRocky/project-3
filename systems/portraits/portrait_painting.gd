@@ -129,7 +129,7 @@ func is_safe_to_remove_from_house() -> bool:
 	return is_family_portrait and not is_occupied
 
 func _build_visuals() -> void:
-	if get_child_count() > 0:
+	if get_node_or_null("Canvas") != null:
 		return
 	var w: float = painting_size.x
 	var h: float = painting_size.y
