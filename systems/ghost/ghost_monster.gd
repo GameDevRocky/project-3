@@ -12,7 +12,9 @@ signal ghost_chase_ended()
 signal player_killed()
 
 @export var roam_speed: float = 4.5
-@export var chase_speed: float = 5.8
+@export var chase_speed: float = 5.5
+@export var attack_distance: float = 0.85
+@export var exterior_threshold_z: float = -0.35
 @export var current_room: GameTypes.RoomId = GameTypes.RoomId.BASEMENT
 
 var mode: GameTypes.GhostMode = GameTypes.GhostMode.DORMANT
@@ -20,28 +22,43 @@ var current_painting_id: StringName = &""
 var target_painting_id: StringName = &""
 var is_chasing: bool = false
 var _dormant: bool = true
+var _target_player: Node3D = null
+var _electrical_system: ElectricalSystem = null
+var _portrait_system: PortraitSystem = null
+var _exit_position: Vector3 = Vector3.ZERO
+var _has_killed_target: bool = false
 
 @onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
 @onready var shadow_mesh: MeshInstance3D = $ShadowMesh
 
 func _ready() -> void:
+	add_to_group("ghost")
+	add_to_group("mcp_watch")
 	collision_layer = 4 # Layer 3 (monster)
-	collision_mask = 1  # Layer 1 (world) | Layer 2 (player)
+	collision_mask = 2  # The entity phases through the house, but still detects the player.
 
 func _physics_process(delta: float) -> void:
 	if _dormant:
 		mode = GameTypes.GhostMode.DORMANT
 		return
 
-	# Query electrical system for current room light state if available in tree
-	_check_light_reaction()
+	_resolve_dependencies()
+	if mode == GameTypes.GhostMode.PAINTING_BOUND:
+		if _should_remain_in_painting():
+			velocity = Vector3.ZERO
+			return
+		_exit_current_painting()
+
+	# A lit room is a hard movement barrier. Enter a valid frame or remain stunned.
+	if _check_light_reaction():
+		velocity = Vector3.ZERO
+		return
 
 	match mode:
 		GameTypes.GhostMode.FREE_ROAM, GameTypes.GhostMode.CHASE:
 			_process_roam_or_chase(delta)
 		GameTypes.GhostMode.PAINTING_BOUND:
 			velocity = Vector3.ZERO
-			move_and_slide()
 
 func set_monster_dormant(dormant: bool) -> void:
 	_dormant = dormant
@@ -49,6 +66,10 @@ func set_monster_dormant(dormant: bool) -> void:
 		mode = GameTypes.GhostMode.DORMANT
 	else:
 		mode = GameTypes.GhostMode.FREE_ROAM
+		_has_killed_target = false
+
+func set_target_player(player: Node3D) -> void:
+	_target_player = player
 
 func get_ghost_state() -> GhostState:
 	var state = GhostState.new()
@@ -66,10 +87,22 @@ func force_enter_nearest_painting(paintings_in_room: Array) -> bool:
 	# Find first available uncovered painting
 	for p in paintings_in_room:
 		if p.is_active and not p.is_covered and not p.is_occupied:
+			var occupied: bool = false
+			_resolve_dependencies()
+			if _portrait_system != null:
+				occupied = _portrait_system.set_monster_occupied(p.id, true)
+			else:
+				p.is_occupied = true
+				occupied = true
+			if not occupied:
+				continue
+			_exit_position = global_position
 			current_painting_id = p.id
-			p.is_occupied = true
 			mode = GameTypes.GhostMode.PAINTING_BOUND
-			shadow_mesh.visible = false
+			is_chasing = false
+			global_position = p.global_position
+			if shadow_mesh != null:
+				shadow_mesh.visible = false
 			ghost_entered_painting.emit(p.id)
 			return true
 	return false
@@ -77,33 +110,106 @@ func force_enter_nearest_painting(paintings_in_room: Array) -> bool:
 func can_exit_house(family_portrait_id: StringName) -> bool:
 	return mode == GameTypes.GhostMode.PAINTING_BOUND and current_painting_id == family_portrait_id
 
-func _check_light_reaction() -> void:
-	var parent = get_parent()
-	if parent == null:
-		return
-	var electrical = parent.get_node_or_null("ElectricalSystem")
-	if electrical != null and electrical.has_method("is_room_lit"):
-		if electrical.is_room_lit(current_room) and mode != GameTypes.GhostMode.PAINTING_BOUND:
-			var portraits = parent.get_node_or_null("PortraitSystem")
-			var valid_paintings = []
-			if portraits != null and portraits.has_method("get_valid_entry_paintings"):
-				valid_paintings = portraits.get_valid_entry_paintings(current_room)
-			if not valid_paintings.is_empty():
-				force_enter_nearest_painting(valid_paintings)
+func _check_light_reaction() -> bool:
+	if _electrical_system == null or not _electrical_system.is_room_lit(current_room):
+		return false
+	if _portrait_system != null:
+		var valid_paintings: Array[PaintingData] = _portrait_system.get_valid_entry_paintings(current_room)
+		if not valid_paintings.is_empty():
+			force_enter_nearest_painting(valid_paintings)
+	return true
 
 func _process_roam_or_chase(delta: float) -> void:
-	if nav_agent.is_navigation_finished():
+	_resolve_target_player()
+	if _target_player == null or not is_instance_valid(_target_player):
+		if is_chasing:
+			is_chasing = false
+			ghost_chase_ended.emit()
+		mode = GameTypes.GhostMode.FREE_ROAM
+		velocity = Vector3.ZERO
 		return
-	var next_pos = nav_agent.get_next_path_position()
-	var dir = (next_pos - global_position).normalized()
+	if not is_chasing:
+		is_chasing = true
+		ghost_chase_started.emit()
+	mode = GameTypes.GhostMode.CHASE
+	var target_position: Vector3 = _target_player.global_position
+	var dir: Vector3 = (target_position - global_position).normalized()
 	dir.y = 0
-	var spd = chase_speed if is_chasing else roam_speed
-	velocity = dir * spd
-	move_and_slide()
+	velocity = dir * chase_speed
+	global_position += velocity * delta
+	if target_position.z > exterior_threshold_z and global_position.z > exterior_threshold_z:
+		global_position.z = exterior_threshold_z - 0.05
+		velocity.z = 0.0
+	if global_position.distance_to(_target_player.global_position) <= attack_distance:
+		if _try_enter_carried_family_portrait():
+			return
+		_kill_target_player()
 
-	# Check collision with player
-	for i in get_slide_collision_count():
-		var col = get_slide_collision(i)
-		var collider = col.get_collider()
-		if collider != null and collider.is_in_group("player"):
-			player_killed.emit()
+func _resolve_dependencies() -> void:
+	var parent: Node = get_parent()
+	if parent == null:
+		return
+	if _electrical_system == null or not is_instance_valid(_electrical_system):
+		var electrical: Node = parent.get_node_or_null("ElectricalSystem")
+		if electrical is ElectricalSystem:
+			_electrical_system = electrical
+	if _portrait_system == null or not is_instance_valid(_portrait_system):
+		var portraits: Node = parent.get_node_or_null("PortraitSystem")
+		if portraits is PortraitSystem:
+			_portrait_system = portraits
+
+func _resolve_target_player() -> void:
+	if _target_player != null and is_instance_valid(_target_player):
+		return
+	if get_tree() != null:
+		var player: Node = get_tree().get_first_node_in_group("player")
+		if player is Node3D:
+			_target_player = player
+
+func _should_remain_in_painting() -> bool:
+	if current_painting_id == &"":
+		return false
+	if _portrait_system != null:
+		var data: PaintingData = _portrait_system.get_painting_data(current_painting_id)
+		if data != null and data.is_family_portrait and data.is_being_carried:
+			return true
+	return _electrical_system != null and _electrical_system.is_room_lit(current_room)
+
+func _exit_current_painting() -> void:
+	var exited_id: StringName = current_painting_id
+	if exited_id == &"":
+		return
+	if _portrait_system != null:
+		_portrait_system.set_monster_occupied(exited_id, false)
+	current_painting_id = &""
+	mode = GameTypes.GhostMode.FREE_ROAM
+	global_position = _exit_position
+	if shadow_mesh != null:
+		shadow_mesh.visible = true
+	ghost_exited_painting.emit(exited_id)
+
+func _try_enter_carried_family_portrait() -> bool:
+	if _portrait_system == null or not _portrait_system.is_family_portrait_held():
+		return false
+	var family: PaintingData = _portrait_system.get_family_portrait_data()
+	if family == null or family.is_covered or not family.is_active or family.is_occupied:
+		return false
+	return force_enter_nearest_painting([family])
+
+func _kill_target_player() -> void:
+	if _has_killed_target or _target_player == null:
+		return
+	_has_killed_target = true
+	velocity = Vector3.ZERO
+	if _target_player.has_method("kill_player"):
+		_target_player.call("kill_player")
+	player_killed.emit()
+
+func _mcp_state() -> Dictionary:
+	return {
+		"room_id": current_room,
+		"mode": mode,
+		"painting_id": current_painting_id,
+		"is_chasing": is_chasing,
+		"dormant": _dormant,
+	}

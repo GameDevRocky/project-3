@@ -16,9 +16,9 @@
 
 ## Iteration 2: Ghost behavior
 
-- [ ] Write failing ghost tests.
-- [ ] Complete pursuit, light/painting transitions, death, carried portrait, and threshold behavior.
-- [ ] Ghost tests and full suite pass.
+- [x] Write failing ghost tests.
+- [x] Complete pursuit, light/painting transitions, death, carried portrait, and threshold behavior.
+- [x] Ghost tests and full suite pass (12 scripts, 43 tests, 198 assertions).
 
 ## Iteration 3: Core gameplay loop
 
