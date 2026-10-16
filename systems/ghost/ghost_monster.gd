@@ -34,8 +34,7 @@ var _has_killed_target: bool = false
 func _ready() -> void:
 	add_to_group("ghost")
 	add_to_group("mcp_watch")
-	collision_layer = 4 # Layer 3 (monster)
-	collision_mask = 2  # The entity phases through the house, but still detects the player.
+	_apply_dormancy_state()
 
 func _physics_process(delta: float) -> void:
 	if _dormant:
@@ -67,6 +66,20 @@ func set_monster_dormant(dormant: bool) -> void:
 	else:
 		mode = GameTypes.GhostMode.FREE_ROAM
 		_has_killed_target = false
+	_apply_dormancy_state()
+
+func _apply_dormancy_state() -> void:
+	if _dormant:
+		mode = GameTypes.GhostMode.DORMANT
+		collision_layer = 0
+		collision_mask = 0
+		if shadow_mesh != null:
+			shadow_mesh.visible = false
+	else:
+		collision_layer = 4 # Layer 3 (monster)
+		collision_mask = 2  # The entity phases through the house, but still detects the player.
+		if shadow_mesh != null and mode != GameTypes.GhostMode.PAINTING_BOUND:
+			shadow_mesh.visible = true
 
 func set_target_player(player: Node3D) -> void:
 	_target_player = player

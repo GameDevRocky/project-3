@@ -13,11 +13,26 @@ func _ready() -> void:
 	collision_mask = 0
 	_build_visuals()
 
+func is_box() -> bool:
+	return item_type >= GameTypes.CarriedItemType.BOX_LIVING_ROOM and item_type <= GameTypes.CarriedItemType.BOX_BASEMENT
+
+func can_be_picked_up() -> bool:
+	if not is_box():
+		return true
+	var coordinator: Node = get_tree().get_first_node_in_group("game_coordinator") if get_tree() != null else null
+	if coordinator != null and coordinator.has_method("can_pack_boxes"):
+		return bool(coordinator.call("can_pack_boxes"))
+	return true
+
 func interact(actor: Node = null) -> void:
+	if not can_be_picked_up():
+		return
 	if actor != null and actor.has_method("try_pick_up_item"):
 		actor.call("try_pick_up_item", self, item_type)
 
 func get_interaction_prompt(_actor: Node = null) -> String:
+	if is_box() and not can_be_picked_up():
+		return "Restore power at breaker first"
 	return "E — Pick up %s" % item_label
 
 func on_picked_up(_actor: Node) -> void:

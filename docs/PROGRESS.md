@@ -30,12 +30,12 @@ _Updated 2026-10-15_
 
 ## Integration: John
 
-- **Status:** ✅ · **Branch:** None · **Current feature:** None · **Updated:** 2026-10-15 (Codex)
-- **Done:** Completed and wired the GDD gameplay loop across player carry/interactions, ghost pursuit and painting occupancy, electrical flicker, objectives/endings, HUD, procedural presentation, and generated audio. Added and enabled Godot MCP for development inspection. The synced full suite passes 14 scripts, 54 tests, and 250 assertions with no script errors. GitHub Actions run `38813442772` successfully imported, tested, exported Web, uploaded the artifact, and deployed GitHub Pages.
-- **In progress:** None; the complete GDD branch is merged and deployed.
-- **Next:** Perform the human-controlled desktop-browser playtest.
-- **Needs from others:** Human verification of mouse feel, lighting balance, audio mix, chase difficulty, and overall browser playability. Codex will not launch editor play mode unless explicitly requested.
-- **Handoff notes:** The complete loop is breaker → four unique boxes → family portrait → forced blackout → car. An occupied family portrait produces the loss ending; an empty one produces the escape ending. Depositing the portrait reparents it into the trunk instead of freeing the registered node. Mouse look uses `_input` so the HUD cannot consume movement. `.github/workflows/deploy-pages.yml` performs the authoritative single-threaded Web export and deploys only from `main`.
+- **Status:** 🟢 · **Branch:** `integration/minor-bug-fix` · **Current feature:** `07-minor-bug-fix` · **Updated:** 2026-10-15 (Gemini CLI)
+- **Done:** Implemented all playtest minor bug fixes: hidden/non-colliding ghost monster while dormant during Phase 0; light switch operation disabled during Phase 0 ("Restore power at breaker first"); moving box pickup and trunk deposit phase gating; family portrait phase gating; correct inward orientations for all house paintings; and flush 6m Parlor alignment with centered doorway labels. Full GUT suite passes 14 scripts, 60 tests, and 305 assertions with zero errors.
+- **In progress:** PR #12 opened and updated on `main`.
+- **Next:** Teammate review and merge.
+- **Needs from others:** Review per review pairs (`TEAM.md`).
+- **Handoff notes:** The ghost remains hidden and collision-free during Phase 0 until the basement breaker is flipped; light switches and boxes cannot be interacted with before Phase 1; all paintings face outward into rooms; Parlor CSG geometry aligns with exterior walls Z: 0 to -6.
 
 ---
 

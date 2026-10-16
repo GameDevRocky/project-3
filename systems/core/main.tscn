@@ -28,7 +28,7 @@ albedo_color = Color(0.72, 0.68, 0.62, 1)
 size = Vector3(6, 3, 6)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_parlor"]
-size = Vector3(8, 3, 8)
+size = Vector3(8, 3, 6)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_study"]
 size = Vector3(6, 3, 6)
@@ -130,26 +130,26 @@ size = Vector3(1.6, 2.6, 0.5)
 
 [node name="ParlorFloor" type="CSGBox3D" parent="HouseGeometry" unique_id=123281413]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0.1, -3)
-size = Vector3(8, 0.2, 8)
+size = Vector3(8, 0.2, 6)
 material = SubResource("Mat_Floor")
 
 [node name="ParlorCeiling" type="CSGBox3D" parent="HouseGeometry" unique_id=1340256227]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 3.1, -3)
-size = Vector3(8, 0.2, 8)
+size = Vector3(8, 0.2, 6)
 material = SubResource("Mat_Wall")
 
 [node name="ParlorWestWall" type="CSGBox3D" parent="HouseGeometry" unique_id=454490685]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11, 1.6, -3)
-size = Vector3(0.2, 3, 8)
+size = Vector3(0.2, 3, 6)
 material = SubResource("Mat_Wall")
 
 [node name="ParlorSouthWall" type="CSGBox3D" parent="HouseGeometry" unique_id=773549089]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1.6, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1.6, 0)
 size = Vector3(8, 3, 0.2)
 material = SubResource("Mat_Wall")
 
 [node name="ParlorNorthWall" type="CSGBox3D" parent="HouseGeometry" unique_id=361467047]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1.6, -7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1.6, -6)
 size = Vector3(8, 3, 0.2)
 material = SubResource("Mat_Wall")
 
@@ -317,22 +317,22 @@ shape = SubResource("BoxShape3D_driveway")
 [node name="PortraitSystem" parent="." unique_id=975324426 instance=ExtResource("2_portraits")]
 
 [node name="FamilyPortrait" parent="PortraitSystem" unique_id=191046079 instance=ExtResource("3_painting")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 1.6, -0.15)
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 1.4, 1.6, -0.15)
 portrait_id = &"family_portrait"
 is_family_portrait = true
 
 [node name="Painting_Parlor_1" parent="PortraitSystem" unique_id=2080260441 instance=ExtResource("3_painting")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -10.85, 1.6, -3)
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -10.85, 1.6, -3)
 portrait_id = &"parlor_1"
 room_id = 1
 
 [node name="Painting_Parlor_2" parent="PortraitSystem" unique_id=1131422192 instance=ExtResource("3_painting")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1.6, -6.85)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1.6, -5.85)
 portrait_id = &"parlor_2"
 room_id = 1
 
 [node name="Painting_Study_1" parent="PortraitSystem" unique_id=456713173 instance=ExtResource("3_painting")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 8.85, 1.6, -3)
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 8.85, 1.6, -3)
 portrait_id = &"study_1"
 room_id = 2
 
@@ -342,7 +342,7 @@ portrait_id = &"dining_1"
 room_id = 3
 
 [node name="Painting_Basement_1" parent="PortraitSystem" instance=ExtResource("3_painting")]
-transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -5.85, -2.1, -12.0)
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5.85, -2.1, -12.0)
 portrait_id = &"basement_1"
 room_id = 4
 portrait_tint = Color(0.43, 0.5, 0.46, 1)

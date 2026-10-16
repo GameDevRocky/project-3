@@ -108,6 +108,12 @@ func update_entity_room(body: Node3D, room_id: GameTypes.RoomId) -> void:
 func get_packed_box_count() -> int:
 	return _packed_boxes.size()
 
+func can_pack_boxes() -> bool:
+	return phase == Phase.PACKING
+
+func can_take_family_portrait() -> bool:
+	return phase == Phase.PORTRAIT and not is_game_over()
+
 func is_game_over() -> bool:
 	return phase == Phase.WON or phase == Phase.LOST
 

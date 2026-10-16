@@ -98,3 +98,18 @@ func test_roaming_ghost_stops_at_exterior_threshold() -> void:
 	for index: int in range(20):
 		ghost._physics_process(0.1)
 	assert_lte(ghost.global_position.z, -0.35, "A roaming ghost cannot cross the front threshold")
+
+func test_ghost_hidden_and_non_colliding_when_dormant() -> void:
+	var ghost: GhostMonster = GhostMonsterScene.instantiate()
+	add_child_autoqfree(ghost)
+	assert_true(ghost._dormant)
+	assert_false(ghost.shadow_mesh.visible, "Ghost shadow mesh should be hidden when dormant")
+	assert_eq(ghost.collision_layer, 0, "Dormant ghost should have no collision layer")
+	assert_eq(ghost.collision_mask, 0, "Dormant ghost should have no collision mask")
+
+	ghost.set_monster_dormant(false)
+	assert_false(ghost._dormant)
+	assert_true(ghost.shadow_mesh.visible, "Active ghost shadow mesh should be visible")
+	assert_eq(ghost.collision_layer, 4, "Active ghost should have monster collision layer")
+	assert_eq(ghost.collision_mask, 2, "Active ghost should have player collision mask")
+

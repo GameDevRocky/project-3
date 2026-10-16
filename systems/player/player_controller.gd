@@ -154,6 +154,9 @@ func interact_with_portrait(painting: PortraitPainting) -> bool:
 		return true
 	if not painting.is_family_portrait or carried_item != GameTypes.CarriedItemType.NONE:
 		return false
+	var coordinator: Node = get_tree().get_first_node_in_group("game_coordinator") if get_tree() != null else null
+	if coordinator != null and coordinator.has_method("can_take_family_portrait") and not bool(coordinator.call("can_take_family_portrait")):
+		return false
 	if boxes_packed_count < 4 or carry_socket == null:
 		return false
 	if not painting.remove_from_wall(carry_socket):

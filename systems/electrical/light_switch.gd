@@ -24,8 +24,17 @@ func _ensure_collision_shape() -> void:
 	col.shape = box
 	add_child(col)
 
+func can_operate_switch() -> bool:
+	var coordinator: Node = get_tree().get_first_node_in_group("game_coordinator") if get_tree() != null else null
+	if coordinator != null and coordinator.get("phase") == 0:
+		return false
+	return true
+
 ## Called when the player presses interact ('E') while looking at this switch
 func interact(_actor: Node = null) -> void:
+	if not can_operate_switch():
+		return
+
 	var electrical := _get_electrical_system()
 	if electrical == null:
 		push_warning("LightSwitch for room %d cannot find ElectricalSystem." % room_id)
@@ -33,6 +42,15 @@ func interact(_actor: Node = null) -> void:
 
 	var is_lit := electrical.is_room_lit(room_id)
 	electrical.set_room_light(room_id, not is_lit)
+
+func get_interaction_prompt(_actor: Node = null) -> String:
+	if not can_operate_switch():
+		return "Restore power at breaker first"
+	var electrical := _get_electrical_system()
+	if electrical != null and electrical.breaker_state == GameTypes.BreakerState.TRIPPED:
+		return "Breaker tripped"
+	var is_lit: bool = electrical != null and electrical.is_room_lit(room_id)
+	return "E — Turn lights %s" % ("OFF" if is_lit else "ON")
 
 func set_electrical_system(system: ElectricalSystem) -> void:
 	_electrical_system = system
