@@ -7,7 +7,7 @@ func test_electrical_initial_state() -> void:
 	var electrical: ElectricalSystem = ElectricalSystemScript.new()
 	add_child_autoqfree(electrical)
 
-	assert_eq(electrical.get_current_power(), 100.0, "Power meter should start at 100 Watts")
+	assert_eq(electrical.get_current_power(), 250.0, "Power meter should start at 250 Watts")
 	assert_eq(electrical.get_lit_room_count(), 0, "No rooms should start illuminated")
 
 	for room in [GameTypes.RoomId.ENTRY_HALL, GameTypes.RoomId.PARLOR, GameTypes.RoomId.STUDY, GameTypes.RoomId.DINING_ROOM, GameTypes.RoomId.BASEMENT]:
@@ -49,39 +49,53 @@ func test_power_drain_with_lit_rooms() -> void:
 	var electrical: ElectricalSystem = ElectricalSystemScript.new()
 	add_child_autoqfree(electrical)
 
+	# 2 rooms lit: break-even equilibrium (4.0 - 4.0 = 0.0 W/s)
 	electrical.set_room_light(GameTypes.RoomId.ENTRY_HALL, true)
 	electrical.set_room_light(GameTypes.RoomId.STUDY, true)
 	assert_eq(electrical.get_lit_room_count(), 2, "2 rooms lit")
-
-	# 2 rooms * 1.0 W/s * 3.0s = 6.0 Watts drained
 	electrical._process(3.0)
-	assert_almost_eq(electrical.get_current_power(), 94.0, 0.01, "Power should drain by 6.0 Watts")
+	assert_almost_eq(electrical.get_current_power(), 250.0, 0.01, "2 lit rooms should be at break-even (250W)")
+
+	# 3 rooms lit: net drain of -2.0 W/s (4.0 - 6.0 = -2.0 W/s)
+	electrical.set_room_light(GameTypes.RoomId.PARLOR, true)
+	assert_eq(electrical.get_lit_room_count(), 3, "3 rooms lit")
+	electrical._process(3.0)
+	assert_almost_eq(electrical.get_current_power(), 244.0, 0.01, "3 rooms should drain 6.0 Watts over 3s")
 
 func test_power_recharge_when_all_rooms_dark() -> void:
 	var electrical: ElectricalSystem = ElectricalSystemScript.new()
 	add_child_autoqfree(electrical)
 
-	electrical.current_power = 80.0
+	electrical.current_power = 200.0
 	assert_eq(electrical.get_lit_room_count(), 0, "All rooms dark")
 
-	# Recharge at 5.0 W/s * 2.0s = +10.0 Watts
+	# Recharge at 4.0 W/s * 2.0s = +8.0 Watts
 	electrical._process(2.0)
-	assert_almost_eq(electrical.get_current_power(), 90.0, 0.01, "Power should recharge to 90.0 Watts")
+	assert_almost_eq(electrical.get_current_power(), 208.0, 0.01, "Power should recharge to 208.0 Watts")
 
-	# Overcharge should clamp to max_power (100.0)
-	electrical._process(5.0)
-	assert_eq(electrical.get_current_power(), 100.0, "Power should clamp at 100.0 Watts")
+	# 1 room lit: net recharge at +2.0 W/s (4.0 - 2.0 = +2.0 W/s)
+	electrical.set_room_light(GameTypes.RoomId.PARLOR, true)
+	electrical._process(2.0)
+	assert_almost_eq(electrical.get_current_power(), 212.0, 0.01, "1 lit room should net recharge to 212.0 Watts")
+
+	# Overcharge should clamp to max_power (250.0)
+	electrical.set_room_light(GameTypes.RoomId.PARLOR, false)
+	electrical._process(20.0)
+	assert_eq(electrical.get_current_power(), 250.0, "Power should clamp at 250.0 Watts")
 
 func test_automatic_breaker_trip_at_zero_power() -> void:
 	var electrical: ElectricalSystem = ElectricalSystemScript.new()
 	add_child_autoqfree(electrical)
 	watch_signals(electrical)
 
+	# Turn on 3 rooms: net drain of -2.0 W/s
+	electrical.set_room_light(GameTypes.RoomId.ENTRY_HALL, true)
+	electrical.set_room_light(GameTypes.RoomId.STUDY, true)
 	electrical.set_room_light(GameTypes.RoomId.DINING_ROOM, true)
 	electrical.current_power = 2.0
 
-	# Process 3 seconds with 1 room lit -> drains 3.0W, drops below 0W
-	electrical._process(3.0)
+	# Process 2 seconds with 3 rooms lit -> drains 4.0W, drops below 0W
+	electrical._process(2.0)
 
 	assert_eq(electrical.get_current_power(), 0.0, "Power should clamp at 0.0 Watts")
 	assert_false(electrical.is_room_lit(GameTypes.RoomId.DINING_ROOM), "Dining room light should cut off")
@@ -105,7 +119,7 @@ func test_manual_trip_and_reset_breaker() -> void:
 	assert_signal_emitted_with_parameters(electrical, "breaker_state_changed", [GameTypes.BreakerState.TRIPPED])
 
 	electrical.reset_breaker()
-	assert_eq(electrical.get_current_power(), 100.0, "Resetting breaker should restore 100 Watts")
+	assert_eq(electrical.get_current_power(), 250.0, "Resetting breaker should restore 250 Watts")
 	assert_signal_emitted_with_parameters(electrical, "breaker_state_changed", [GameTypes.BreakerState.OPERATIONAL])
 
 	# Now lights can be turned on again

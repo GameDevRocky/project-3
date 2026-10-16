@@ -18,7 +18,7 @@ func test_breaker_panel_initial_interaction_turns_on_all_lights() -> void:
 	# Flip breaker in basement -> Phase 0 turns on all lights
 	breaker.interact()
 	assert_eq(electrical.get_lit_room_count(), 5, "Flipping breaker panel turns on all 5 house lights")
-	assert_eq(electrical.get_current_power(), 100.0, "Power meter should be 100 Watts")
+	assert_eq(electrical.get_current_power(), 250.0, "Power meter should be 250 Watts")
 
 func test_breaker_panel_resets_tripped_breaker() -> void:
 	var electrical: ElectricalSystem = ElectricalSystemScript.new()
@@ -36,7 +36,7 @@ func test_breaker_panel_resets_tripped_breaker() -> void:
 	# Interact with breaker panel to reset it
 	breaker.interact()
 	assert_eq(electrical.breaker_state, GameTypes.BreakerState.OPERATIONAL, "Breaker should now be operational")
-	assert_eq(electrical.get_current_power(), 100.0, "Power should be fully restored to 100 Watts")
+	assert_eq(electrical.get_current_power(), 250.0, "Power should be fully restored to 250 Watts")
 
 func test_player_interaction_with_breaker_panel() -> void:
 	var root: Node3D = Node3D.new()

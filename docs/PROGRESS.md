@@ -51,12 +51,12 @@ _Updated 2026-10-15_
 
 ## Electrical & Lighting: Rocky
 
-- **Status:** 🟢 · **Branch:** `electrical/03-energy-drain` · **Current feature:** `electrical/03-energy-drain` · **Updated:** 2026-10-14 (Gemini CLI)
-- **Done:** Implemented `PowerMeterHUD` in `systems/electrical/power_meter_hud.gd` and `.tscn` displaying live wattage bar, drain rate per lit room (`-X.0 W/s`), recharge status (`+5.0 W/s`), low voltage warning (<25W amber, <10W red flashing), and blackout trip banner. Added low-voltage light fixture dimming in `electrical_system.gd` (<15W). Automated unit tests in `tests/electrical/test_power_meter_hud.gd` (6/6 passing, 20/20 electrical tests passing total).
-- **In progress:** Ready for review and merge into `main`.
-- **Next:** Climax breaker cutoff and paranormal bulb flickering mechanics (`electrical/04-bulb-flicker`).
+- **Status:** 🟢 · **Branch:** `electrical/04-energy-tuning` · **Current feature:** `04-energy-tuning` · **Updated:** 2026-10-15 (Gemini CLI)
+- **Done:** Completed 250W energy retuning: 250W grid capacity, continuous generator recharge (+4.0 W/s base), 2.0 W/s drain per lit room, break-even at 2 rooms (0.0 W/s equilibrium), scaled warning thresholds (100W low voltage, 50W dimming, 25W critical flashing), and §9 Tuning Table update. Full headless GUT suite passes 14 scripts, 62 tests, and 324 assertions with zero errors.
+- **In progress:** Ready for PR into `main`.
+- **Next:** Push branch and open PR.
 - **Needs from others:** None.
-- **Handoff notes:** The `PowerMeterHUD` automatically instantiates and binds to `ElectricalSystem` at runtime, providing real-time visual feedback for the 100W wattage economy, drain/recharge dynamics, and blackout alerts. Fixtures dim dynamically when power drops below 15W.
+- **Handoff notes:** The grid continuously generates +4.0 W/s; 1 lit room recharges at +2.0 W/s, 2 lit rooms break even at 0.0 W/s, and 3-5 lit rooms net drain (-2.0 to -6.0 W/s). Low voltage warning banner displays below 100W, fixtures dim below 50W, and critical flashing triggers below 25W. Breaker reset restores 250W.
 
 ---
 
