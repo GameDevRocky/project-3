@@ -10,6 +10,7 @@ signal ghost_exited_painting(painting_id: StringName)
 signal ghost_chase_started()
 signal ghost_chase_ended()
 signal ghost_roam_sound_requested()
+signal ghost_teleported(to_room: GameTypes.RoomId)
 signal player_killed()
 
 @export var roam_speed: float = 1.8
@@ -128,6 +129,7 @@ func _physics_process(delta: float) -> void:
 		return
 
 	_update_eye_tracking()
+	_process_trapped_and_sabotage(delta)
 
 	match mode:
 		GameTypes.GhostMode.FREE_ROAM, GameTypes.GhostMode.CHASE:
@@ -211,6 +213,71 @@ func _check_light_reaction() -> bool:
 var _roam_waypoint: Vector3 = Vector3.ZERO
 var _has_roam_waypoint: bool = false
 var _roam_sound_timer: float = 3.0
+var _trapped_timer: float = 0.0
+var _blocked_flicker_timer: float = 0.0
+
+func _get_dark_adjacent_rooms() -> Array[int]:
+	var dark_neighbors: Array[int] = []
+	var neighbors: Array = ADJACENT_ROOMS.get(current_room, [])
+	for room in neighbors:
+		if _electrical_system == null or not _electrical_system.is_room_lit(room):
+			dark_neighbors.append(room)
+	return dark_neighbors
+
+func _find_all_unlit_rooms() -> Array[int]:
+	var unlit: Array[int] = []
+	for room in [GameTypes.RoomId.ENTRY_HALL, GameTypes.RoomId.PARLOR, GameTypes.RoomId.STUDY, GameTypes.RoomId.DINING_ROOM, GameTypes.RoomId.BASEMENT]:
+		if room != current_room:
+			if _electrical_system == null or not _electrical_system.is_room_lit(room):
+				unlit.append(room)
+	return unlit
+
+func shadow_teleport(dest_room: GameTypes.RoomId, target_pos: Vector3) -> void:
+	var from_room: GameTypes.RoomId = current_room
+	current_room = dest_room
+	global_position = target_pos
+	_roam_waypoint = target_pos
+	_has_roam_waypoint = true
+	_trapped_timer = 0.0
+	_blocked_flicker_timer = 0.0
+	ghost_moved.emit(from_room, dest_room, mode)
+	ghost_teleported.emit(dest_room)
+
+func _process_trapped_and_sabotage(delta: float) -> void:
+	if _dormant or mode == GameTypes.GhostMode.PAINTING_BOUND:
+		_trapped_timer = 0.0
+		_blocked_flicker_timer = 0.0
+		return
+
+	_resolve_dependencies()
+	var dark_neighbors: Array[int] = _get_dark_adjacent_rooms()
+
+	# If all adjacent exits are lit, the ghost is trapped in this room
+	if dark_neighbors.is_empty():
+		_trapped_timer += delta
+		_blocked_flicker_timer += delta
+
+		# Flicker sabotage at 10.0s
+		if _blocked_flicker_timer >= 10.0:
+			_blocked_flicker_timer = 0.0
+			var neighbors: Array = ADJACENT_ROOMS.get(current_room, [])
+			if not neighbors.is_empty() and _electrical_system != null:
+				var target_flicker_room = neighbors[0]
+				_electrical_system.trigger_flicker(target_flicker_room, 2.5)
+
+		# Shadow teleport at 15.0s
+		if _trapped_timer >= 15.0:
+			var unlit_rooms: Array[int] = _find_all_unlit_rooms()
+			if not unlit_rooms.is_empty():
+				var dest_room: GameTypes.RoomId = unlit_rooms[randi() % unlit_rooms.size()] as GameTypes.RoomId
+				var points: Array = ROOM_WAYPOINTS.get(dest_room, [])
+				var dest_pos: Vector3 = points[randi() % points.size()] if not points.is_empty() else global_position
+				shadow_teleport(dest_room, dest_pos)
+			else:
+				_trapped_timer = 0.0
+	else:
+		_trapped_timer = 0.0
+		_blocked_flicker_timer = 0.0
 
 func _should_chase_player() -> bool:
 	if _target_player == null or not is_instance_valid(_target_player):

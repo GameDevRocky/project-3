@@ -14,7 +14,7 @@ Mirrors [02-plan.md](02-plan.md). Tick each box in the same commit as the work.
 - [x] Step 1.1 & 1.2: Implement Entry Hall 4.0 W/s drain rate in `electrical_system.gd` with tests in `test_electrical_system.gd`
 
 ## Iteration 2: Shadow Teleportation & Flicker Sabotage
-- [ ] Step 2.1 & 2.2: Implement 15s trapped dark teleportation and 10s lit threshold flicker sabotage in `ghost_monster.gd` with tests in `test_ghost_behavior.gd`
+- [x] Step 2.1 & 2.2: Implement 15s trapped dark teleportation and 10s lit threshold flicker sabotage in `ghost_monster.gd` with tests in `test_ghost_behavior.gd`
 
 ## Iteration 3: Void Phase Audio & Tuning Documentation
 - [ ] Step 3.1: Connect `ghost_teleported` in `procedural_audio.gd` and synthesize void phase chime
