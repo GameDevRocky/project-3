@@ -86,6 +86,7 @@ This feature resolves four playtest oversights in the integrated house slice:
 - [x] Ghost monster shadow mesh is completely hidden and collision disabled when dormant in Phase 0.
 - [x] Ghost becomes visible and active upon the initial basement breaker flip.
 - [x] Moving boxes cannot be picked up in Phase 0 and show "Restore power at breaker first".
+- [x] Light switches cannot turn on lights in Phase 0 and display "Restore power at breaker first".
 - [x] Car trunk rejects depositing moving boxes in Phase 0 and rejects the family portrait before all 4 boxes are packed.
 - [x] `Painting_Basement_1` faces East into the basement toward the stairs.
 - [x] `FamilyPortrait` faces North into the Entry Hall foyer.

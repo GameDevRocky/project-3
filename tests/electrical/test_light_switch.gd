@@ -71,3 +71,33 @@ func test_player_interaction_with_light_switch() -> void:
 	# Interact again
 	player.try_interact()
 	assert_false(electrical.is_room_lit(GameTypes.RoomId.ENTRY_HALL), "Player interact again should turn off Entry Hall light")
+
+func test_light_switch_blocked_during_startup_phase() -> void:
+	var root := Node3D.new()
+	add_child_autoqfree(root)
+
+	var coordinator_script = load("res://systems/core/game_coordinator.gd")
+	var coordinator = coordinator_script.new()
+	root.add_child(coordinator)
+
+	var electrical: ElectricalSystem = ElectricalSystemScript.new()
+	electrical.name = "ElectricalSystem"
+	root.add_child(electrical)
+
+	var switch: LightSwitch = LightSwitchScript.new()
+	switch.room_id = GameTypes.RoomId.PARLOR
+	switch.set_electrical_system(electrical)
+	root.add_child(switch)
+
+	await get_tree().process_frame
+
+	assert_eq(coordinator.phase, 0) # Phase.STARTUP
+	assert_eq(switch.get_interaction_prompt(), "Restore power at breaker first")
+	switch.interact()
+	assert_false(electrical.is_room_lit(GameTypes.RoomId.PARLOR), "Light cannot be turned on before breaker is flipped")
+
+	coordinator.phase = 1 # Phase.PACKING
+	assert_eq(switch.get_interaction_prompt(), "E — Turn lights ON")
+	switch.interact()
+	assert_true(electrical.is_room_lit(GameTypes.RoomId.PARLOR), "Light can be turned on after breaker is flipped")
+
