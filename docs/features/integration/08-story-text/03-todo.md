@@ -26,4 +26,4 @@ Mirrors [02-plan.md](02-plan.md). Tick each box in the same commit as the work.
 
 ## PR
 - [x] Pulled `origin/main` right before pushing; re-ran the suite
-- [ ] PR opened with summary, interfaces touched, how to test, and test results
+- [x] PR opened with summary, interfaces touched, how to test, and test results (#16)
