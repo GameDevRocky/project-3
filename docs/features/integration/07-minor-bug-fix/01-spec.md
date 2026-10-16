@@ -83,13 +83,13 @@ This feature resolves four playtest oversights in the integrated house slice:
 
 ## 7. Done when
 
-- [ ] Ghost monster shadow mesh is completely hidden and collision disabled when dormant in Phase 0.
-- [ ] Ghost becomes visible and active upon the initial basement breaker flip.
-- [ ] Moving boxes cannot be picked up in Phase 0 and show "Restore power at breaker first".
-- [ ] Car trunk rejects depositing moving boxes in Phase 0 and rejects the family portrait before all 4 boxes are packed.
-- [ ] `Painting_Basement_1` faces East into the basement toward the stairs.
-- [ ] `FamilyPortrait` faces North into the Entry Hall foyer.
-- [ ] `Painting_Parlor_1` faces East and `Painting_Study_1` faces West.
-- [ ] Parlor walls match the front and back facade planes of the house (depth 6m).
-- [ ] Parlor and Study room labels are centered above their respective doorway arches facing the Entry Hall.
-- [ ] Full GUT test suite passes with 0 errors.
+- [x] Ghost monster shadow mesh is completely hidden and collision disabled when dormant in Phase 0.
+- [x] Ghost becomes visible and active upon the initial basement breaker flip.
+- [x] Moving boxes cannot be picked up in Phase 0 and show "Restore power at breaker first".
+- [x] Car trunk rejects depositing moving boxes in Phase 0 and rejects the family portrait before all 4 boxes are packed.
+- [x] `Painting_Basement_1` faces East into the basement toward the stairs.
+- [x] `FamilyPortrait` faces North into the Entry Hall foyer.
+- [x] `Painting_Parlor_1` faces East and `Painting_Study_1` faces West.
+- [x] Parlor walls match the front and back facade planes of the house (depth 6m).
+- [x] Parlor and Study room labels are centered above their respective doorway arches facing the Entry Hall.
+- [x] Full GUT test suite passes with 0 errors.

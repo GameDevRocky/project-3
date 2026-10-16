@@ -31,11 +31,11 @@ _Updated 2026-10-15_
 ## Integration: John
 
 - **Status:** 🟢 · **Branch:** `integration/minor-bug-fix` · **Current feature:** `07-minor-bug-fix` · **Updated:** 2026-10-15 (Gemini CLI)
-- **Done:** Completed spec, plan, and setup for minor playtest bug fixes (dormant ghost visibility, carry/deposit gating, painting orientations, parlor alignment).
-- **In progress:** Step 1.1: Monster dormancy visibility and collision.
-- **Next:** Step 2.1: Carry & trunk gating, Step 3.1: Painting orientations & Parlor layout.
+- **Done:** Implemented all playtest minor bug fixes: hidden/non-colliding ghost monster while dormant during Phase 0; moving box pickup and trunk deposit phase gating; family portrait phase gating; correct inward orientations for all house paintings; and flush 6m Parlor alignment with centered doorway labels. Full GUT suite passes 14 scripts, 59 tests, and 300 assertions with zero errors.
+- **In progress:** Ready for PR into `main`.
+- **Next:** Open PR into `main`.
 - **Needs from others:** None.
-- **Handoff notes:** Gated box pickup and trunk deposit by game phase; ghost remains hidden and collision-free until breaker activation.
+- **Handoff notes:** The ghost remains hidden and collision-free during Phase 0 until the basement breaker is flipped; boxes cannot be picked up or packed before Phase 1; all paintings face outward into rooms; Parlor CSG geometry aligns with exterior walls Z: 0 to -6.
 
 ---
 
