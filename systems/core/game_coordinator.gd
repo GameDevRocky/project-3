@@ -35,8 +35,9 @@ func _ready() -> void:
 	call_deferred("_wire_scene")
 
 func _unhandled_input(event: InputEvent) -> void:
-	if is_game_over() and Time.get_ticks_msec() - _game_over_time > 1500 and event.is_action_pressed("interact") and get_tree() != null:
-		get_tree().reload_current_scene()
+	if is_game_over() and Time.get_ticks_msec() - _game_over_time > 1500 and get_tree() != null:
+		if event is InputEventKey and event.pressed and ((event as InputEventKey).keycode == KEY_ENTER or (event as InputEventKey).keycode == KEY_SPACE or event.is_action_pressed("ui_accept")):
+			get_tree().reload_current_scene()
 
 func bind_systems(player: PlayerController, electrical: ElectricalSystem, portraits: PortraitSystem, ghost: GhostMonster, trunk: CarTrunk, breaker: BreakerPanel) -> void:
 	_disconnect_systems()
@@ -84,10 +85,12 @@ func finish_portrait(was_safe: bool) -> void:
 	_game_over_time = Time.get_ticks_msec()
 	if was_safe:
 		phase = Phase.WON
-		ending_message = "ESCAPED\n\nYou successfully packed all your belongings, contained the shadows within the walls, and left the family home behind safely as the new dawn breaks."
+		ending_message = "ESCAPED\n\nYou successfully packed all your belongings, contained the shadows within the walls, and left the family home behind safely as the new dawn breaks.\n\nPress ENTER or SPACE to restart"
 	else:
 		phase = Phase.LOST
-		ending_message = "YOU BROUGHT IT WITH YOU\n\nYou loaded the family portrait into the car trunk, unaware the entity was trapped inside the canvas. As you drive away into the night, whispered breaths echo from the back seat."
+		ending_message = "YOU BROUGHT IT WITH YOU\n\nYou loaded the family portrait into the car trunk, unaware the entity was trapped inside the canvas. As you drive away into the night, whispered breaths echo from the back seat.\n\nPress ENTER or SPACE to restart"
+	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	if _player != null:
 		_player.velocity = Vector3.ZERO
 		_player.set_physics_process(false)
@@ -99,7 +102,9 @@ func lose_to_ghost() -> void:
 		return
 	_game_over_time = Time.get_ticks_msec()
 	phase = Phase.LOST
-	ending_message = "THE DARKNESS TOOK YOU\n\nYou were caught in the dark before you could finish packing. The house claims another tenant, and your final portrait joins the gallery on the wall.\n\nPress E to try again."
+	ending_message = "THE DARKNESS TOOK YOU\n\nYou were caught in the dark before you could finish packing. The house claims another tenant, and your final portrait joins the gallery on the wall.\n\nPress ENTER or SPACE to restart"
+	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	if get_tree() != null:
 		get_tree().call_group("game_hud", "trigger_jumpscare_flash")
 	if _player != null:
