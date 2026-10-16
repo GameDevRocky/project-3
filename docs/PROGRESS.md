@@ -30,12 +30,12 @@ _Updated 2026-10-15_
 
 ## Integration: John
 
-- **Status:** ✅ · **Branch:** None · **Current feature:** None · **Updated:** 2026-10-15 (Codex)
-- **Done:** Completed and wired the GDD gameplay loop across player carry/interactions, ghost pursuit and painting occupancy, electrical flicker, objectives/endings, HUD, procedural presentation, and generated audio. Added and enabled Godot MCP for development inspection. The synced full suite passes 14 scripts, 54 tests, and 250 assertions with no script errors. GitHub Actions run `38813442772` successfully imported, tested, exported Web, uploaded the artifact, and deployed GitHub Pages.
-- **In progress:** None; the complete GDD branch is merged and deployed.
-- **Next:** Perform the human-controlled desktop-browser playtest.
-- **Needs from others:** Human verification of mouse feel, lighting balance, audio mix, chase difficulty, and overall browser playability. Codex will not launch editor play mode unless explicitly requested.
-- **Handoff notes:** The complete loop is breaker → four unique boxes → family portrait → forced blackout → car. An occupied family portrait produces the loss ending; an empty one produces the escape ending. Depositing the portrait reparents it into the trunk instead of freeing the registered node. Mouse look uses `_input` so the HUD cannot consume movement. `.github/workflows/deploy-pages.yml` performs the authoritative single-threaded Web export and deploys only from `main`.
+- **Status:** 🟢 · **Branch:** `integration/minor-bug-fix` · **Current feature:** `07-minor-bug-fix` · **Updated:** 2026-10-15 (Gemini CLI)
+- **Done:** Completed spec, plan, and setup for minor playtest bug fixes (dormant ghost visibility, carry/deposit gating, painting orientations, parlor alignment).
+- **In progress:** Step 1.1: Monster dormancy visibility and collision.
+- **Next:** Step 2.1: Carry & trunk gating, Step 3.1: Painting orientations & Parlor layout.
+- **Needs from others:** None.
+- **Handoff notes:** Gated box pickup and trunk deposit by game phase; ghost remains hidden and collision-free until breaker activation.
 
 ---
 
