@@ -16,6 +16,8 @@ The Portrait System will add wall paintings to underrepresented rooms and keep a
 
 The integrated house loads its added wall paintings only when the Portrait System is under the house geometry root. The house begins with uncovered and active paintings in the entry hall, parlor, study, dining room, and basement. Existing dust-sheet interactions continue to cover and uncover them without explanatory HUD copy. When the Ghost System marks a legal painting occupied, its capsule silhouette appears within the artwork with the current painted face detail and brush distortion. The silhouette fades and distorts into the canvas on entry, stays visible while occupied, and fades out on exit. Registry occupancy ensures only one canvas displays it at a time. The family portrait retains its current carry and ending behavior.
 
+When the player carries a removed dust sheet, the interaction prompt exposes **G — Drop carried item**. Dropping the sheet places its visual on the floor and frees the carry slot so the player can pick up a box.
+
 ## 3. Rules and numbers
 
 | Rule / constant | Value | Source |
@@ -68,9 +70,10 @@ Every added painting is active, uncovered, unoccupied, and not carried at startu
 
 - [x] Seven unique ordinary paintings are added and registered; the room counts match the table above.
 - [x] Every painting starts uncovered and active; all existing dust-sheet behavior remains intact.
-- [x] Occupied canvases display the existing GhostMonster capsule silhouette within the painted image.
+- [x] Occupied canvases display the existing GhostMonster capsule silhouette within the painted image with readable in-art contrast and eyes.
 - [x] Exiting or changing paintings removes the old canvas occupancy and leaves at most one physical silhouette visible.
 - [x] A basement painting is registered, eligible, correctly assigned, and reachable from the monster's spawn room.
 - [x] The family portrait still passes its pickup, carry, occupancy, and drop behavior.
 - [x] Portrait tests and Godot validation run with no script or import errors.
 - [x] Run Project in the actual main house confirms the in-canvas appearance and wall placement.
+- [x] G drops a removed dust sheet, and the player can pick up a box afterward.

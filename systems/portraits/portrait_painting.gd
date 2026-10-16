@@ -213,7 +213,9 @@ func _build_monster_artwork() -> void:
 	silhouette.position = source_mesh.position
 	var silhouette_material := StandardMaterial3D.new()
 	var source_material: StandardMaterial3D = source_mesh.material_override as StandardMaterial3D
-	silhouette_material.albedo_color = source_material.albedo_color if source_material != null else Color(0.05, 0.05, 0.08, 0.9)
+	var source_color: Color = source_material.albedo_color if source_material != null else Color(0.05, 0.05, 0.08, 0.9)
+	# Translate the monster's near-black in-world material into readable painted ink.
+	silhouette_material.albedo_color = Color(0.19, 0.22, 0.28, 0.96) if source_color.get_luminance() < 0.15 else source_color
 	silhouette_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	silhouette_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	silhouette_material.cull_mode = BaseMaterial3D.CULL_DISABLED

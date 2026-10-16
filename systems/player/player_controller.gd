@@ -58,6 +58,12 @@ func _input(event: InputEvent) -> void:
 
 	if event.is_action_pressed("interact"):
 		try_interact()
+		return
+
+	if event is InputEventKey:
+		var key_event: InputEventKey = event as InputEventKey
+		if key_event.pressed and not key_event.echo and key_event.keycode == KEY_G:
+			drop_carried_item()
 
 func _apply_look(mouse_delta: Vector2) -> void:
 	rotate_y(-mouse_delta.x * mouse_sensitivity)
@@ -203,12 +209,22 @@ func drop_carried_item() -> bool:
 		return false
 	if carried_node != null and is_instance_valid(carried_node):
 		var world_parent: Node = get_tree().current_scene if get_tree() != null else get_parent()
+		if world_parent == null:
+			world_parent = get_parent()
+		if world_parent == null:
+			return false
 		if carried_node is PortraitPainting:
 			var drop_transform := Transform3D(Basis.IDENTITY, global_position - global_basis.z * 1.2 + Vector3.UP)
-			(carried_node as PortraitPainting).drop_at(drop_transform, world_parent)
+			if not (carried_node as PortraitPainting).drop_at(drop_transform, world_parent):
+				return false
 		else:
 			carried_node.reparent(world_parent, true)
-			carried_node.global_position = global_position - global_basis.z * 1.2 + Vector3.UP * 0.4
+			var drop_position: Vector3 = global_position - global_basis.z * 1.2
+			if carried_item == GameTypes.CarriedItemType.DUST_SHEET:
+				carried_node.global_position = drop_position + Vector3.UP * 0.025
+				carried_node.global_rotation = Vector3(-PI * 0.5, 0.0, rotation.y)
+			else:
+				carried_node.global_position = drop_position + Vector3.UP * 0.4
 			_restore_collision(carried_node)
 	carried_node = null
 	_set_carried_item(GameTypes.CarriedItemType.NONE)
@@ -221,7 +237,11 @@ func get_carried_item() -> GameTypes.CarriedItemType:
 	return carried_item
 
 func get_interaction_prompt() -> String:
-	return current_interaction_prompt
+	if carried_item == GameTypes.CarriedItemType.NONE:
+		return current_interaction_prompt
+	if current_interaction_prompt.is_empty():
+		return "G — Drop carried item"
+	return "%s   •   G — Drop carried item" % current_interaction_prompt
 
 func get_stamina_ratio() -> float:
 	return stamina / max_stamina if max_stamina > 0.0 else 0.0

@@ -41,15 +41,18 @@ void fragment() {
 	float skull = soft_ellipse(uv, vec2(0.52, 0.33), vec2(0.13, 0.16));
 	float shoulders = soft_ellipse(uv, vec2(0.52, 0.69), vec2(0.27, 0.20));
 	float figure = max(skull, shoulders * 0.85) * smoothstep(0.03, 0.2, ghost_amount);
-	float eye_l = soft_ellipse(uv, vec2(0.475, 0.315), vec2(0.027, 0.017));
-	float eye_r = soft_ellipse(uv, vec2(0.565, 0.315), vec2(0.027, 0.017));
+	float eye_l = soft_ellipse(uv, vec2(0.475, 0.315), vec2(0.04, 0.024));
+	float eye_r = soft_ellipse(uv, vec2(0.565, 0.315), vec2(0.04, 0.024));
+	float eye_glint_l = soft_ellipse(uv, vec2(0.475, 0.315), vec2(0.018, 0.012));
+	float eye_glint_r = soft_ellipse(uv, vec2(0.565, 0.315), vec2(0.018, 0.012));
 	float mouth = soft_ellipse(uv, vec2(0.52, 0.385), vec2(0.035, 0.055));
 	float dragged = step(0.82, fract((uv.x + warp) * 13.0 + sin(uv.y * 19.0) * 0.13)) * ghost_amount * 0.12;
 	pigment = mix(pigment, vec3(0.035, 0.027, 0.03), figure * 0.91);
 	vec4 monster_artwork = texture(monster_artwork_texture, uv);
 	float monster_ink = clamp(monster_artwork.a * ghost_amount, 0.0, 1.0);
 	pigment = mix(pigment, monster_artwork.rgb, monster_ink);
-	pigment = mix(pigment, vec3(0.82, 0.73, 0.57), max(eye_l, eye_r) * ghost_amount * 0.9);
+	pigment = mix(pigment, vec3(0.72, 0.59, 0.43), max(eye_l, eye_r) * ghost_amount);
+	pigment = mix(pigment, vec3(1.0, 0.88, 0.66), max(eye_glint_l, eye_glint_r) * ghost_amount);
 	pigment = mix(pigment, vec3(0.008, 0.006, 0.01), mouth * ghost_amount * 0.8);
 	pigment += vec3(dragged * (0.22 + sin(TIME * 2.0) * 0.06));
 	float wear = scratches + (1.0 - vignette) * 0.1 + (grain - 0.5) * 0.08;
@@ -59,5 +62,5 @@ void fragment() {
 	ROUGHNESS = 0.94;
 	METALLIC = 0.0;
 	NORMAL = normalize(vec3(warp * 1.8, sin(uv.x * 31.0 + TIME * 1.7) * 0.025 * ghost_amount, 1.0));
-	EMISSION = vec3(0.12, 0.08, 0.035) * ghost_amount * (0.3 + 0.25 * sin(TIME * 2.3));
+	EMISSION = monster_artwork.rgb * monster_ink * 0.4 + vec3(0.95, 0.62, 0.32) * max(eye_glint_l, eye_glint_r) * ghost_amount * 0.9;
 }

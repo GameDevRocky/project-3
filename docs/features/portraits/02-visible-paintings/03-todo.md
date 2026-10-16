@@ -24,7 +24,7 @@ Mirrors [02-plan.md](02-plan.md).
 - [x] Step 3.2: Validate and visually inspect the actual house and basement encounter setup
 
 ## Verify
-- [x] Full GUT suite passes headless with no script errors (15 scripts, 57 tests, 367 assertions)
+- [x] Full GUT suite passes headless with no script errors (15 scripts, 58 tests, 378 assertions)
 - [x] Every Done when item in 01-spec.md is met
 - [x] Run Project visual check confirms canvas rendering and reachable placements
 - [x] Pull origin/main before push and re-run tests and Run Project
@@ -33,3 +33,10 @@ Mirrors [02-plan.md](02-plan.md).
 - [x] Push feature branch (`f118217`)
 - [ ] Open PR into main (not requested)
 - [ ] Review by John and Daniel
+
+## Follow-up feedback
+- [x] Add a visible G drop action for carried dust sheets; release the carry slot and allow box pickup.
+- [x] Improve the physical ghost silhouette's in-canvas contrast and eye visibility while reusing the existing mesh.
+- [x] Hang the basement side-wall painting below the utility pipe and test its clearance.
+- [x] Re-run all GUT tests and verify the basement painting transfer in the live house.
+- [ ] Sync with origin/main, rerun tests and Run Project, then push these follow-up fixes.

@@ -43,10 +43,10 @@ _Updated 2026-10-15_
 
 - **Status:** 🟡 · **Branch:** `portraits/02-visible-paintings` · **Current feature:** 02-visible-paintings · **Updated:** 2026-10-15 (Codex)
 - **Done:** Reusable painting component and registry, dust-sheet covers, family portrait carry hooks, plus 7 new registered house paintings (13 total). Initial frames face into their rooms. Occupied canvases render the existing GhostMonster capsule mesh in a portrait-local transparent SubViewport and composite it into the artwork with the existing entry/exit distortion.
-- **In progress:** Ready for review and merge to `main`.
-- **Next:** Human visual review of the occupied canvas readability and wall placements; then merge the feature branch.
+- **In progress:** Follow-up playtest fixes are verified and ready for review on the feature branch.
+- **Next:** Human review, especially of the G drop control in PlayerController; then merge the feature branch.
 - **Needs from others:** Review by John and Daniel; no Ghost System integration changes are required.
-- **Handoff notes:** Counts: Entry Hall 2, Parlor 3, Study 3, Dining 2, Basement 3, Exterior 0. All paintings start uncovered/active. GhostMonster's existing `set_monster_occupied` entry/exit calls correctly synchronize the canvas, including transfer between paintings and carried family portrait behavior. Full GUT suite passes: 15 scripts, 57 tests, 367 assertions. Godot 4.7.2 editor loaded and ran the integrated main house; the basement encounter showed the ghost silhouette inside the painting. Covered eligibility and uncover restoration are tested. No changes were made to GhostMonster movement or chase logic.
+- **Handoff notes:** Counts: Entry Hall 2, Parlor 3, Study 3, Dining 2, Basement 3, Exterior 0. All paintings start uncovered/active. GhostMonster's existing `set_monster_occupied` entry/exit calls correctly synchronize the canvas. The basement side-wall painting now hangs below the utility pipe. Follow-up feedback added a visible G drop prompt/key for carried sheets so players can resume picking up boxes; a removed sheet rests on the floor when dropped. Full GUT suite passes: 15 scripts, 58 tests, 378 assertions. Live-house verification showed the existing monster mesh and eyes visibly rendered inside basement paintings, including a transfer where the old canvas cleared and the new canvas became occupied. No changes were made to GhostMonster movement or chase logic.
 ---
 
 ## Electrical & Lighting: Rocky

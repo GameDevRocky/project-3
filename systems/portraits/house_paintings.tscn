@@ -47,7 +47,7 @@ is_covered = false
 is_active = true
 
 [node name="Painting_Basement_3" parent="." instance=ExtResource("1_painting")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 1.85, -2.1, -12.0)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 1.85, -2.65, -14.3)
 portrait_id = &"basement_3"
 room_id = 4
 is_covered = false

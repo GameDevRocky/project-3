@@ -38,6 +38,10 @@ func test_house_paintings_are_registered_unique_and_available_at_start() -> void
 				assert_gt(painting_node.global_basis.z.normalized().dot(inward.normalized()), 0.7, "%s faces into its room" % painting.id)
 
 	assert_eq(total_count, 13, "the house has 13 registered paintings including the family portrait")
+	var basement_side: PortraitPainting = _find_painting(portraits, &"basement_3")
+	assert_not_null(basement_side, "the basement side-wall painting stays registered")
+	if basement_side != null:
+		assert_lt(basement_side.global_position.y, -2.5, "the side-wall painting hangs below the basement pipe")
 	var basement_options: Array[PaintingData] = portraits.get_valid_entry_paintings(GameTypes.RoomId.BASEMENT)
 	assert_eq(basement_options.size(), 3, "the monster's starting room has three eligible paintings")
 	var ghost: GhostMonster = main.get_node("GhostMonster") as GhostMonster
@@ -76,6 +80,8 @@ func test_ghost_interface_renders_its_mesh_and_transfers_occupancy_between_basem
 	assert_true(artwork_texture is ViewportTexture, "the canvas shader uses the rendered monster texture")
 
 	var silhouette: MeshInstance3D = first_viewport.get_node("MonsterArtRoot/MonsterSilhouette") as MeshInstance3D
+	var silhouette_material: StandardMaterial3D = silhouette.material_override as StandardMaterial3D
+	assert_gt(silhouette_material.albedo_color.get_luminance(), 0.15, "the in-canvas monster ink remains readable against the dark artwork")
 	var source_ghost: GhostMonster = GHOST_SCENE.instantiate() as GhostMonster
 	var source_mesh: MeshInstance3D = source_ghost.get_node("ShadowMesh") as MeshInstance3D
 	assert_eq(silhouette.mesh.get_class(), source_mesh.mesh.get_class(), "the artwork uses the actual in-game monster mesh type")

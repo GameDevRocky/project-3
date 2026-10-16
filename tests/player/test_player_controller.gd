@@ -61,3 +61,32 @@ func test_mouse_look_rotates_body_and_clamps_camera_pitch() -> void:
 		0.001,
 		"Vertical mouse motion should rotate and clamp the camera",
 	)
+
+func test_drop_key_releases_a_retrieved_dust_sheet_and_allows_box_pickup() -> void:
+	var root := Node3D.new()
+	add_child_autoqfree(root)
+	var player: PlayerController = PlayerControllerScene.instantiate()
+	root.add_child(player)
+	var painting: PortraitPainting = load("res://systems/portraits/portrait_painting.tscn").instantiate() as PortraitPainting
+	painting.portrait_id = &"drop_sheet_test"
+	painting.is_covered = true
+	root.add_child(painting)
+	await get_tree().process_frame
+
+	assert_true(player.interact_with_portrait(painting), "Removing a sheet picks it up")
+	assert_eq(player.get_carried_item(), GameTypes.CarriedItemType.DUST_SHEET)
+	assert_true(player.get_interaction_prompt().contains("G"), "The drop key is shown while carrying an item")
+	var carried_sheet: Node3D = player.carried_node
+
+	var drop_event := InputEventKey.new()
+	drop_event.keycode = KEY_G
+	drop_event.pressed = true
+	player._input(drop_event)
+	assert_eq(player.get_carried_item(), GameTypes.CarriedItemType.NONE, "G drops the carried sheet")
+	assert_eq(carried_sheet.get_parent(), root, "The dropped sheet is returned to the world")
+	assert_almost_eq(carried_sheet.global_position.y, player.global_position.y + 0.025, 0.001, "The dropped sheet rests at floor level")
+
+	var box := Node3D.new()
+	root.add_child(box)
+	assert_true(player.try_pick_up_item(box, GameTypes.CarriedItemType.BOX_BASEMENT), "The freed carry slot can pick up a box")
+	assert_eq(player.get_carried_item(), GameTypes.CarriedItemType.BOX_BASEMENT)
