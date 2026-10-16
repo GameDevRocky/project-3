@@ -144,8 +144,11 @@ The entity behaves strictly according to logical rules rather than arbitrary jum
 | Ghost Painting Transition Time | 0.8 | seconds | Time to enter/emerge from a painting |
 | Breaker Reset Delay | 2.0 | seconds | Interaction time required at breaker panel |
 | Max Power Grid Capacity | 250.0 | Watts | Total electrical reserve before blackout |
-| Light Drain Rate Per Room | 2.0 | W/s | Drains 2 Watts per second per lit room |
+| Light Drain Rate Per Room | 2.0 | W/s | Standard room drain (Parlor, Study, Dining, Basement) |
+| Entry Hall Drain Rate | 4.0 | W/s | Grand foyer chandelier; breaks even alone with 4W/s generator |
 | Grid Base Recharge Rate | 4.0 | W/s | Continuous generation; 1 room (+2W/s), 2 rooms (0W/s) |
+| Ghost Trapped Teleport Delay | 15.0 | seconds | Phases to an unlit room if cornered with no dark exits |
+| Ghost Flicker Sabotage Delay | 10.0 | seconds | Surges blocking circuit into a 2.5s violent flicker |
 | Low Voltage Warning Threshold | 100.0 | Watts | Amber warning banner and battery bar |
 | Light Dimming Threshold | 50.0 | Watts | Fixture dimming and paranormal bulb flickers |
 | Critical Flashing Voltage | 25.0 | Watts | Red flashing warning banner and battery bar |

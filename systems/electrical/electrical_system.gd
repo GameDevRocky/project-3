@@ -41,20 +41,32 @@ func _ready() -> void:
 	_bind_scene_fixtures()
 	_ensure_hud()
 
+## Returns drain rate in Watts/second for a specific room
+func get_room_drain_rate(room_id: GameTypes.RoomId) -> float:
+	if room_id == GameTypes.RoomId.ENTRY_HALL:
+		return 4.0
+	return drain_rate_per_room
+
+## Returns total active drain in Watts/second across all currently lit rooms
+func get_total_drain_rate() -> float:
+	var total: float = 0.0
+	for room_id: int in _room_states.keys():
+		if is_room_lit(room_id as GameTypes.RoomId):
+			total += get_room_drain_rate(room_id as GameTypes.RoomId)
+	return total
+
 ## Returns net power rate in Watts/second (positive = charging, negative = draining)
 func get_net_power_rate() -> float:
 	if breaker_state == GameTypes.BreakerState.TRIPPED:
 		return 0.0
-	var lit_count: int = get_lit_room_count()
-	return recharge_rate - (lit_count * drain_rate_per_room)
+	return recharge_rate - get_total_drain_rate()
 
 func _process(delta: float) -> void:
 	if breaker_state == GameTypes.BreakerState.TRIPPED:
 		return
 	_update_flickers(delta)
 
-	var lit_count: int = get_lit_room_count()
-	var net_rate: float = recharge_rate - (lit_count * drain_rate_per_room)
+	var net_rate: float = get_net_power_rate()
 
 	if net_rate < 0.0:
 		current_power = max(0.0, current_power + (net_rate * delta))

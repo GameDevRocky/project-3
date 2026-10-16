@@ -176,5 +176,48 @@ func test_ghost_wanders_in_darkness_and_chases_when_player_enters_room() -> void
 	assert_true(ghost.is_chasing)
 	assert_true(ghost.is_eyes_flaring())
 
+func test_trapped_ghost_teleports_to_dark_room() -> void:
+	var world := Node3D.new()
+	add_child_autoqfree(world)
+	var electrical: ElectricalSystem = ElectricalSystemScene.instantiate()
+	electrical.name = "ElectricalSystem"
+	world.add_child(electrical)
+
+	# Light Entry Hall so basement exits are blocked
+	electrical.set_room_light(GameTypes.RoomId.ENTRY_HALL, true)
+
+	var ghost: GhostMonster = GhostMonsterScene.instantiate()
+	world.add_child(ghost)
+	ghost.current_room = GameTypes.RoomId.BASEMENT
+	ghost.set_monster_dormant(false)
+	watch_signals(ghost)
+
+	# Simulate 15.5 seconds trapped
+	ghost._process_trapped_and_sabotage(15.5)
+
+	assert_ne(ghost.current_room, GameTypes.RoomId.BASEMENT, "Trapped ghost should have teleported out of the basement")
+	assert_signal_emitted(ghost, "ghost_teleported")
+
+func test_blocked_ghost_triggers_flicker_sabotage() -> void:
+	var world := Node3D.new()
+	add_child_autoqfree(world)
+	var electrical: ElectricalSystem = ElectricalSystemScene.instantiate()
+	electrical.name = "ElectricalSystem"
+	world.add_child(electrical)
+
+	# Light Entry Hall
+	electrical.set_room_light(GameTypes.RoomId.ENTRY_HALL, true)
+
+	var ghost: GhostMonster = GhostMonsterScene.instantiate()
+	world.add_child(ghost)
+	ghost.current_room = GameTypes.RoomId.BASEMENT
+	ghost.set_monster_dormant(false)
+
+	# Simulate 10.5 seconds blocked at Entry Hall threshold
+	ghost._process_trapped_and_sabotage(10.5)
+
+	assert_eq(electrical.get_room_light_state(GameTypes.RoomId.ENTRY_HALL), GameTypes.LightState.FLICKERING, "Blocking room light should flicker")
+
+
 
 
