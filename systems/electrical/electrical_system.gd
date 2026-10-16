@@ -16,10 +16,10 @@ signal power_meter_updated(current_watts: float, max_watts: float)
 ## Emitted when a specific light bulb blows out
 signal bulb_blown(room_id: GameTypes.RoomId, fixture_id: StringName)
 
-@export var max_power: float = 100.0
-@export var current_power: float = 100.0
-@export var drain_rate_per_room: float = 1.0 ## Watts per second per lit room
-@export var recharge_rate: float = 5.0 ## Watts per second when all lights OFF
+@export var max_power: float = 250.0
+@export var current_power: float = 250.0
+@export var drain_rate_per_room: float = 2.0 ## Watts per second per lit room
+@export var recharge_rate: float = 4.0 ## Base Watts per second continuous generation
 @export var breaker_state: GameTypes.BreakerState = GameTypes.BreakerState.OPERATIONAL
 
 ## Room light states for indoor house circuits
@@ -41,16 +41,25 @@ func _ready() -> void:
 	_bind_scene_fixtures()
 	_ensure_hud()
 
+## Returns net power rate in Watts/second (positive = charging, negative = draining)
+func get_net_power_rate() -> float:
+	if breaker_state == GameTypes.BreakerState.TRIPPED:
+		return 0.0
+	var lit_count: int = get_lit_room_count()
+	return recharge_rate - (lit_count * drain_rate_per_room)
+
 func _process(delta: float) -> void:
 	if breaker_state == GameTypes.BreakerState.TRIPPED:
 		return
 	_update_flickers(delta)
 
 	var lit_count: int = get_lit_room_count()
-	if lit_count > 0:
-		current_power = max(0.0, current_power - (lit_count * drain_rate_per_room * delta))
+	var net_rate: float = recharge_rate - (lit_count * drain_rate_per_room)
+
+	if net_rate < 0.0:
+		current_power = max(0.0, current_power + (net_rate * delta))
 		power_meter_updated.emit(current_power, max_power)
-		if current_power < 15.0:
+		if current_power < 50.0:
 			_update_fixture_energies()
 			if _low_voltage_flicker_armed:
 				_low_voltage_flicker_armed = false
@@ -59,14 +68,16 @@ func _process(delta: float) -> void:
 						trigger_flicker(room_id as GameTypes.RoomId, 1.2)
 		if current_power <= 0.0:
 			trip_breaker()
-	else:
+	elif net_rate > 0.0:
 		if current_power < max_power:
-			current_power = min(max_power, current_power + (recharge_rate * delta))
+			current_power = min(max_power, current_power + (net_rate * delta))
 			power_meter_updated.emit(current_power, max_power)
-			if current_power >= 15.0:
+			if current_power >= 50.0:
 				_update_fixture_energies()
-			if current_power >= 20.0:
+			if current_power >= 60.0:
 				_low_voltage_flicker_armed = true
+	else:
+		power_meter_updated.emit(current_power, max_power)
 
 ## Returns the current light state of a given room
 func get_room_light_state(room_id: GameTypes.RoomId) -> GameTypes.LightState:
@@ -204,7 +215,7 @@ func _sync_fixture(room_id: GameTypes.RoomId, lit: bool) -> void:
 		if "visible" in fixture:
 			fixture.visible = lit
 		if "light_energy" in fixture:
-			var dim_factor: float = clampf(current_power / 15.0, 0.35, 1.0) if current_power < 15.0 else 1.0
+			var dim_factor: float = clampf(current_power / 50.0, 0.35, 1.0) if current_power < 50.0 else 1.0
 			fixture.light_energy = 1.2 * dim_factor
 
 func _update_fixture_energies() -> void:

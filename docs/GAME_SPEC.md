@@ -139,12 +139,16 @@ The entity behaves strictly according to logical rules rather than arbitrary jum
 |---|---|---|---|
 | Player Move Speed | 3.5 | m/s | Standard exploration walking pace |
 | Player Sprint Speed | 5.5 | m/s | Brief stamina-limited sprint |
-| Ghost Dark Roam Speed | 4.5 | m/s | Fast enough to pressure player in dark rooms |
+| Ghost Dark Roam Speed | 1.8 | m/s | Prowling pace through unlit rooms |
+| Ghost Chase Speed | 3.2 | m/s | Direct pursuit pace when locked onto player |
 | Ghost Painting Transition Time | 0.8 | seconds | Time to enter/emerge from a painting |
 | Breaker Reset Delay | 2.0 | seconds | Interaction time required at breaker panel |
-| Max Power Grid Capacity | 100.0 | Watts | Total electrical reserve before blackout |
-| Light Drain Rate Per Room | 1.0 | W/s | Drains 1 Watt per second per lit room |
-| Grid Recharge Rate | 5.0 | W/s | Restores power when all house lights are OFF |
-| Breaker Reset Value | 100.0 | Watts | Flipping tripped breaker restores full 100W |
+| Max Power Grid Capacity | 250.0 | Watts | Total electrical reserve before blackout |
+| Light Drain Rate Per Room | 2.0 | W/s | Drains 2 Watts per second per lit room |
+| Grid Base Recharge Rate | 4.0 | W/s | Continuous generation; 1 room (+2W/s), 2 rooms (0W/s) |
+| Low Voltage Warning Threshold | 100.0 | Watts | Amber warning banner and battery bar |
+| Light Dimming Threshold | 50.0 | Watts | Fixture dimming and paranormal bulb flickers |
+| Critical Flashing Voltage | 25.0 | Watts | Red flashing warning banner and battery bar |
+| Breaker Reset Value | 250.0 | Watts | Flipping tripped breaker restores full 250W |
 | Breaker Trip Threshold | 0.0 | Watts | All lights cut out and breaker trips at 0W |
 | Interaction Range | 2.5 | meters | First-person raycast interact reach |

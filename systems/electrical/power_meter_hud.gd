@@ -92,38 +92,45 @@ func update_display(current_watts: float, max_watts: float) -> void:
 		if power_bar != null:
 			power_bar.modulate = Color(1.0, 0.2, 0.2)
 	elif lit_rooms > 0:
-		var drain_rate := lit_rooms * (_electrical_system.drain_rate_per_room if _electrical_system != null else 1.0)
+		var net_rate: float = _electrical_system.get_net_power_rate() if _electrical_system != null else -(lit_rooms * 2.0)
 		if status_label != null:
-			status_label.text = "DRAINING: -%.1f W/s (%d %s)" % [drain_rate, lit_rooms, "room" if lit_rooms == 1 else "rooms"]
+			if is_zero_approx(net_rate):
+				status_label.text = "GRID EQUILIBRIUM: 0.0 W/s (%d rooms)" % lit_rooms
+				status_label.modulate = Color(0.85, 0.9, 0.95)
+			elif net_rate > 0.0:
+				status_label.text = "RECHARGING: +%.1f W/s (%d %s)" % [net_rate, lit_rooms, "room" if lit_rooms == 1 else "rooms"]
+				status_label.modulate = Color(0.4, 1.0, 0.6)
+			else:
+				status_label.text = "DRAINING: %.1f W/s (%d %s)" % [net_rate, lit_rooms, "room" if lit_rooms == 1 else "rooms"]
+				status_label.modulate = Color(0.9, 0.9, 0.9)
+
 		if warning_banner != null:
-			if current_watts < 25.0:
+			if current_watts < 100.0:
 				warning_banner.visible = true
-				warning_banner.text = "⚡ CRITICAL VOLTAGE — LIGHTS DESTABILIZING" if current_watts < 10.0 else "⚡ LOW VOLTAGE WARNING"
+				warning_banner.text = "⚡ CRITICAL VOLTAGE — LIGHTS DESTABILIZING" if current_watts < 25.0 else "⚡ LOW VOLTAGE WARNING"
 			else:
 				warning_banner.visible = false
 
 		if power_bar != null:
-			if current_watts < 10.0:
+			if current_watts < 25.0:
 				power_bar.modulate = Color(1.0, 0.25, 0.25)
 				if status_label != null:
 					var flash_alpha: float = 0.45 + 0.55 * absf(sin(Time.get_ticks_msec() * 0.012))
 					status_label.modulate = Color(1.0, 0.3, 0.3, flash_alpha)
-			elif current_watts < 25.0:
+			elif current_watts < 100.0:
 				power_bar.modulate = Color(1.0, 0.75, 0.2)
-				if status_label != null:
+				if status_label != null and net_rate < 0.0:
 					status_label.modulate = Color(1.0, 0.8, 0.3)
 			else:
 				power_bar.modulate = Color(0.3, 0.9, 0.5)
-				if status_label != null:
-					status_label.modulate = Color(0.9, 0.9, 0.9)
 	else:
 		if status_label != null:
 			if current_watts >= max_watts:
 				status_label.text = "GRID IDLE (Full Reserve)"
 				status_label.modulate = Color(0.8, 0.8, 0.8)
 			else:
-				var recharge_rate := _electrical_system.recharge_rate if _electrical_system != null else 5.0
-				status_label.text = "RECHARGING: +%.1f W/s" % recharge_rate
+				var net_rate := _electrical_system.get_net_power_rate() if _electrical_system != null else 4.0
+				status_label.text = "RECHARGING: +%.1f W/s" % net_rate
 				status_label.modulate = Color(0.4, 1.0, 0.6)
 		if warning_banner != null:
 			warning_banner.visible = false
