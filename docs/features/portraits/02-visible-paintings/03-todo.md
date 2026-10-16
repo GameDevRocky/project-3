@@ -40,4 +40,4 @@ Mirrors [02-plan.md](02-plan.md).
 - [x] Hang the basement side-wall painting below the utility pipe and test its clearance.
 - [x] Re-run all GUT tests and verify the basement painting transfer in the live house.
 - [x] Sync with origin/main, rerun tests (58 tests, 378 assertions) and Run Project.
-- [ ] Push these follow-up fixes.
+- [x] Push these follow-up fixes (`a2d5906`).
