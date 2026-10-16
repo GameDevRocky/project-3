@@ -73,9 +73,9 @@ _Updated 2026-10-15_
 
 ## Ghost / Monster System: John
 
-- **Status:** 🟢 · **Branch:** `ghost/01-monster-system` · **Current feature:** `ghost/01-monster-system` · **Updated:** 2026-10-07
-- **Done:** Implemented `systems/ghost/ghost_monster.gd` (FSM with DORMANT, FREE_ROAM, CHASE, PAINTING_BOUND modes, light reaction query, and lethal contact), `systems/ghost/ghost_monster.tscn` (procedural 3D shadow mesh and NavigationAgent3D), and GUT tests in `tests/ghost/test_ghost_system.gd`.
-- **In progress:** Preparing PR into `main`.
-- **Next:** Merge ghost system into `main` and wire into integration scene.
-- **Needs from others:** Electrical system and portrait system method stubs.
-- **Handoff notes:** The monster starts dormant (`DORMANT`) until power is activated. It queries parent nodes for `ElectricalSystem` and `PortraitSystem` to handle light freezing and painting occupancy.
+- **Status:** 🟢 · **Branch:** `ghost/03-make-scary` · **Current feature:** `03-make-scary` · **Updated:** 2026-10-15 (Gemini CLI)
+- **Done:** Completed horror enhancements: emissive red eyes on head pivot with player tracking, dark-room silhouette red halo visible across doorways, semi-random dark room waypoint wandering (`roam_speed = 1.8 m/s`), immediate lock-on chase screech with eye flare (`chase_speed = 3.2 m/s`), and procedural 3D positional audio cues (guttural breathing while roaming and jarring screech on chase). Headless GUT test suite passes 14 scripts, 62 tests, and 318 assertions with zero errors.
+- **In progress:** Ready for PR into `main`.
+- **Next:** Push branch and open PR.
+- **Needs from others:** None.
+- **Handoff notes:** Glowing red eyes rotate to track the player up to 15m; wandering passes through doorways connecting unlit rooms; entering the ghost's dark room triggers immediate chase screech and pursuit. Lighted rooms remain impassable barriers.

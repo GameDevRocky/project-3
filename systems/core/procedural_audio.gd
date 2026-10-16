@@ -55,6 +55,8 @@ func _connect_gameplay() -> void:
 			_ghost.ghost_exited_painting.connect(_on_ghost_exited_painting)
 		if not _ghost.ghost_chase_started.is_connected(_on_ghost_chase):
 			_ghost.ghost_chase_started.connect(_on_ghost_chase)
+		if _ghost.has_signal("ghost_roam_sound_requested") and not _ghost.ghost_roam_sound_requested.is_connected(_on_ghost_roam_sound):
+			_ghost.ghost_roam_sound_requested.connect(_on_ghost_roam_sound)
 	if coordinator != null:
 		if not coordinator.climax_began.is_connected(_on_climax):
 			coordinator.climax_began.connect(_on_climax)
@@ -81,7 +83,16 @@ func _on_ghost_exited_painting(_painting_id: StringName) -> void:
 	_play_ghost_cue(84.0, 0.6, 0.42, 0.9)
 
 func _on_ghost_chase() -> void:
-	_play_ghost_cue(54.0, 0.85, 0.5, 0.45)
+	if not _unlocked or _ghost_player == null:
+		return
+	_ghost_player.stream = _make_screech_wave(1.2, 0.7)
+	_ghost_player.play()
+
+func _on_ghost_roam_sound() -> void:
+	if not _unlocked or _ghost_player == null or _ghost == null or _ghost.is_chasing:
+		return
+	_ghost_player.stream = _make_roam_drone_wave(1.6, 0.45)
+	_ghost_player.play()
 
 func _on_climax() -> void:
 	_play_cue(48.0, 1.05, 0.65)
@@ -128,3 +139,55 @@ func _make_wave(frequency: float, duration: float, amplitude: float, looping: bo
 		stream.loop_begin = 0
 		stream.loop_end = sample_count
 	return stream
+
+func _make_screech_wave(duration: float, amplitude: float) -> AudioStreamWAV:
+	var sample_rate: int = 22050
+	var sample_count: int = maxi(1, int(duration * sample_rate))
+	var bytes := PackedByteArray()
+	bytes.resize(sample_count * 2)
+	var random := RandomNumberGenerator.new()
+	random.seed = 666
+	for sample_index: int in range(sample_count):
+		var time_value: float = float(sample_index) / float(sample_rate)
+		var progress: float = float(sample_index) / float(sample_count)
+		var freq: float = lerpf(380.0, 850.0, progress)
+		var vibrato: float = sin(TAU * 16.0 * time_value) * 45.0
+		var tone_a: float = sin(TAU * (freq + vibrato) * time_value)
+		var tone_b: float = sin(TAU * ((freq * 1.414) + vibrato) * time_value) * 0.5
+		var noise: float = random.randf_range(-1.0, 1.0) * 0.35
+		var envelope: float = minf(1.0, progress / 0.05) * (1.0 - progress)
+		var sample: float = (tone_a + tone_b + noise) * amplitude * envelope
+		var value: int = clampi(int(sample * 32767.0), -32768, 32767)
+		bytes.encode_s16(sample_index * 2, value)
+	var stream := AudioStreamWAV.new()
+	stream.format = AudioStreamWAV.FORMAT_16_BITS
+	stream.mix_rate = sample_rate
+	stream.stereo = false
+	stream.data = bytes
+	return stream
+
+func _make_roam_drone_wave(duration: float, amplitude: float) -> AudioStreamWAV:
+	var sample_rate: int = 22050
+	var sample_count: int = maxi(1, int(duration * sample_rate))
+	var bytes := PackedByteArray()
+	bytes.resize(sample_count * 2)
+	var random := RandomNumberGenerator.new()
+	random.seed = 333
+	for sample_index: int in range(sample_count):
+		var time_value: float = float(sample_index) / float(sample_rate)
+		var progress: float = float(sample_index) / float(sample_count)
+		var tremor: float = sin(TAU * 7.5 * time_value) * 0.4 + 0.6
+		var base_tone: float = sin(TAU * 42.0 * time_value) * 0.6
+		var sub_tone: float = sin(TAU * 28.0 * time_value) * 0.4
+		var rasp: float = random.randf_range(-1.0, 1.0) * 0.45
+		var envelope: float = sin(PI * progress)
+		var sample: float = (base_tone + sub_tone + rasp) * tremor * amplitude * envelope
+		var value: int = clampi(int(sample * 32767.0), -32768, 32767)
+		bytes.encode_s16(sample_index * 2, value)
+	var stream := AudioStreamWAV.new()
+	stream.format = AudioStreamWAV.FORMAT_16_BITS
+	stream.mix_rate = sample_rate
+	stream.stereo = false
+	stream.data = bytes
+	return stream
+

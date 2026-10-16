@@ -113,3 +113,68 @@ func test_ghost_hidden_and_non_colliding_when_dormant() -> void:
 	assert_eq(ghost.collision_layer, 4, "Active ghost should have monster collision layer")
 	assert_eq(ghost.collision_mask, 2, "Active ghost should have player collision mask")
 
+func test_ghost_eyes_track_player_and_flare_on_chase() -> void:
+	var world := Node3D.new()
+	add_child_autoqfree(world)
+	var ghost: GhostMonster = GhostMonsterScene.instantiate()
+	world.add_child(ghost)
+	ghost.set_monster_dormant(false)
+
+	var head_pivot: Node3D = ghost.get_node_or_null("ShadowMesh/HeadPivot") as Node3D
+	assert_not_null(head_pivot, "Ghost must have HeadPivot under ShadowMesh")
+	var eye_left = ghost.get_node_or_null("ShadowMesh/HeadPivot/EyeLeft")
+	var eye_right = ghost.get_node_or_null("ShadowMesh/HeadPivot/EyeRight")
+	var eye_aura = ghost.get_node_or_null("ShadowMesh/HeadPivot/EyeAura")
+	assert_not_null(eye_left, "Ghost must have EyeLeft")
+	assert_not_null(eye_right, "Ghost must have EyeRight")
+	assert_not_null(eye_aura, "Ghost must have EyeAura OmniLight3D")
+
+	var player: PlayerController = PlayerControllerScene.instantiate()
+	world.add_child(player)
+	player.global_position = Vector3(4.0, 1.6, 0.0)
+	ghost.global_position = Vector3(0.0, 0.0, 0.0)
+
+	ghost.set_target_player(player)
+	ghost._physics_process(0.1)
+
+	assert_true(ghost.is_chasing, "Ghost should enter chase when unlit with player in sight")
+	assert_true(ghost.is_eyes_flaring(), "Eyes should flare during chase")
+	# Check head pivot forward vector (-Z local) points toward player (+X world)
+	var forward: Vector3 = -head_pivot.global_transform.basis.z.normalized()
+	assert_gt(forward.x, 0.7, "HeadPivot should rotate to face the player")
+
+func test_ghost_wanders_in_darkness_and_chases_when_player_enters_room() -> void:
+	var world := Node3D.new()
+	add_child_autoqfree(world)
+	var electrical: ElectricalSystem = ElectricalSystemScene.instantiate()
+	electrical.name = "ElectricalSystem"
+	world.add_child(electrical)
+
+	var ghost: GhostMonster = GhostMonsterScene.instantiate()
+	world.add_child(ghost)
+	ghost.global_position = Vector3(-7.0, 0.2, -3.0)
+	ghost.current_room = GameTypes.RoomId.PARLOR
+	ghost.set_monster_dormant(false)
+
+	var player: PlayerController = PlayerControllerScene.instantiate()
+	world.add_child(player)
+	player.global_position = Vector3(0.0, 0.2, -3.0)
+	player.current_room = GameTypes.RoomId.ENTRY_HALL
+	ghost.set_target_player(player)
+
+	# When player is in a separate room, ghost should be in FREE_ROAM wandering
+	ghost._physics_process(0.1)
+	assert_eq(ghost.mode, GameTypes.GhostMode.FREE_ROAM, "Ghost should wander in darkness when player is in another room")
+	assert_false(ghost.is_chasing, "Ghost should not chase player in another room")
+	assert_false(ghost.is_eyes_flaring())
+
+	# When player steps into the same dark room, ghost engages CHASE
+	player.global_position = Vector3(-6.0, 0.2, -3.0)
+	player.current_room = GameTypes.RoomId.PARLOR
+	ghost._physics_process(0.1)
+	assert_eq(ghost.mode, GameTypes.GhostMode.CHASE, "Ghost should chase when player enters same dark room")
+	assert_true(ghost.is_chasing)
+	assert_true(ghost.is_eyes_flaring())
+
+
+
