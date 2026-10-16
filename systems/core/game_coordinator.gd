@@ -81,10 +81,10 @@ func finish_portrait(was_safe: bool) -> void:
 		return
 	if was_safe:
 		phase = Phase.WON
-		ending_message = "THE HOUSE IS BEHIND YOU\nThe last portrait is safe."
+		ending_message = "ESCAPED\n\nYou successfully packed all your belongings, contained the shadows within the walls, and left the family home behind safely as the new dawn breaks."
 	else:
 		phase = Phase.LOST
-		ending_message = "YOU BROUGHT IT WITH YOU\nThe entity escaped inside the portrait."
+		ending_message = "YOU BROUGHT IT WITH YOU\n\nYou loaded the family portrait into the car trunk, unaware the entity was trapped inside the canvas. As you drive away into the night, whispered breaths echo from the back seat."
 	if _player != null:
 		_player.velocity = Vector3.ZERO
 		_player.set_physics_process(false)
@@ -95,7 +95,12 @@ func lose_to_ghost() -> void:
 	if is_game_over():
 		return
 	phase = Phase.LOST
-	ending_message = "THE DARKNESS FOUND YOU\nPress E to try again."
+	ending_message = "THE DARKNESS TOOK YOU\n\nYou were caught in the dark before you could finish packing. The house claims another tenant, and your final portrait joins the gallery on the wall.\n\nPress E to try again."
+	if get_tree() != null:
+		get_tree().call_group("game_hud", "trigger_jumpscare_flash")
+	if _player != null:
+		_player.velocity = Vector3.ZERO
+		_player.set_physics_process(false)
 	game_finished.emit(false, ending_message)
 	objective_updated.emit(get_objective_text())
 

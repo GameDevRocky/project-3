@@ -1,44 +1,54 @@
 class_name ProceduralAudio
 extends Node3D
 
-var _unlocked: bool = false
-var _ambient_player: AudioStreamPlayer = null
+const GameTypes = preload("res://systems/shared/game_types.gd")
+
 var _cue_player: AudioStreamPlayer = null
-var _ghost_player: AudioStreamPlayer3D = null
+var _ambient_player: AudioStreamPlayer = null
+var _ghost_player: AudioStreamPlayer = null
+var _unlocked: bool = false
 var _ghost: GhostMonster = null
+var _chase_rumble_timer: float = 0.0
 
 func _ready() -> void:
+	name = "ProceduralAudio"
+	add_to_group("procedural_audio")
 	_build_players()
-	call_deferred("_connect_gameplay")
+	call_deferred("_wire_signals")
 
-func _process(_delta: float) -> void:
-	if _ghost != null and is_instance_valid(_ghost) and _ghost_player != null:
-		_ghost_player.global_position = _ghost.global_position
+func _process(delta: float) -> void:
+	if not _unlocked or _ghost_player == null or _ghost == null:
+		return
+	if _ghost.is_chasing:
+		_chase_rumble_timer -= delta
+		if _chase_rumble_timer <= 0.0:
+			_chase_rumble_timer = 2.0
+			_ghost_player.stream = _make_chase_rumble_wave(1.9, 0.65)
+			_ghost_player.play()
 
 func _build_players() -> void:
-	_ambient_player = AudioStreamPlayer.new()
-	_ambient_player.name = "AmbientDrone"
-	_ambient_player.volume_db = -27.0
-	_ambient_player.stream = _make_wave(46.0, 2.0, 0.13, true, 0.18)
-	add_child(_ambient_player)
 	_cue_player = AudioStreamPlayer.new()
-	_cue_player.name = "InteractionCues"
-	_cue_player.volume_db = -11.0
+	_cue_player.name = "CuePlayer"
 	add_child(_cue_player)
-	_ghost_player = AudioStreamPlayer3D.new()
-	_ghost_player.name = "GhostCues"
-	_ghost_player.volume_db = -5.0
-	_ghost_player.max_distance = 24.0
-	_ghost_player.unit_size = 4.0
+
+	_ambient_player = AudioStreamPlayer.new()
+	_ambient_player.name = "AmbientPlayer"
+	_ambient_player.stream = _make_wave(55.0, 4.0, 0.12, true, 0.15)
+	add_child(_ambient_player)
+
+	_ghost_player = AudioStreamPlayer.new()
+	_ghost_player.name = "GhostPlayer"
 	add_child(_ghost_player)
 
-func _connect_gameplay() -> void:
-	if get_tree() == null:
+func _wire_signals() -> void:
+	var root := get_parent()
+	if root == null:
 		return
-	var player: PlayerController = get_tree().get_first_node_in_group("player") as PlayerController
-	_ghost = get_tree().get_first_node_in_group("ghost") as GhostMonster
+	var player: PlayerController = root.get_node_or_null("PlayerController") as PlayerController
 	var breaker: BreakerPanel = get_tree().get_first_node_in_group("breaker_panel") as BreakerPanel
 	var coordinator: GameCoordinator = get_tree().get_first_node_in_group("game_coordinator") as GameCoordinator
+	_ghost = root.get_node_or_null("GhostMonster") as GhostMonster
+
 	if player != null:
 		if not player.interaction_performed.is_connected(_unlock_audio):
 			player.interaction_performed.connect(_unlock_audio)
@@ -79,16 +89,17 @@ func _on_item_packed(_item_type: GameTypes.CarriedItemType) -> void:
 	_play_cue(118.0, 0.2, 0.38)
 
 func _on_ghost_entered_painting(_painting_id: StringName) -> void:
-	_play_ghost_cue(165.0, 0.48, 0.34, 0.7)
+	_play_ghost_cue(110.0, 0.7, 0.5, 0.85)
 
 func _on_ghost_exited_painting(_painting_id: StringName) -> void:
-	_play_ghost_cue(84.0, 0.6, 0.42, 0.9)
+	_play_ghost_cue(95.0, 0.75, 0.55, 0.9)
 
 func _on_ghost_chase() -> void:
 	if not _unlocked or _ghost_player == null:
 		return
-	_ghost_player.stream = _make_screech_wave(1.2, 0.7)
+	_ghost_player.stream = _make_screech_wave(1.2, 0.75)
 	_ghost_player.play()
+	_chase_rumble_timer = 0.5
 
 func _on_ghost_roam_sound() -> void:
 	if not _unlocked or _ghost_player == null or _ghost == null or _ghost.is_chasing:
@@ -106,7 +117,10 @@ func _on_climax() -> void:
 	_play_cue(48.0, 1.05, 0.65)
 
 func _on_player_died() -> void:
-	_play_cue(39.0, 1.2, 0.8)
+	if not _unlocked or _ghost_player == null:
+		return
+	_ghost_player.stream = _make_jumpscare_shriek_wave(1.5, 0.95)
+	_ghost_player.play()
 
 func _on_game_finished(won: bool, _message: String) -> void:
 	_play_cue(330.0 if won else 42.0, 1.15, 0.55)
@@ -199,6 +213,53 @@ func _make_roam_drone_wave(duration: float, amplitude: float) -> AudioStreamWAV:
 	stream.data = bytes
 	return stream
 
+func _make_chase_rumble_wave(duration: float, amplitude: float) -> AudioStreamWAV:
+	var sample_rate: int = 22050
+	var sample_count: int = maxi(1, int(duration * sample_rate))
+	var bytes := PackedByteArray()
+	bytes.resize(sample_count * 2)
+	var random := RandomNumberGenerator.new()
+	random.seed = 999
+	for sample_index: int in range(sample_count):
+		var time_value: float = float(sample_index) / float(sample_rate)
+		var progress: float = float(sample_index) / float(sample_count)
+		var rumble: float = sin(TAU * 34.0 * time_value) * 0.7 + sin(TAU * 18.0 * time_value) * 0.5
+		var noise: float = random.randf_range(-1.0, 1.0) * 0.5
+		var envelope: float = sin(PI * progress)
+		var sample: float = (rumble + noise) * amplitude * envelope
+		var value: int = clampi(int(sample * 32767.0), -32768, 32767)
+		bytes.encode_s16(sample_index * 2, value)
+	var stream := AudioStreamWAV.new()
+	stream.format = AudioStreamWAV.FORMAT_16_BITS
+	stream.mix_rate = sample_rate
+	stream.stereo = false
+	stream.data = bytes
+	return stream
+
+func _make_jumpscare_shriek_wave(duration: float, amplitude: float) -> AudioStreamWAV:
+	var sample_rate: int = 22050
+	var sample_count: int = maxi(1, int(duration * sample_rate))
+	var bytes := PackedByteArray()
+	bytes.resize(sample_count * 2)
+	var random := RandomNumberGenerator.new()
+	random.seed = 777
+	for sample_index: int in range(sample_count):
+		var time_value: float = float(sample_index) / float(sample_rate)
+		var progress: float = float(sample_index) / float(sample_count)
+		var freq: float = lerpf(950.0, 320.0, progress)
+		var tone: float = sin(TAU * freq * time_value)
+		var noise: float = random.randf_range(-1.0, 1.0) * 0.7
+		var envelope: float = minf(1.0, progress / 0.01) * (1.0 - progress)
+		var sample: float = (tone + noise) * amplitude * envelope
+		var value: int = clampi(int(sample * 32767.0), -32768, 32767)
+		bytes.encode_s16(sample_index * 2, value)
+	var stream := AudioStreamWAV.new()
+	stream.format = AudioStreamWAV.FORMAT_16_BITS
+	stream.mix_rate = sample_rate
+	stream.stereo = false
+	stream.data = bytes
+	return stream
+
 func _make_teleport_chime_wave(duration: float, amplitude: float) -> AudioStreamWAV:
 	var sample_rate: int = 22050
 	var sample_count: int = maxi(1, int(duration * sample_rate))
@@ -221,4 +282,3 @@ func _make_teleport_chime_wave(duration: float, amplitude: float) -> AudioStream
 	stream.stereo = false
 	stream.data = bytes
 	return stream
-
