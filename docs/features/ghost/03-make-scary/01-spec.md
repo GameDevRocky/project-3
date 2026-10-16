@@ -70,10 +70,10 @@ This feature significantly elevates the horror atmosphere, visibility, and AI be
 
 ## 7. Done when
 
-- [ ] Ghost monster features two glowing red emissive eyes and a subtle red point light halo in `ghost_monster.tscn`.
-- [ ] Eyes rotate/track the player when in line-of-sight and flare brighter during `CHASE` mode.
-- [ ] Ghost wanders semi-randomly through dark rooms and passes through doorways between unlit rooms.
-- [ ] Ghost can be spotted from outside dark doorways moving through shadows.
-- [ ] Entering the ghost's dark room immediately triggers player lock-on, chase screech, and high-speed pursuit.
-- [ ] Procedural audio plays periodic 3D positional guttural breathing while roaming and sharp screech on chase start.
-- [ ] Full GUT test suite passes with 0 errors.
+- [x] Ghost monster features two glowing red emissive eyes and a subtle red point light halo in `ghost_monster.tscn`.
+- [x] Eyes rotate/track the player when in line-of-sight and flare brighter during `CHASE` mode.
+- [x] Ghost wanders semi-randomly through dark rooms and passes through doorways between unlit rooms.
+- [x] Ghost can be spotted from outside dark doorways moving through shadows.
+- [x] Entering the ghost's dark room immediately triggers player lock-on, chase screech, and high-speed pursuit.
+- [x] Procedural audio plays periodic 3D positional guttural breathing while roaming and sharp screech on chase start.
+- [x] Full GUT test suite passes with 0 errors.

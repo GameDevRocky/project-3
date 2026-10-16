@@ -74,8 +74,8 @@ _Updated 2026-10-15_
 ## Ghost / Monster System: John
 
 - **Status:** 🟢 · **Branch:** `ghost/03-make-scary` · **Current feature:** `03-make-scary` · **Updated:** 2026-10-15 (Gemini CLI)
-- **Done:** Completed brainstorm, spec, plan, and TODO for horror enhancements: emissive glowing red eyes with player tracking, dark-room semi-random wandering, dark corridor/threshold visibility, high-speed chase lock-on, and procedural positional audio (guttural breathing and chase screech).
-- **In progress:** Iteration 1: Emissive eyes, head pivot, and player tracking.
-- **Next:** Iteration 2: Dark room wandering AI; Iteration 3: Positional audio cues.
+- **Done:** Completed horror enhancements: emissive red eyes on head pivot with player tracking, dark-room silhouette red halo visible across doorways, semi-random dark room waypoint wandering (`roam_speed = 1.8 m/s`), immediate lock-on chase screech with eye flare (`chase_speed = 3.2 m/s`), and procedural 3D positional audio cues (guttural breathing while roaming and jarring screech on chase). Headless GUT test suite passes 14 scripts, 62 tests, and 318 assertions with zero errors.
+- **In progress:** Ready for PR into `main`.
+- **Next:** Push branch and open PR.
 - **Needs from others:** None.
-- **Handoff notes:** The monster's eyes track the player's position when nearby in the room; wandering selects dark-room waypoints and avoids lit rooms.
+- **Handoff notes:** Glowing red eyes rotate to track the player up to 15m; wandering passes through doorways connecting unlit rooms; entering the ghost's dark room triggers immediate chase screech and pursuit. Lighted rooms remain impassable barriers.
