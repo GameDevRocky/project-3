@@ -59,6 +59,9 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
 		try_interact()
 
+	if event is InputEventKey and event.pressed and (event as InputEventKey).keycode == KEY_G:
+		drop_carried_item()
+
 func _apply_look(mouse_delta: Vector2) -> void:
 	rotate_y(-mouse_delta.x * mouse_sensitivity)
 	if camera == null:

@@ -111,7 +111,7 @@ func test_ghost_hidden_and_non_colliding_when_dormant() -> void:
 	assert_false(ghost._dormant)
 	assert_true(ghost.shadow_mesh.visible, "Active ghost shadow mesh should be visible")
 	assert_eq(ghost.collision_layer, 4, "Active ghost should have monster collision layer")
-	assert_eq(ghost.collision_mask, 2, "Active ghost should have player collision mask")
+	assert_eq(ghost.collision_mask, 7, "Active ghost should have world and player collision mask")
 
 func test_ghost_eyes_track_player_and_flare_on_chase() -> void:
 	var world := Node3D.new()

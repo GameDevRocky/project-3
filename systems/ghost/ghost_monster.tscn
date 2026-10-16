@@ -27,7 +27,7 @@ height = 0.09
 
 [node name="GhostMonster" type="CharacterBody3D"]
 collision_layer = 4
-collision_mask = 5
+collision_mask = 7
 script = ExtResource("1_ghost")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

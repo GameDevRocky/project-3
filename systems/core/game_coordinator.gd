@@ -27,13 +27,15 @@ var _ghost: GhostMonster = null
 var _trunk: CarTrunk = null
 var _breaker: BreakerPanel = null
 
+var _game_over_time: float = 0.0
+
 func _ready() -> void:
 	add_to_group("game_coordinator")
 	add_to_group("mcp_watch")
 	call_deferred("_wire_scene")
 
 func _unhandled_input(event: InputEvent) -> void:
-	if is_game_over() and event.is_action_pressed("interact") and get_tree() != null:
+	if is_game_over() and Time.get_ticks_msec() - _game_over_time > 1500 and event.is_action_pressed("interact") and get_tree() != null:
 		get_tree().reload_current_scene()
 
 func bind_systems(player: PlayerController, electrical: ElectricalSystem, portraits: PortraitSystem, ghost: GhostMonster, trunk: CarTrunk, breaker: BreakerPanel) -> void:
@@ -79,6 +81,7 @@ func begin_portrait_climax() -> void:
 func finish_portrait(was_safe: bool) -> void:
 	if phase != Phase.PORTRAIT:
 		return
+	_game_over_time = Time.get_ticks_msec()
 	if was_safe:
 		phase = Phase.WON
 		ending_message = "ESCAPED\n\nYou successfully packed all your belongings, contained the shadows within the walls, and left the family home behind safely as the new dawn breaks."
@@ -94,6 +97,7 @@ func finish_portrait(was_safe: bool) -> void:
 func lose_to_ghost() -> void:
 	if is_game_over():
 		return
+	_game_over_time = Time.get_ticks_msec()
 	phase = Phase.LOST
 	ending_message = "THE DARKNESS TOOK YOU\n\nYou were caught in the dark before you could finish packing. The house claims another tenant, and your final portrait joins the gallery on the wall.\n\nPress E to try again."
 	if get_tree() != null:
