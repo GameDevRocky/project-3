@@ -30,11 +30,43 @@ var _has_killed_target: bool = false
 
 @onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
 @onready var shadow_mesh: MeshInstance3D = $ShadowMesh
+@onready var head_pivot: Node3D = get_node_or_null("ShadowMesh/HeadPivot") as Node3D
+@onready var eye_left: MeshInstance3D = get_node_or_null("ShadowMesh/HeadPivot/EyeLeft") as MeshInstance3D
+@onready var eye_right: MeshInstance3D = get_node_or_null("ShadowMesh/HeadPivot/EyeRight") as MeshInstance3D
+@onready var eye_aura: OmniLight3D = get_node_or_null("ShadowMesh/HeadPivot/EyeAura") as OmniLight3D
+
+var _is_eyes_flaring: bool = false
 
 func _ready() -> void:
 	add_to_group("ghost")
 	add_to_group("mcp_watch")
+	if eye_left != null and eye_left.material_override != null:
+		eye_left.material_override = eye_left.material_override.duplicate()
+	if eye_right != null and eye_right.material_override != null:
+		eye_right.material_override = eye_right.material_override.duplicate()
 	_apply_dormancy_state()
+
+func is_eyes_flaring() -> bool:
+	return _is_eyes_flaring
+
+func set_eyes_flaring(flaring: bool) -> void:
+	_is_eyes_flaring = flaring
+	var mult: float = 8.0 if flaring else 4.0
+	var light_eng: float = 1.2 if flaring else 0.6
+	if eye_left != null and eye_left.material_override is StandardMaterial3D:
+		(eye_left.material_override as StandardMaterial3D).emission_energy_multiplier = mult
+	if eye_right != null and eye_right.material_override is StandardMaterial3D:
+		(eye_right.material_override as StandardMaterial3D).emission_energy_multiplier = mult
+	if eye_aura != null:
+		eye_aura.light_energy = light_eng
+
+func _update_eye_tracking() -> void:
+	if head_pivot == null or _target_player == null or not is_instance_valid(_target_player):
+		return
+	var target_head: Vector3 = _target_player.global_position + Vector3(0, 1.5, 0)
+	var diff: Vector3 = target_head - head_pivot.global_position
+	if diff.length_squared() > 0.01:
+		head_pivot.look_at(target_head, Vector3.UP)
 
 func _physics_process(delta: float) -> void:
 	if _dormant:
@@ -52,6 +84,8 @@ func _physics_process(delta: float) -> void:
 	if _check_light_reaction():
 		velocity = Vector3.ZERO
 		return
+
+	_update_eye_tracking()
 
 	match mode:
 		GameTypes.GhostMode.FREE_ROAM, GameTypes.GhostMode.CHASE:
@@ -137,12 +171,14 @@ func _process_roam_or_chase(delta: float) -> void:
 	if _target_player == null or not is_instance_valid(_target_player):
 		if is_chasing:
 			is_chasing = false
+			set_eyes_flaring(false)
 			ghost_chase_ended.emit()
 		mode = GameTypes.GhostMode.FREE_ROAM
 		velocity = Vector3.ZERO
 		return
 	if not is_chasing:
 		is_chasing = true
+		set_eyes_flaring(true)
 		ghost_chase_started.emit()
 	mode = GameTypes.GhostMode.CHASE
 	var target_position: Vector3 = _target_player.global_position

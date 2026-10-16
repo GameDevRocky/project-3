@@ -73,9 +73,9 @@ _Updated 2026-10-15_
 
 ## Ghost / Monster System: John
 
-- **Status:** 🟢 · **Branch:** `ghost/01-monster-system` · **Current feature:** `ghost/01-monster-system` · **Updated:** 2026-10-07
-- **Done:** Implemented `systems/ghost/ghost_monster.gd` (FSM with DORMANT, FREE_ROAM, CHASE, PAINTING_BOUND modes, light reaction query, and lethal contact), `systems/ghost/ghost_monster.tscn` (procedural 3D shadow mesh and NavigationAgent3D), and GUT tests in `tests/ghost/test_ghost_system.gd`.
-- **In progress:** Preparing PR into `main`.
-- **Next:** Merge ghost system into `main` and wire into integration scene.
-- **Needs from others:** Electrical system and portrait system method stubs.
-- **Handoff notes:** The monster starts dormant (`DORMANT`) until power is activated. It queries parent nodes for `ElectricalSystem` and `PortraitSystem` to handle light freezing and painting occupancy.
+- **Status:** 🟢 · **Branch:** `ghost/03-make-scary` · **Current feature:** `03-make-scary` · **Updated:** 2026-10-15 (Gemini CLI)
+- **Done:** Completed brainstorm, spec, plan, and TODO for horror enhancements: emissive glowing red eyes with player tracking, dark-room semi-random wandering, dark corridor/threshold visibility, high-speed chase lock-on, and procedural positional audio (guttural breathing and chase screech).
+- **In progress:** Iteration 1: Emissive eyes, head pivot, and player tracking.
+- **Next:** Iteration 2: Dark room wandering AI; Iteration 3: Positional audio cues.
+- **Needs from others:** None.
+- **Handoff notes:** The monster's eyes track the player's position when nearby in the room; wandering selects dark-room waypoints and avoids lit rooms.
