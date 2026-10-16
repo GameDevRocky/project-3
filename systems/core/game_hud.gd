@@ -30,11 +30,6 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 
-	if _coordinator == null or not is_instance_valid(_coordinator):
-		return
-	if _coordinator.is_game_over() and event.is_action_pressed("interact") and get_tree() != null:
-		get_tree().reload_current_scene()
-
 func _process(delta: float) -> void:
 	if _coordinator == null or not is_instance_valid(_coordinator) or _player == null or not is_instance_valid(_player):
 		_resolve_dependencies()

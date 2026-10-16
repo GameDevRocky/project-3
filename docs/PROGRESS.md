@@ -30,12 +30,12 @@ _Updated 2026-10-15_
 
 ## Integration: John
 
-- **Status:** 🟢 · **Branch:** `integration/story-text` · **Current feature:** `08-story-text` · **Updated:** 2026-10-15 (Gemini CLI)
-- **Done:** Implemented narrative story intro (moving out premise without mentioning ghost), event tooltips ("It has awoken", low-voltage warning, shadow movement), horror audio cues (scary canvas entry/exit, chase lock-on screech, chase rumbling drone, jumpscare shriek), jumpscare strobe flash upon player capture, and rich story-driven ending texts for Win, Loss, and Death. Full GUT suite passes 14 scripts, 65 tests, and 331 assertions with zero errors.
+- **Status:** 🟢 · **Branch:** `integration/bug-fixes` · **Current feature:** `09-bug-fixes` · **Updated:** 2026-10-15 (Gemini CLI)
+- **Done:** Implemented 7 major bug fixes and polish items: dropping carried items with `G`; fixed ghost collision mask (Layer 2) ensuring lethal contact while carrying boxes; fixed ghost floor clamping and slope navigation via `move_and_slide()`; added raycast wall line-of-sight occlusion (`_has_line_of_sight_to_player()`) preventing seeing through walls; ensured ghost stays locked inside carried family portrait; and added 1.5s game-over input cooldown preventing immediate restart so endings can be read. Full headless GUT test suite passes 14 scripts, 65 tests, and 331 assertions with zero errors.
 - **In progress:** Ready for PR into `main`.
 - **Next:** Push branch and open PR.
 - **Needs from others:** None.
-- **Handoff notes:** Story intro overlay introduces the moving out premise and dismisses on E/Space. Breaker flip triggers "It has awoken". Player capture triggers jumpscare strobe flash and piercing shriek. Endings display rich narrative text.
+- **Handoff notes:** Press G to drop carried items. Ghost navigates slopes and respects solid walls for line of sight. Endings feature a 1.5s read delay before restart.
 
 ---
 

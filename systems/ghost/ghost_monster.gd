@@ -70,6 +70,7 @@ var _electrical_system: ElectricalSystem = null
 var _portrait_system: PortraitSystem = null
 var _exit_position: Vector3 = Vector3.ZERO
 var _has_killed_target: bool = false
+var _bound_painting_node: PortraitPainting = null
 
 @onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
 @onready var shadow_mesh: MeshInstance3D = $ShadowMesh
@@ -83,6 +84,11 @@ var _is_eyes_flaring: bool = false
 func _ready() -> void:
 	add_to_group("ghost")
 	add_to_group("mcp_watch")
+	collision_layer = 4
+	collision_mask = 7 # World (1) | Player (2) | Monster (4)
+	floor_snap_length = 0.4
+	floor_constant_speed = true
+	floor_max_angle = deg_to_rad(55.0)
 	if eye_left != null and eye_left.material_override != null:
 		eye_left.material_override = eye_left.material_override.duplicate()
 	if eye_right != null and eye_right.material_override != null:
@@ -118,6 +124,10 @@ func _physics_process(delta: float) -> void:
 
 	_resolve_dependencies()
 	if mode == GameTypes.GhostMode.PAINTING_BOUND:
+		if _bound_painting_node != null and is_instance_valid(_bound_painting_node):
+			global_position = _bound_painting_node.global_position
+			velocity = Vector3.ZERO
+			return
 		if _should_remain_in_painting():
 			velocity = Vector3.ZERO
 			return
@@ -155,7 +165,7 @@ func _apply_dormancy_state() -> void:
 			shadow_mesh.visible = false
 	else:
 		collision_layer = 4 # Layer 3 (monster)
-		collision_mask = 2  # The entity phases through the house, but still detects the player.
+		collision_mask = 7  # World | Player | Monster
 		if shadow_mesh != null and mode != GameTypes.GhostMode.PAINTING_BOUND:
 			shadow_mesh.visible = true
 
@@ -175,7 +185,6 @@ func get_ghost_state() -> GhostState:
 func force_enter_nearest_painting(paintings_in_room: Array) -> bool:
 	if paintings_in_room.is_empty():
 		return false
-	# Find first available uncovered painting
 	for p in paintings_in_room:
 		if p.is_active and not p.is_covered and not p.is_occupied:
 			var occupied: bool = false
@@ -191,6 +200,8 @@ func force_enter_nearest_painting(paintings_in_room: Array) -> bool:
 			current_painting_id = p.id
 			mode = GameTypes.GhostMode.PAINTING_BOUND
 			is_chasing = false
+			if p is PortraitPainting:
+				_bound_painting_node = p as PortraitPainting
 			global_position = p.global_position
 			if shadow_mesh != null:
 				shadow_mesh.visible = false
@@ -252,12 +263,10 @@ func _process_trapped_and_sabotage(delta: float) -> void:
 	_resolve_dependencies()
 	var dark_neighbors: Array[int] = _get_dark_adjacent_rooms()
 
-	# If all adjacent exits are lit, the ghost is trapped in this room
 	if dark_neighbors.is_empty():
 		_trapped_timer += delta
 		_blocked_flicker_timer += delta
 
-		# Flicker sabotage at 10.0s
 		if _blocked_flicker_timer >= 10.0:
 			_blocked_flicker_timer = 0.0
 			var neighbors: Array = ADJACENT_ROOMS.get(current_room, [])
@@ -265,7 +274,6 @@ func _process_trapped_and_sabotage(delta: float) -> void:
 				var target_flicker_room = neighbors[0]
 				_electrical_system.trigger_flicker(target_flicker_room, 2.5)
 
-		# Shadow teleport at 15.0s
 		if _trapped_timer >= 15.0:
 			var unlit_rooms: Array[int] = _find_all_unlit_rooms()
 			if not unlit_rooms.is_empty():
@@ -279,6 +287,21 @@ func _process_trapped_and_sabotage(delta: float) -> void:
 		_trapped_timer = 0.0
 		_blocked_flicker_timer = 0.0
 
+func _has_line_of_sight_to_player() -> bool:
+	if _target_player == null or not is_instance_valid(_target_player):
+		return false
+	var space_state := get_world_3d().direct_space_state
+	if space_state == null:
+		return true
+	var query := PhysicsRayQueryParameters3D.create(
+		global_position + Vector3(0, 1.0, 0),
+		_target_player.global_position + Vector3(0, 1.0, 0),
+		1 # Layer 1 (world geometry)
+	)
+	query.exclude = [self]
+	var result := space_state.intersect_ray(query)
+	return result.is_empty()
+
 func _should_chase_player() -> bool:
 	if _target_player == null or not is_instance_valid(_target_player):
 		return false
@@ -291,21 +314,17 @@ func _should_chase_player() -> bool:
 	elif "current_room" in _target_player:
 		player_room = _target_player.current_room
 
-	# If player is in a lit room, the ghost cannot chase them
 	if _electrical_system != null and _electrical_system.is_room_lit(player_room):
 		return false
 
-	# If player is outside (driveway), ghost pursues toward the front threshold
 	if _target_player.global_position.z > exterior_threshold_z:
 		return true
 
-	# If player is in the same room
 	if current_room == player_room:
 		return true
 
-	# If player is within line of sight / immediate dark proximity
 	var dist: float = global_position.distance_to(_target_player.global_position)
-	if dist <= 5.0:
+	if dist <= 5.0 and _has_line_of_sight_to_player():
 		return true
 
 	return false
@@ -349,8 +368,12 @@ func _process_roam(delta: float) -> void:
 
 	var dir: Vector3 = (_roam_waypoint - global_position).normalized()
 	dir.y = 0
-	velocity = dir * roam_speed
-	global_position += velocity * delta
+	velocity.x = dir.x * roam_speed
+	velocity.z = dir.z * roam_speed
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+	move_and_slide()
+
 	if global_position.z > exterior_threshold_z:
 		global_position.z = exterior_threshold_z - 0.05
 		velocity.z = 0.0
@@ -370,8 +393,12 @@ func _process_roam_or_chase(delta: float) -> void:
 	var target_position: Vector3 = _target_player.global_position
 	var dir: Vector3 = (target_position - global_position).normalized()
 	dir.y = 0
-	velocity = dir * chase_speed
-	global_position += velocity * delta
+	velocity.x = dir.x * chase_speed
+	velocity.z = dir.z * chase_speed
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+	move_and_slide()
+
 	if target_position.z > exterior_threshold_z and global_position.z > exterior_threshold_z:
 		global_position.z = exterior_threshold_z - 0.05
 		velocity.z = 0.0
@@ -417,6 +444,7 @@ func _exit_current_painting() -> void:
 	if _portrait_system != null:
 		_portrait_system.set_monster_occupied(exited_id, false)
 	current_painting_id = &""
+	_bound_painting_node = null
 	mode = GameTypes.GhostMode.FREE_ROAM
 	global_position = _exit_position
 	if shadow_mesh != null:
