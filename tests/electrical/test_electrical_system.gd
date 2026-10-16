@@ -49,18 +49,33 @@ func test_power_drain_with_lit_rooms() -> void:
 	var electrical: ElectricalSystem = ElectricalSystemScript.new()
 	add_child_autoqfree(electrical)
 
-	# 2 rooms lit: break-even equilibrium (4.0 - 4.0 = 0.0 W/s)
-	electrical.set_room_light(GameTypes.RoomId.ENTRY_HALL, true)
+	# 2 standard rooms lit: break-even equilibrium (4.0 - 4.0 = 0.0 W/s)
+	electrical.set_room_light(GameTypes.RoomId.PARLOR, true)
 	electrical.set_room_light(GameTypes.RoomId.STUDY, true)
 	assert_eq(electrical.get_lit_room_count(), 2, "2 rooms lit")
 	electrical._process(3.0)
-	assert_almost_eq(electrical.get_current_power(), 250.0, 0.01, "2 lit rooms should be at break-even (250W)")
+	assert_almost_eq(electrical.get_current_power(), 250.0, 0.01, "2 standard lit rooms should be at break-even (250W)")
 
-	# 3 rooms lit: net drain of -2.0 W/s (4.0 - 6.0 = -2.0 W/s)
-	electrical.set_room_light(GameTypes.RoomId.PARLOR, true)
+	# 3 standard rooms lit: net drain of -2.0 W/s (4.0 - 6.0 = -2.0 W/s)
+	electrical.set_room_light(GameTypes.RoomId.DINING_ROOM, true)
 	assert_eq(electrical.get_lit_room_count(), 3, "3 rooms lit")
 	electrical._process(3.0)
 	assert_almost_eq(electrical.get_current_power(), 244.0, 0.01, "3 rooms should drain 6.0 Watts over 3s")
+
+func test_entry_hall_heavy_power_drain() -> void:
+	var electrical: ElectricalSystem = ElectricalSystemScript.new()
+	add_child_autoqfree(electrical)
+
+	# Entry Hall alone consumes 4.0 W/s, breaking even with the 4.0 W/s generator
+	electrical.set_room_light(GameTypes.RoomId.ENTRY_HALL, true)
+	assert_eq(electrical.get_room_drain_rate(GameTypes.RoomId.ENTRY_HALL), 4.0, "Entry Hall should drain 4.0 W/s")
+	assert_almost_eq(electrical.get_net_power_rate(), 0.0, 0.01, "Entry Hall alone should break even with generator")
+
+	# Entry Hall + Parlor consumes 6.0 W/s (net -2.0 W/s drain)
+	electrical.set_room_light(GameTypes.RoomId.PARLOR, true)
+	assert_almost_eq(electrical.get_net_power_rate(), -2.0, 0.01, "Entry Hall + Parlor should net drain at -2.0 W/s")
+	electrical._process(3.0)
+	assert_almost_eq(electrical.get_current_power(), 244.0, 0.01, "Power should drain by 6.0W over 3s")
 
 func test_power_recharge_when_all_rooms_dark() -> void:
 	var electrical: ElectricalSystem = ElectricalSystemScript.new()
