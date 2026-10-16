@@ -14,7 +14,7 @@ Mirrors [02-plan.md](02-plan.md). Tick each box in the same commit as the work.
 - [x] Step 1.1 & 1.2: Add emissive eyes, head pivot, and red halo to `ghost_monster.tscn`, implement player eye tracking look-at and chase emission flare with tests in `test_ghost_behavior.gd`
 
 ## Iteration 2: Dark Room Wandering AI
-- [ ] Step 2.1: Implement multi-room dark waypoint wandering and proximity/room chase engagement in `ghost_monster.gd` with tests in `test_ghost_behavior.gd`
+- [x] Step 2.1: Implement multi-room dark waypoint wandering and proximity/room chase engagement in `ghost_monster.gd` with tests in `test_ghost_behavior.gd`
 
 ## Iteration 3: Positional Procedural Audio
 - [ ] Step 3.1: Implement periodic 3D guttural roaming breathing and intense chase screech in `procedural_audio.gd` and `ghost_monster.gd`

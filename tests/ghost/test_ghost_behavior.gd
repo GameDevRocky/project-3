@@ -143,4 +143,38 @@ func test_ghost_eyes_track_player_and_flare_on_chase() -> void:
 	var forward: Vector3 = -head_pivot.global_transform.basis.z.normalized()
 	assert_gt(forward.x, 0.7, "HeadPivot should rotate to face the player")
 
+func test_ghost_wanders_in_darkness_and_chases_when_player_enters_room() -> void:
+	var world := Node3D.new()
+	add_child_autoqfree(world)
+	var electrical: ElectricalSystem = ElectricalSystemScene.instantiate()
+	electrical.name = "ElectricalSystem"
+	world.add_child(electrical)
+
+	var ghost: GhostMonster = GhostMonsterScene.instantiate()
+	world.add_child(ghost)
+	ghost.global_position = Vector3(-7.0, 0.2, -3.0)
+	ghost.current_room = GameTypes.RoomId.PARLOR
+	ghost.set_monster_dormant(false)
+
+	var player: PlayerController = PlayerControllerScene.instantiate()
+	world.add_child(player)
+	player.global_position = Vector3(0.0, 0.2, -3.0)
+	player.current_room = GameTypes.RoomId.ENTRY_HALL
+	ghost.set_target_player(player)
+
+	# When player is in a separate room, ghost should be in FREE_ROAM wandering
+	ghost._physics_process(0.1)
+	assert_eq(ghost.mode, GameTypes.GhostMode.FREE_ROAM, "Ghost should wander in darkness when player is in another room")
+	assert_false(ghost.is_chasing, "Ghost should not chase player in another room")
+	assert_false(ghost.is_eyes_flaring())
+
+	# When player steps into the same dark room, ghost engages CHASE
+	player.global_position = Vector3(-6.0, 0.2, -3.0)
+	player.current_room = GameTypes.RoomId.PARLOR
+	ghost._physics_process(0.1)
+	assert_eq(ghost.mode, GameTypes.GhostMode.CHASE, "Ghost should chase when player enters same dark room")
+	assert_true(ghost.is_chasing)
+	assert_true(ghost.is_eyes_flaring())
+
+
 

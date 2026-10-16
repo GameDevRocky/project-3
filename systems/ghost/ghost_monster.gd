@@ -9,13 +9,55 @@ signal ghost_entered_painting(painting_id: StringName)
 signal ghost_exited_painting(painting_id: StringName)
 signal ghost_chase_started()
 signal ghost_chase_ended()
+signal ghost_roam_sound_requested()
 signal player_killed()
 
-@export var roam_speed: float = 4.5
-@export var chase_speed: float = 5.5
+@export var roam_speed: float = 1.8
+@export var chase_speed: float = 3.2
 @export var attack_distance: float = 0.85
 @export var exterior_threshold_z: float = -0.35
 @export var current_room: GameTypes.RoomId = GameTypes.RoomId.BASEMENT
+
+const ROOM_WAYPOINTS: Dictionary = {
+	GameTypes.RoomId.ENTRY_HALL: [
+		Vector3(0.0, 0.2, -2.0),
+		Vector3(-1.5, 0.2, -4.0),
+		Vector3(1.5, 0.2, -3.5),
+		Vector3(0.0, 0.2, -4.8),
+	],
+	GameTypes.RoomId.PARLOR: [
+		Vector3(-6.5, 0.2, -2.5),
+		Vector3(-8.5, 0.2, -4.5),
+		Vector3(-9.5, 0.2, -2.0),
+		Vector3(-7.5, 0.2, -4.8),
+	],
+	GameTypes.RoomId.STUDY: [
+		Vector3(5.0, 0.2, -2.5),
+		Vector3(7.0, 0.2, -4.5),
+		Vector3(7.5, 0.2, -2.0),
+		Vector3(5.5, 0.2, -4.8),
+	],
+	GameTypes.RoomId.DINING_ROOM: [
+		Vector3(0.5, 0.2, -8.0),
+		Vector3(3.5, 0.2, -8.5),
+		Vector3(3.5, 0.2, -11.5),
+		Vector3(0.5, 0.2, -11.5),
+	],
+	GameTypes.RoomId.BASEMENT: [
+		Vector3(-4.0, -3.35, -10.0),
+		Vector3(-4.0, -3.35, -14.0),
+		Vector3(0.5, -3.35, -13.0),
+		Vector3(-2.0, -3.35, -14.5),
+	],
+}
+
+const ADJACENT_ROOMS: Dictionary = {
+	GameTypes.RoomId.ENTRY_HALL: [GameTypes.RoomId.PARLOR, GameTypes.RoomId.STUDY, GameTypes.RoomId.DINING_ROOM, GameTypes.RoomId.BASEMENT],
+	GameTypes.RoomId.PARLOR: [GameTypes.RoomId.ENTRY_HALL],
+	GameTypes.RoomId.STUDY: [GameTypes.RoomId.ENTRY_HALL],
+	GameTypes.RoomId.DINING_ROOM: [GameTypes.RoomId.ENTRY_HALL],
+	GameTypes.RoomId.BASEMENT: [GameTypes.RoomId.ENTRY_HALL],
+}
 
 var mode: GameTypes.GhostMode = GameTypes.GhostMode.DORMANT
 var current_painting_id: StringName = &""
@@ -166,21 +208,98 @@ func _check_light_reaction() -> bool:
 			force_enter_nearest_painting(valid_paintings)
 	return true
 
+var _roam_waypoint: Vector3 = Vector3.ZERO
+var _has_roam_waypoint: bool = false
+var _roam_sound_timer: float = 3.0
+
+func _should_chase_player() -> bool:
+	if _target_player == null or not is_instance_valid(_target_player):
+		return false
+
+	var player_room: GameTypes.RoomId = GameTypes.RoomId.ENTRY_HALL
+	if _target_player is PlayerController:
+		player_room = (_target_player as PlayerController).current_room
+	elif _target_player.has_method("get_current_room"):
+		player_room = _target_player.call("get_current_room")
+	elif "current_room" in _target_player:
+		player_room = _target_player.current_room
+
+	# If player is in a lit room, the ghost cannot chase them
+	if _electrical_system != null and _electrical_system.is_room_lit(player_room):
+		return false
+
+	# If player is outside (driveway), ghost pursues toward the front threshold
+	if _target_player.global_position.z > exterior_threshold_z:
+		return true
+
+	# If player is in the same room
+	if current_room == player_room:
+		return true
+
+	# If player is within line of sight / immediate dark proximity
+	var dist: float = global_position.distance_to(_target_player.global_position)
+	if dist <= 5.0:
+		return true
+
+	return false
+
+func _pick_next_roam_waypoint() -> void:
+	var dark_neighbors: Array[int] = []
+	var neighbors: Array = ADJACENT_ROOMS.get(current_room, [])
+	for room in neighbors:
+		if _electrical_system == null or not _electrical_system.is_room_lit(room):
+			dark_neighbors.append(room)
+
+	var target_room: int = current_room
+	var is_current_dark: bool = (_electrical_system == null or not _electrical_system.is_room_lit(current_room))
+	if not is_current_dark and not dark_neighbors.is_empty():
+		target_room = dark_neighbors[randi() % dark_neighbors.size()]
+	elif is_current_dark and not dark_neighbors.is_empty() and randf() < 0.4:
+		target_room = dark_neighbors[randi() % dark_neighbors.size()]
+
+	var points: Array = ROOM_WAYPOINTS.get(target_room, [])
+	if not points.is_empty():
+		_roam_waypoint = points[randi() % points.size()]
+		_has_roam_waypoint = true
+	else:
+		_roam_waypoint = global_position
+		_has_roam_waypoint = false
+
+func _process_roam(delta: float) -> void:
+	if is_chasing:
+		is_chasing = false
+		set_eyes_flaring(false)
+		ghost_chase_ended.emit()
+	mode = GameTypes.GhostMode.FREE_ROAM
+
+	_roam_sound_timer -= delta
+	if _roam_sound_timer <= 0.0:
+		_roam_sound_timer = randf_range(3.5, 5.5)
+		ghost_roam_sound_requested.emit()
+
+	if not _has_roam_waypoint or global_position.distance_to(_roam_waypoint) <= 0.8:
+		_pick_next_roam_waypoint()
+
+	var dir: Vector3 = (_roam_waypoint - global_position).normalized()
+	dir.y = 0
+	velocity = dir * roam_speed
+	global_position += velocity * delta
+	if global_position.z > exterior_threshold_z:
+		global_position.z = exterior_threshold_z - 0.05
+		velocity.z = 0.0
+
 func _process_roam_or_chase(delta: float) -> void:
 	_resolve_target_player()
-	if _target_player == null or not is_instance_valid(_target_player):
-		if is_chasing:
-			is_chasing = false
-			set_eyes_flaring(false)
-			ghost_chase_ended.emit()
-		mode = GameTypes.GhostMode.FREE_ROAM
-		velocity = Vector3.ZERO
+	if not _should_chase_player():
+		_process_roam(delta)
 		return
+
 	if not is_chasing:
 		is_chasing = true
 		set_eyes_flaring(true)
 		ghost_chase_started.emit()
 	mode = GameTypes.GhostMode.CHASE
+
 	var target_position: Vector3 = _target_player.global_position
 	var dir: Vector3 = (target_position - global_position).normalized()
 	dir.y = 0
