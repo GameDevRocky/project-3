@@ -2,6 +2,9 @@ extends GutTest
 
 const PlayerControllerScene = preload("res://systems/player/player_controller.tscn")
 const PortraitPaintingScene = preload("res://systems/portraits/portrait_painting.tscn")
+const GameCoordinatorClass = preload("res://systems/core/game_coordinator.gd")
+const CarryableItemScene = preload("res://systems/player/carryable_item.tscn")
+const CarTrunkScene = preload("res://systems/player/car_trunk.tscn")
 
 func test_player_picks_up_one_item_and_rejects_a_second() -> void:
 	var player: PlayerController = PlayerControllerScene.instantiate()
@@ -100,3 +103,50 @@ func test_deposit_keeps_registered_family_portrait_alive() -> void:
 	assert_true(is_instance_valid(portrait), "Depositing must not free a registered portrait")
 	assert_not_null(portrait_system.get_painting_data(&"family_portrait"))
 	assert_false(portrait.is_being_carried)
+
+func test_box_pickup_blocked_in_phase_0() -> void:
+	var root := Node3D.new()
+	add_child_autoqfree(root)
+	var coordinator = GameCoordinatorClass.new()
+	root.add_child(coordinator)
+	var player: PlayerController = PlayerControllerScene.instantiate()
+	root.add_child(player)
+	var box: CarryableItem = CarryableItemScene.instantiate()
+	box.item_type = GameTypes.CarriedItemType.BOX_LIVING_ROOM
+	box.item_label = "Living Room Box"
+	root.add_child(box)
+	await get_tree().process_frame
+
+	assert_eq(coordinator.phase, GameCoordinatorClass.Phase.STARTUP)
+	assert_eq(box.get_interaction_prompt(), "Restore power at breaker first")
+	box.interact(player)
+	assert_eq(player.get_carried_item(), GameTypes.CarriedItemType.NONE, "Player cannot pick up box in Phase 0")
+
+	coordinator.phase = GameCoordinatorClass.Phase.PACKING
+	assert_true(box.get_interaction_prompt().begins_with("E — Pick up"))
+	box.interact(player)
+	assert_eq(player.get_carried_item(), GameTypes.CarriedItemType.BOX_LIVING_ROOM, "Player can pick up box in Phase 1")
+
+func test_trunk_rejects_premature_deposits() -> void:
+	var root := Node3D.new()
+	add_child_autoqfree(root)
+	var coordinator = GameCoordinatorClass.new()
+	root.add_child(coordinator)
+	var player: PlayerController = PlayerControllerScene.instantiate()
+	root.add_child(player)
+	var trunk: CarTrunk = CarTrunkScene.instantiate()
+	root.add_child(trunk)
+	var box := Node3D.new()
+	box.name = "TestBox"
+	root.add_child(box)
+	await get_tree().process_frame
+
+	assert_true(player.try_pick_up_item(box, GameTypes.CarriedItemType.BOX_LIVING_ROOM))
+	assert_eq(coordinator.phase, GameCoordinatorClass.Phase.STARTUP)
+	trunk.interact(player)
+	assert_eq(player.get_carried_item(), GameTypes.CarriedItemType.BOX_LIVING_ROOM, "Trunk rejects box deposit during Phase 0")
+
+	coordinator.phase = GameCoordinatorClass.Phase.PACKING
+	trunk.interact(player)
+	assert_eq(player.get_carried_item(), GameTypes.CarriedItemType.NONE, "Trunk accepts box deposit during Phase 1")
+

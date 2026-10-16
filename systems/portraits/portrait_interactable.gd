@@ -24,6 +24,9 @@ func get_interaction_prompt(actor: Node = null) -> String:
 	var boxes_loaded: bool = false
 	if actor != null and actor.has_method("get_carried_item"):
 		has_sheet = actor.call("get_carried_item") == GameTypes.CarriedItemType.DUST_SHEET
-	if actor is PlayerController:
+	var coordinator: Node = get_tree().get_first_node_in_group("game_coordinator") if get_tree() != null else null
+	if coordinator != null and coordinator.has_method("can_take_family_portrait"):
+		boxes_loaded = bool(coordinator.call("can_take_family_portrait"))
+	elif actor is PlayerController:
 		boxes_loaded = (actor as PlayerController).boxes_packed_count >= 4
 	return painting.get_interaction_prompt(has_sheet, boxes_loaded)

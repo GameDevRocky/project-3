@@ -14,7 +14,7 @@ Mirrors [02-plan.md](02-plan.md). Tick each box in the same commit as the work.
 - [x] Step 1.1: Implement dormant ghost hidden visibility and disabled collision in `ghost_monster.gd` with tests in `test_ghost_behavior.gd`
 
 ## Iteration 2: Carry & Trunk Phase Gating
-- [ ] Step 2.1: Enforce Phase 0 box pickup guard and trunk deposit gating in `carryable_item.gd`, `car_trunk.gd`, and `game_coordinator.gd` with tests in `test_carry_loop.gd`
+- [x] Step 2.1: Enforce Phase 0 box pickup guard and trunk deposit gating in `carryable_item.gd`, `car_trunk.gd`, and `game_coordinator.gd` with tests in `test_carry_loop.gd`
 
 ## Iteration 3: Painting Orientations & Parlor Layout
 - [ ] Step 3.1: Fix painting orientations in `main.tscn`, align Parlor depth to 6m, and center doorway labels in `house_presentation.gd` with tests in `test_house_layout.gd`
