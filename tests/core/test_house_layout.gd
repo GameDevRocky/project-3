@@ -88,3 +88,78 @@ func test_complete_gameplay_nodes_exist() -> void:
 	assert_not_null(instance.get_node_or_null("Sockets/CarSocket/CarTrunk"))
 	assert_not_null(instance.get_node_or_null("Sockets/MovingBoxSockets/DustSheet"))
 	assert_true(instance.get_node("Sockets/MovingBoxSockets/Box_LivingRoom") is CarryableItem)
+
+func test_painting_orientations() -> void:
+	var scene_res = load(MAIN_SCENE_PATH)
+	var instance = scene_res.instantiate()
+	add_child_autoqfree(instance)
+	var portraits = instance.get_node_or_null("PortraitSystem")
+	assert_not_null(portraits)
+
+	var basement_1: Node3D = portraits.get_node_or_null("Painting_Basement_1") as Node3D
+	assert_not_null(basement_1)
+	assert_gt(basement_1.transform.basis.z.x, 0.9, "Painting_Basement_1 must face East (+X) toward the stairs")
+
+	var family: Node3D = portraits.get_node_or_null("FamilyPortrait") as Node3D
+	assert_not_null(family)
+	assert_lt(family.transform.basis.z.z, -0.9, "FamilyPortrait must face North (-Z) into the entry foyer")
+
+	var parlor_1: Node3D = portraits.get_node_or_null("Painting_Parlor_1") as Node3D
+	assert_not_null(parlor_1)
+	assert_gt(parlor_1.transform.basis.z.x, 0.9, "Painting_Parlor_1 must face East (+X) into the parlor")
+
+	var study_1: Node3D = portraits.get_node_or_null("Painting_Study_1") as Node3D
+	assert_not_null(study_1)
+	assert_lt(study_1.transform.basis.z.x, -0.9, "Painting_Study_1 must face West (-X) into the study")
+
+	var dining_1: Node3D = portraits.get_node_or_null("Painting_Dining_1") as Node3D
+	assert_not_null(dining_1)
+	assert_gt(dining_1.transform.basis.z.z, 0.9, "Painting_Dining_1 must face South (+Z) into the dining room")
+
+	var parlor_2: Node3D = portraits.get_node_or_null("Painting_Parlor_2") as Node3D
+	assert_not_null(parlor_2)
+	assert_gt(parlor_2.transform.basis.z.z, 0.9, "Painting_Parlor_2 must face South (+Z) into the parlor")
+
+func test_parlor_geometry_and_label_alignment() -> void:
+	var scene_res = load(MAIN_SCENE_PATH)
+	var instance = scene_res.instantiate()
+	add_child_autoqfree(instance)
+	var geom = instance.get_node_or_null("HouseGeometry")
+	assert_not_null(geom)
+
+	var floor_node: CSGBox3D = geom.get_node_or_null("ParlorFloor") as CSGBox3D
+	assert_not_null(floor_node)
+	assert_eq(floor_node.size.z, 6.0, "Parlor floor depth should be 6.0m")
+
+	var ceiling_node: CSGBox3D = geom.get_node_or_null("ParlorCeiling") as CSGBox3D
+	assert_not_null(ceiling_node)
+	assert_eq(ceiling_node.size.z, 6.0, "Parlor ceiling depth should be 6.0m")
+
+	var west_wall: CSGBox3D = geom.get_node_or_null("ParlorWestWall") as CSGBox3D
+	assert_not_null(west_wall)
+	assert_eq(west_wall.size.z, 6.0, "Parlor west wall depth should be 6.0m")
+
+	var south_wall: CSGBox3D = geom.get_node_or_null("ParlorSouthWall") as CSGBox3D
+	assert_not_null(south_wall)
+	assert_eq(south_wall.position.z, 0.0, "Parlor south wall should be flush at Z=0.0")
+
+	var north_wall: CSGBox3D = geom.get_node_or_null("ParlorNorthWall") as CSGBox3D
+	assert_not_null(north_wall)
+	assert_eq(north_wall.position.z, -6.0, "Parlor north wall should be flush at Z=-6.0")
+
+	var parlor_2: Node3D = instance.get_node_or_null("PortraitSystem/Painting_Parlor_2") as Node3D
+	assert_not_null(parlor_2)
+	assert_almost_eq(parlor_2.position.z, -5.85, 0.05, "Painting_Parlor_2 should be mounted on Z=-6.0 wall")
+
+	var presentation = instance.get_node_or_null("HousePresentation")
+	assert_not_null(presentation)
+	var parlor_label: Label3D = presentation.get_node_or_null("PARLORLabel") as Label3D
+	assert_not_null(parlor_label)
+	assert_almost_eq(parlor_label.position.z, -3.0, 0.1, "PARLOR label should be centered over Z=-3.0 doorway")
+	assert_almost_eq(parlor_label.position.x, -2.95, 0.1, "PARLOR label should be on Entry Hall face of wall")
+
+	var study_label: Label3D = presentation.get_node_or_null("STUDYLabel") as Label3D
+	assert_not_null(study_label)
+	assert_almost_eq(study_label.position.z, -3.0, 0.1, "STUDY label should be centered over Z=-3.0 doorway")
+	assert_almost_eq(study_label.position.x, 2.95, 0.1, "STUDY label should be on Entry Hall face of wall")
+

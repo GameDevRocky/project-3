@@ -69,9 +69,9 @@ func _build_basement() -> void:
 	_add_cylinder("BasementPipe", 0.12, 6.5, Vector3(1.55, -1.8, -12.0), Color(0.25, 0.22, 0.18), Vector3(PI * 0.5, 0.0, 0.0))
 
 func _build_room_labels() -> void:
-	_add_label("ENTRY HALL", Vector3(0.0, 2.35, -0.18), 0.0)
-	_add_label("PARLOR", Vector3(-3.12, 2.35, -2.1), -PI * 0.5)
-	_add_label("STUDY", Vector3(3.12, 2.35, -2.1), PI * 0.5)
+	_add_label("ENTRY HALL", Vector3(0.0, 2.35, -0.18), PI)
+	_add_label("PARLOR", Vector3(-2.95, 2.45, -3.0), PI * 0.5)
+	_add_label("STUDY", Vector3(2.95, 2.45, -3.0), -PI * 0.5)
 	_add_label("DINING ROOM", Vector3(1.0, 2.35, -6.12), 0.0)
 	_add_label("BASEMENT", Vector3(-1.8, 1.1, -7.85), PI)
 

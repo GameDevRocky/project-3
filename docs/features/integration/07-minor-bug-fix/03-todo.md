@@ -17,12 +17,12 @@ Mirrors [02-plan.md](02-plan.md). Tick each box in the same commit as the work.
 - [x] Step 2.1: Enforce Phase 0 box pickup guard and trunk deposit gating in `carryable_item.gd`, `car_trunk.gd`, and `game_coordinator.gd` with tests in `test_carry_loop.gd`
 
 ## Iteration 3: Painting Orientations & Parlor Layout
-- [ ] Step 3.1: Fix painting orientations in `main.tscn`, align Parlor depth to 6m, and center doorway labels in `house_presentation.gd` with tests in `test_house_layout.gd`
+- [x] Step 3.1: Fix painting orientations in `main.tscn`, align Parlor depth to 6m, and center doorway labels in `house_presentation.gd` with tests in `test_house_layout.gd`
 
 ## Verify
-- [ ] Full GUT suite passes headless
-- [ ] Every "Done when" item in `01-spec.md` is met
-- [ ] Pulled `origin/main` into the branch; feature wired into the game and verified
+- [x] Full GUT suite passes headless
+- [x] Every "Done when" item in `01-spec.md` is met
+- [x] Pulled `origin/main` into the branch; feature wired into the game and verified
 
 ## PR
 - [ ] Pulled `origin/main` right before pushing; re-ran the suite
