@@ -17,12 +17,12 @@ Mirrors [02-plan.md](02-plan.md). Tick each box in the same commit as the work.
 - [x] Step 2.1 & 2.2: Implement 15s trapped dark teleportation and 10s lit threshold flicker sabotage in `ghost_monster.gd` with tests in `test_ghost_behavior.gd`
 
 ## Iteration 3: Void Phase Audio & Tuning Documentation
-- [ ] Step 3.1: Connect `ghost_teleported` in `procedural_audio.gd` and synthesize void phase chime
-- [ ] Step 3.2: Update `docs/GAME_SPEC.md` §9 Tuning Table per Rule 6
-- [ ] Step 3.3: Full GUT suite passes headless
-- [ ] Every "Done when" item in `01-spec.md` is met
-- [ ] Pulled `origin/main` into the branch; feature wired and verified
+- [x] Step 3.1: Connect `ghost_teleported` in `procedural_audio.gd` and synthesize void phase chime
+- [x] Step 3.2: Update `docs/GAME_SPEC.md` §9 Tuning Table per Rule 6
+- [x] Step 3.3: Full GUT suite passes headless
+- [x] Every "Done when" item in `01-spec.md` is met
+- [x] Pulled `origin/main` into the branch; feature wired and verified
 
 ## PR
-- [ ] Pulled `origin/main` right before pushing; re-ran the suite
+- [x] Pulled `origin/main` right before pushing; re-ran the suite
 - [ ] PR opened with summary, interfaces touched, how to test, and test results

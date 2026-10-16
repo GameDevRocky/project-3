@@ -57,6 +57,8 @@ func _connect_gameplay() -> void:
 			_ghost.ghost_chase_started.connect(_on_ghost_chase)
 		if _ghost.has_signal("ghost_roam_sound_requested") and not _ghost.ghost_roam_sound_requested.is_connected(_on_ghost_roam_sound):
 			_ghost.ghost_roam_sound_requested.connect(_on_ghost_roam_sound)
+		if _ghost.has_signal("ghost_teleported") and not _ghost.ghost_teleported.is_connected(_on_ghost_teleported):
+			_ghost.ghost_teleported.connect(_on_ghost_teleported)
 	if coordinator != null:
 		if not coordinator.climax_began.is_connected(_on_climax):
 			coordinator.climax_began.connect(_on_climax)
@@ -92,6 +94,12 @@ func _on_ghost_roam_sound() -> void:
 	if not _unlocked or _ghost_player == null or _ghost == null or _ghost.is_chasing:
 		return
 	_ghost_player.stream = _make_roam_drone_wave(1.6, 0.45)
+	_ghost_player.play()
+
+func _on_ghost_teleported(_to_room: GameTypes.RoomId) -> void:
+	if not _unlocked or _ghost_player == null:
+		return
+	_ghost_player.stream = _make_teleport_chime_wave(1.8, 0.55)
 	_ghost_player.play()
 
 func _on_climax() -> void:
@@ -182,6 +190,29 @@ func _make_roam_drone_wave(duration: float, amplitude: float) -> AudioStreamWAV:
 		var rasp: float = random.randf_range(-1.0, 1.0) * 0.45
 		var envelope: float = sin(PI * progress)
 		var sample: float = (base_tone + sub_tone + rasp) * tremor * amplitude * envelope
+		var value: int = clampi(int(sample * 32767.0), -32768, 32767)
+		bytes.encode_s16(sample_index * 2, value)
+	var stream := AudioStreamWAV.new()
+	stream.format = AudioStreamWAV.FORMAT_16_BITS
+	stream.mix_rate = sample_rate
+	stream.stereo = false
+	stream.data = bytes
+	return stream
+
+func _make_teleport_chime_wave(duration: float, amplitude: float) -> AudioStreamWAV:
+	var sample_rate: int = 22050
+	var sample_count: int = maxi(1, int(duration * sample_rate))
+	var bytes := PackedByteArray()
+	bytes.resize(sample_count * 2)
+	for sample_index: int in range(sample_count):
+		var time_value: float = float(sample_index) / float(sample_rate)
+		var progress: float = float(sample_index) / float(sample_count)
+		var tone1: float = sin(TAU * 520.0 * time_value) * exp(-progress * 4.0)
+		var tone2: float = sin(TAU * 330.0 * time_value) * exp(-progress * 2.5) * 0.8
+		var sub_drone: float = sin(TAU * 55.0 * time_value) * exp(-progress * 1.8) * 0.5
+		var shimmer: float = sin(TAU * 880.0 * time_value) * exp(-progress * 6.0) * 0.3
+		var envelope: float = minf(1.0, progress / 0.02) * (1.0 - progress)
+		var sample: float = (tone1 + tone2 + sub_drone + shimmer) * amplitude * envelope
 		var value: int = clampi(int(sample * 32767.0), -32768, 32767)
 		bytes.encode_s16(sample_index * 2, value)
 	var stream := AudioStreamWAV.new()

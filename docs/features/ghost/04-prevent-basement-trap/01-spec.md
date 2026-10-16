@@ -64,9 +64,9 @@ This feature eliminates the passive exploit where the player indefinitely confin
 
 ## 7. Done when
 
-- [ ] Entry Hall drains at 4.0 W/s; other rooms drain at 2.0 W/s; net calculation matches in `electrical_system.gd`.
-- [ ] Ghost trapped with no unlit exits for 15s teleports to a dark room and emits `ghost_teleported`.
-- [ ] Ghost blocked at a lit room threshold for 10s calls `trigger_flicker(room, 2.5)`.
-- [ ] `ProceduralAudio` synthesizes a void phase chime on `ghost_teleported`.
-- [ ] `GAME_SPEC.md` Tuning Table updated.
-- [ ] Full GUT test suite passes with 0 errors.
+- [x] Entry Hall drains at 4.0 W/s; other rooms drain at 2.0 W/s; net calculation matches in `electrical_system.gd`.
+- [x] Ghost trapped with no unlit exits for 15s teleports to a dark room and emits `ghost_teleported`.
+- [x] Ghost blocked at a lit room threshold for 10s calls `trigger_flicker(room, 2.5)`.
+- [x] `ProceduralAudio` synthesizes a void phase chime on `ghost_teleported`.
+- [x] `GAME_SPEC.md` Tuning Table updated.
+- [x] Full GUT test suite passes with 0 errors.

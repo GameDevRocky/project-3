@@ -74,8 +74,8 @@ _Updated 2026-10-15_
 ## Ghost / Monster System: John
 
 - **Status:** 🟢 · **Branch:** `ghost/prevent-basement-trap` · **Current feature:** `04-prevent-basement-trap` · **Updated:** 2026-10-15 (Gemini CLI)
-- **Done:** Completed brainstorm, spec, plan, and TODO for anti-basement-containment mechanics: Entry Hall 4.0 W/s heavy drain, 15s trapped shadow teleportation to unlit rooms, 10s lit threshold paranormal flicker sabotage, and void phase audio.
-- **In progress:** Iteration 1: Entry Hall heavy wattage draw.
-- **Next:** Iteration 2: Shadow teleportation and flicker sabotage; Iteration 3: Void phase audio.
+- **Done:** Completed anti-containment system: Entry Hall 4.0 W/s heavy draw (breaks even alone with generator), 15s trapped shadow teleportation to unlit rooms upstairs, 10s lit threshold flicker sabotage on blocking circuits, synthesized 3D void phase chime in `procedural_audio.gd`, and §9 Tuning Table update. Full headless GUT suite passes 14 scripts, 65 tests, and 331 assertions with zero errors.
+- **In progress:** Ready for PR into `main`.
+- **Next:** Push branch and open PR.
 - **Needs from others:** None.
-- **Handoff notes:** The Entry Hall draws 4.0 W/s, making it break-even alone and draining if any other room is lit. Trapped ghost teleports to an unlit room after 15s and flickers blocking lights after 10s.
+- **Handoff notes:** The Entry Hall draws 4.0 W/s, making it break-even alone and draining if any other room is lit. Trapped ghost teleports to an unlit room after 15s with a distinct void chime and flickers blocking lights after 10s. Illuminated rooms remain barriers until flickered.
