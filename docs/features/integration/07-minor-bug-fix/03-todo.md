@@ -25,5 +25,5 @@ Mirrors [02-plan.md](02-plan.md). Tick each box in the same commit as the work.
 - [x] Pulled `origin/main` into the branch; feature wired into the game and verified
 
 ## PR
-- [ ] Pulled `origin/main` right before pushing; re-ran the suite
+- [x] Pulled `origin/main` right before pushing; re-ran the suite
 - [ ] PR opened with summary, interfaces touched, how to test, and test results
